@@ -27,6 +27,7 @@ claude --plugin-dir /path/to/dunnlab_code
 - Skill descriptions must be concise — they consume ~2% of context budget
 - The `docs/` directory is for the GitHub Pages site (user-facing), not for Claude Code context
 - The `documentation/` directory is for developer reference when working on this repo
+- When writing docs, link to [official Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code) rather than repeating it
 
 ## Documentation
 

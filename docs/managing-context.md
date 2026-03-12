@@ -107,3 +107,45 @@ Skills can be added at three levels:
 Edit the `SKILL.md` file directly. Claude Code detects changes automatically — no restart needed.
 
 For full documentation, see the [official skills reference](https://docs.anthropic.com/en/docs/claude-code/skills).
+
+## Plugins
+
+Plugins are packages that bundle skills, commands, and hooks for distribution. While you can add skills individually to a project, plugins let you install a curated set from a marketplace — including Anthropic's official collection.
+
+### Installing from the Anthropic marketplace
+
+1. Run `/plugin` to open the plugin manager
+2. Browse the marketplace and select a plugin to install
+3. Claude Code copies the plugin to a local cache at `~/.claude/plugins/cache/`
+
+You can also install plugins via the CLI:
+
+```bash
+claude plugin install plugin-name@marketplace-name
+```
+
+### Auto-updates
+
+Plugins from official Anthropic marketplaces are **auto-updated by default**. At startup, Claude Code checks for new versions and updates installed plugins automatically. If updates are found, you'll be prompted to run `/reload-plugins` to apply them.
+
+The `version` field in a plugin's `plugin.json` determines whether an update is needed — if code changes but the version isn't bumped, the cached copy won't update.
+
+To control auto-update behavior:
+
+| Method | Effect |
+| -------- | -------- |
+| `/plugin` → Marketplaces → toggle | Enable or disable auto-update per marketplace |
+| `export DISABLE_AUTOUPDATER=true` | Disable all auto-updates (including Claude Code itself) |
+| Both `DISABLE_AUTOUPDATER=true` and `FORCE_AUTOUPDATE_PLUGINS=true` | Disable CLI updates but keep plugin updates |
+
+To manually update a specific plugin:
+
+```bash
+claude plugin update plugin-name@marketplace-name
+```
+
+### Context impact
+
+Plugin skill descriptions count toward the same ~2% context budget as other skills. Use `/context` to see which plugin skills are loaded and their token cost.
+
+For full documentation, see the [official plugins reference](https://docs.anthropic.com/en/docs/claude-code/plugins).
