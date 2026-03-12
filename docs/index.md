@@ -14,6 +14,7 @@ Welcome! This site documents the Dunn Lab's shared Claude Code plugin — a coll
 - [Data Analysis](data-analysis.md) — Using Claude Code for data analysis workflows
 - [Managing Security](managing-security.md) — Configuring permissions with settings.json
 - [Managing Context](managing-context.md) — Providing Claude Code with the right context
+- [Example Workflows](example-workflows.md) — Step-by-step walkthroughs for common tasks
 
 ## For new lab members
 
