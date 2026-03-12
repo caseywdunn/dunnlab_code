@@ -65,6 +65,8 @@ When reviewing code in Dunn Lab projects, follow this process and checklist.
 
 - [ ] Are there unnecessary copies of large data structures?
 - [ ] Will this scale to the expected data size?
+- [ ] Can loops be replaced with vectorized operations (NumPy, pandas, R vectorization)?
+- [ ] Are there nested loops that could be simplified or flattened?
 - [ ] Are file handles and database connections properly closed?
 
 ### Security and data integrity
