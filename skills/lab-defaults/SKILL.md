@@ -93,6 +93,34 @@ Parallelize where appropriate.
 
 Avoid premature optimization, but keep performance in mind as you write code. Do not write inefficient code for the sake of "getting something working" — aim for clean, efficient code from the start. Do not make big sacrifices in code quality or readability for small performance gains.
 
+## Workflow orchestration
+
+Choose the orchestration tool based on workflow complexity:
+
+### Snakemake for complex workflows
+
+Use **Snakemake** when a workflow involves multiple independent tools, fan-out/fan-in patterns, or complex dependency graphs. Snakemake handles parallelism, cluster submission, and dependency resolution automatically.
+
+- Define each stage as a rule with explicit `input` and `output` files.
+- Use `conda:` directives per rule to isolate tool environments.
+- Store the `Snakefile` at the project root and keep per-rule wrapper scripts in `scripts/` if rule logic exceeds a few lines.
+
+### Bash or Python orchestrators for simple workflows
+
+For simpler multi-step pipelines that form a linear chain (A → B → C), a plain **bash** or **Python** script is sufficient. Use this when introducing Snakemake would add more complexity than it removes.
+
+- In bash, chain steps with `set -euo pipefail` and check for existing outputs before each step.
+- In Python, use `subprocess.run(..., check=True)` and `pathlib.Path.exists()` checks.
+
+### Checkpointing — skip completed stages
+
+All orchestrators must implement checkpointing: **do not re-run a stage if its output already exists**. This applies to Snakemake (built-in via output file tracking) and to bash/Python scripts (explicit existence checks).
+
+- Each stage should write its output to a well-defined path.
+- Before running a stage, check whether the output file or directory already exists; if so, skip it.
+- To re-run a specific stage, the user deletes that stage's output and re-launches the pipeline — the orchestrator picks up from there.
+- Never use sentinel/lock files or hidden state to track completion; the presence of the output itself is the checkpoint.
+
 ## Testing
 
 ### Standard test frameworks
