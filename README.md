@@ -1,4 +1,4 @@
-# dunnlab_code
+# DunnLab Code
 
 This repo has two purposes:
 
