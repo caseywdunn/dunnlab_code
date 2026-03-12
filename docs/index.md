@@ -1,0 +1,22 @@
+---
+title: Home
+nav_order: 1
+---
+
+# Dunn Lab Code
+
+Welcome! This site documents the Dunn Lab's shared Claude Code plugin — a collection of skills, hooks, and slash commands that standardize how we use AI-assisted coding across the lab.
+
+## For new lab members
+
+If you're just getting started, head to the [Getting Started](getting-started.md) guide. It walks you through installing Claude Code, registering the plugin, and verifying everything works.
+
+## For contributors
+
+Want to add a new skill, update a command, or improve these docs? Here's the short version:
+
+1. Clone the repo and create a branch
+2. Add or edit files in the appropriate directory (`skills/`, `commands/`, `hooks/`, or `docs/`)
+3. Open a pull request for review
+
+See [Lab Practices](lab-practices.md) for our conventions on AI-assisted work and contributing back to this repo.
