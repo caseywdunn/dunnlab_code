@@ -1,21 +1,14 @@
 title: Dunn Lab Code
 description: Claude Code skills and lab practices for the Dunn Lab
 remote_theme: just-the-docs/just-the-docs
-url: ""  # Set to GitHub Pages URL once known
-
-# GitHub Pages will serve from /docs
+url: "https://caseywdunn.github.io"
 baseurl: "/dunnlab_code"
+
+# Required for remote_theme on GitHub Pages
+plugins:
+  - jekyll-remote-theme
 
 # Navigation
 aux_links:
   "GitHub Repo":
-    - "https://github.com/dunnlab/dunnlab_code"
-
-# Exclude non-docs directories so Jekyll doesn't process them
-exclude:
-  - skills/
-  - hooks/
-  - commands/
-  - .claude/
-  - node_modules/
-  - "*.json"
+    - "https://github.com/caseywdunn/dunnlab_code"

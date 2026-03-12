@@ -43,4 +43,4 @@ You should see a welcome message and a list of available skills.
 - **Commands** are slash commands (like `/lab-check`) that trigger specific Claude behaviors. See the `commands/` directory.
 - **Hooks** are event-driven scripts that run automatically in response to Claude Code events (e.g., before a commit or after a file is created). See the `hooks/` directory.
 
-Browse the [Guides](guides/) section for walkthroughs of individual skills and workflows.
+Browse the [Data Analysis](data-analysis.md) and [Writing Assistance](writing-assistance.md) pages for walkthroughs of individual skills and workflows.

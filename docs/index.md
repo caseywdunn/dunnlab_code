@@ -7,6 +7,13 @@ nav_order: 1
 
 Welcome! This site documents the Dunn Lab's shared Claude Code plugin — a collection of skills, hooks, and slash commands that standardize how we use AI-assisted coding across the lab.
 
+## Table of Contents
+
+- [Getting Started](getting-started.md) — Install Claude Code and register the Dunn Lab plugin
+- [Lab Practices](lab-practices.md) — Conventions for AI-assisted work and contributing
+- [Data Analysis](data-analysis.md) — Using Claude Code for data analysis workflows
+- [Writing Assistance](writing-assistance.md) — Using Claude Code for scientific writing tasks
+
 ## For new lab members
 
 If you're just getting started, head to the [Getting Started](getting-started.md) guide. It walks you through installing Claude Code, registering the plugin, and verifying everything works.

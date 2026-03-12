@@ -1,7 +1,6 @@
 ---
 title: Data Analysis
-parent: Guides
-nav_order: 1
+nav_order: 4
 ---
 
 # Data Analysis Guide
