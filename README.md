@@ -106,7 +106,7 @@ Then restart Claude Code. Changes are picked up on launch — there's no separat
 | `skills/`   | Reusable Claude Code skills for lab workflows |
 | `commands/` | Slash commands for common tasks |
 | `hooks/`    | Event-driven automation hooks |
-| `guide/`    | GitHub Pages site with setup guides and lab practices |
+| `docs/`     | GitHub Pages site with setup guides and lab practices |
 
 ### Skills
 

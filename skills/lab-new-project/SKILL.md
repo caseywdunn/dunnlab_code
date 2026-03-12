@@ -34,8 +34,8 @@ Initialize git repository with `git init`.
 
 Before writing any code, create the following:
 - README.md with a project overview and setup instructions
- `guide/overview.md` file that outlines the scientific question or engineering goal, key data sources and their formats, and the planned analysis workflow or architecture. This serves as a reference for the project and can be loaded into context by Claude Code when working on relevant parts of the project.
-- Any other guide/ files needed to document the project (e.g., data model, analysis workflow, interpretation notes). These should be atomic and focused on specific aspects of the project, and should be written in a way that they can be loaded into context by Claude Code when working on relevant parts of the project. The goal is to have a comprehensive set of documentation that covers all aspects of the project and can be easily referenced by both humans and Claude Code as needed. These serve as a guardrail on context.
+ `docs/overview.md` file that outlines the scientific question or engineering goal, key data sources and their formats, and the planned analysis workflow or architecture. This serves as a reference for the project and can be loaded into context by Claude Code when working on relevant parts of the project.
+- Any other docs/ files needed to document the project (e.g., data model, analysis workflow, interpretation notes). These should be atomic and focused on specific aspects of the project, and should be written in a way that they can be loaded into context by Claude Code when working on relevant parts of the project. The goal is to have a comprehensive set of documentation that covers all aspects of the project and can be easily referenced by both humans and Claude Code as needed. These serve as a guardrail on context.
 - CLAUDE.md with a brief project summary, links to the above documentation, and any project-specific instructions for using Claude Code. Also specify to use the lab-defaults skill for coding conventions and project structure.
 
 Ask the user any clarifying questions needed to fill in these documents. 
@@ -102,4 +102,4 @@ Run through this checklist when wrapping up:
 - [ ] Tests pass
 - [ ] Linters and formatters run clean
 - [ ] README setup instructions are accurate and complete
-- [ ] CLAUDE.md and guide/ files are comprehensive and up to date
+- [ ] CLAUDE.md and docs/ files are comprehensive and up to date
