@@ -1,0 +1,52 @@
+# Contributing
+
+How to add or modify skills, commands, hooks, and documentation in this repo.
+
+## Adding a new skill
+
+1. Create a directory: `skills/<skill-name>/`
+2. Create `skills/<skill-name>/SKILL.md` with frontmatter (`name`, `description`) and instructions
+3. Keep the `description` to one concise sentence — it's always in context
+4. Reference `lab-defaults` for shared conventions rather than duplicating them
+5. Test locally: `claude --plugin-dir /path/to/dunnlab_code`, then invoke your skill
+6. Update `README.md` to list the new skill in the "Skills" section
+
+## Adding a new command
+
+1. Create `commands/<command-name>.md` with frontmatter (`name`, `description`) and instructions
+2. Test locally with `/command-name`
+3. Update `README.md` to list the new command
+
+## Adding a hook
+
+1. Create a script in `hooks/` (e.g., `pre-commit-check.sh`)
+2. Register it in `.claude/settings.json` under the `hooks` key
+3. Document it in `hooks/README.md`
+4. Test by triggering the relevant event
+
+## Modifying existing skills
+
+- Edit the `SKILL.md` file directly. Claude Code detects changes without restart.
+- If changing a skill's scope or purpose, update its `description` frontmatter.
+- If the change affects how other skills reference it, check cross-references.
+
+## Updating the GitHub Pages site
+
+- Pages live in `docs/` and use Jekyll with the just-the-docs remote theme.
+- Each page has YAML frontmatter with `title` and `nav_order`.
+- See `documentation/github-pages.md` for configuration details.
+- Preview locally: `cd docs && bundle exec jekyll serve`
+
+## Updating the example settings.json
+
+- The HPC settings file is at `assets/settings.json`.
+- It uses JSON comment arrays (`_comment_*` keys) since JSON doesn't support comments.
+- When updating permission rules, follow the deny > ask > allow priority order.
+- Test permission changes by copying to a project's `.claude/settings.json` and verifying behavior.
+
+## Pull request process
+
+1. Create a branch from `main`
+2. Make changes and test locally
+3. Open a PR with a description of what changed and why
+4. Ensure the GitHub Pages site builds correctly (check the Actions tab after push)
