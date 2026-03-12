@@ -51,7 +51,7 @@ When reviewing code in Dunn Lab projects, follow this process and checklist.
 ### Documentation
 
 - [ ] Are new functions documented with docstrings/doc comments?
-- [ ] Is the README or docs/ updated if behavior changed?
+- [ ] Is the README or guide/ updated if behavior changed?
 - [ ] Do comments explain *why*, not *what*?
 
 ### Data and reproducibility

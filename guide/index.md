@@ -24,7 +24,7 @@ If you're just getting started, head to the [Getting Started](getting-started.md
 Want to add a new skill, update a command, or improve these docs? Here's the short version:
 
 1. Clone the repo and create a branch
-2. Add or edit files in the appropriate directory (`skills/`, `commands/`, `hooks/`, or `docs/`)
+2. Add or edit files in the appropriate directory (`skills/`, `commands/`, `hooks/`, or `guide/`)
 3. Open a pull request for review
 
 See [Lab Practices](lab-practices.md) for our conventions on AI-assisted work and contributing back to this repo.
