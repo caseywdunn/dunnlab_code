@@ -18,7 +18,7 @@ Once this plugin is published to a marketplace, install it directly in Claude Co
 /plugin install dunnlab-code@dunnlab
 ```
 
-### Option B: Install from a local clone
+### Option B: Persistent install from a local clone
 
 1. Clone the repo somewhere on your machine:
 
@@ -26,17 +26,29 @@ Once this plugin is published to a marketplace, install it directly in Claude Co
    git clone https://github.com/dunnlab/dunnlab_code.git ~/repos/dunnlab_code
    ```
 
-2. Launch Claude Code with the plugin directory:
+2. Register the plugin:
 
    ```bash
-   claude --plugin-dir ~/repos/dunnlab_code
+   claude plugin add ~/repos/dunnlab_code
    ```
 
-   This loads the plugin for that session alongside any other installed plugins — it does not replace them. The flag is repeatable, so you can load multiple plugin directories at once (e.g., `--plugin-dir ~/pluginA --plugin-dir ~/pluginB`). If a `--plugin-dir` plugin shares a name with an installed marketplace plugin, the local copy takes precedence for that session. To make it persistent, add the marketplace (see below).
+   This persistently installs the plugin so it's available in every future session. The plugin is copied to Claude's local cache at install time, so after pulling new changes with `git pull` you need to re-run `claude plugin add` to update the cached copy.
 
-   There is no way to specify `--plugin-dir` for the Claude VS Code extension. But you can run `claude --plugin-dir` within the VS Code terminal to use the plugin there.
+### Option C: Per-session loading with `--plugin-dir`
 
-### Option C: Add as a team marketplace
+If you want to load the plugin for a single session without installing it permanently (useful during development or testing):
+
+```bash
+claude --plugin-dir ~/repos/dunnlab_code
+```
+
+This loads the plugin for that session alongside any other installed plugins — it does not replace them. The flag is repeatable, so you can load multiple plugin directories at once (e.g., `--plugin-dir ~/pluginA --plugin-dir ~/pluginB`). If a `--plugin-dir` plugin shares a name with an installed marketplace plugin, the local copy takes precedence for that session.
+
+There is no way to specify `--plugin-dir` for the Claude VS Code extension. But you can run `claude --plugin-dir` within the VS Code terminal to use the plugin there.
+
+Because `--plugin-dir` reads directly from the directory, changes take effect immediately on the next session — no update command needed.
+
+### Option D: Add as a team marketplace
 
 To make the plugin available to all lab members via a shared project, add it to your project's `.claude/settings.json`:
 
@@ -90,16 +102,26 @@ If you installed via a marketplace, update from within Claude Code:
 
 Marketplaces auto-update by default, so in most cases you don't need to do anything — new versions are picked up automatically.
 
-### Local clone installs (`--plugin-dir`)
+### Persistent local installs (`plugin add`)
 
-If you're loading from a local clone, pull the latest changes and restart Claude Code:
+Pull the latest changes, then re-register the plugin to update the cache:
 
 ```bash
-cd ~/dunnlab_code
+cd ~/repos/dunnlab_code
+git pull
+claude plugin add ~/repos/dunnlab_code
+```
+
+### Per-session installs (`--plugin-dir`)
+
+Pull the latest changes and restart Claude Code:
+
+```bash
+cd ~/repos/dunnlab_code
 git pull
 ```
 
-Then restart Claude Code. Changes are picked up on launch — there's no separate update command for local plugins.
+Changes are picked up on the next session automatically — no separate update command needed.
 
 ## What's included
 
