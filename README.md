@@ -23,16 +23,18 @@ Once this plugin is published to a marketplace, install it directly in Claude Co
 1. Clone the repo somewhere on your machine:
 
    ```bash
-   git clone https://github.com/dunnlab/dunnlab_code.git ~/dunnlab_code
+   git clone https://github.com/dunnlab/dunnlab_code.git ~/repos/dunnlab_code
    ```
 
 2. Launch Claude Code with the plugin directory:
 
    ```bash
-   claude --plugin-dir ~/dunnlab_code
+   claude --plugin-dir ~/repos/dunnlab_code
    ```
 
-   This loads the plugin for that session. To make it persistent, add the marketplace (see below).
+   This loads the plugin for that session alongside any other installed plugins — it does not replace them. The flag is repeatable, so you can load multiple plugin directories at once (e.g., `--plugin-dir ~/pluginA --plugin-dir ~/pluginB`). If a `--plugin-dir` plugin shares a name with an installed marketplace plugin, the local copy takes precedence for that session. To make it persistent, add the marketplace (see below).
+
+   There is no way to specify `--plugin-dir` for the Claude VS Code extension. But you can run `claude --plugin-dir` within the VS Code terminal to use the plugin there.
 
 ### Option C: Add as a team marketplace
 
