@@ -121,6 +121,14 @@ All orchestrators must implement checkpointing: **do not re-run a stage if its o
 - To re-run a specific stage, the user deletes that stage's output and re-launches the pipeline — the orchestrator picks up from there.
 - Never use sentinel/lock files or hidden state to track completion; the presence of the output itself is the checkpoint.
 
+### Multi-analysis projects
+
+When a project contains multiple distinct analyses that share raw data but have independent processing pipelines, organize each analysis in its own subdirectory (e.g., `analyses_kmer/`, `analyses_qc/`, `analyses_assembly/`). Each subdirectory gets its own Snakefile (or orchestration script), config file, and output directory. Shared raw data stays in `data/raw/` at the project root or is referenced from an external location.
+
+### Logging tool outputs
+
+Redirect stdout and stderr from external tools to structured log files in `logs/`. Use a consistent naming convention: `logs/{tool}/{sample}.log` or `logs/{stage}.log`. This keeps the working directory clean and makes debugging easier. In Snakemake, use the `log:` directive. In bash scripts, use `> logfile 2>&1` or `&> logfile` redirection. Exclude `logs/` from version control.
+
 ## Testing
 
 ### Standard test frameworks
@@ -175,6 +183,7 @@ project-name/
 ├── results/
 │   ├── figures/
 │   └── tables/
+├── logs/             # Tool and pipeline stdout/stderr
 └── environment.yml   # or requirements.txt
 ```
 
