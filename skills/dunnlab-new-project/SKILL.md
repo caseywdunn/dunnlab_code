@@ -10,6 +10,8 @@ description: >
 
 Follow these steps when starting a new project from scratch. This skill references conventions from the `dunnlab-defaults` skill — apply those standards throughout.
 
+Assume that the skill may already have been run in the repo. Before running a step, check if it has already been completed. If it has, skip that step and move on to the next one. This allows the skill to be run multiple times without causing issues, and lets users pick and choose which steps to run.
+
 ## Step 1: Define the project scope
 
 Before writing any code, clarify with the user:
@@ -19,9 +21,11 @@ Before writing any code, clarify with the user:
 - **What are the expected inputs and outputs?**
 - **Will this be a one-off analysis, a reusable tool, or a package?**
 
+If there are problems with the user's plans (e.g., they suggest inappropriate tools, there are missing or unnecessary steps, there are better approaches, the data can't be used for this purpose, etc...), point out the issues and suggest better approaches.
+
 Use the answers to guide decisions in the following steps.
 
-## Create README.md stub and .gitignore
+## Step 2: Create README.md stub, .gitignore, and other initial files
 
 Create a README.md with a project title and placeholder sections for the overview, setup instructions, usage examples, and development notes. This will be fleshed out in later steps but serves as a starting point.
 
@@ -31,8 +35,15 @@ Initialize git repository with `git init`.
 
 Use the `dunnlab-devcontainer` skill to add a `.devcontainer/` directory with the standard Claude Code devcontainer configuration. Add a "Development container" section to README.md explaining how to use it (install Docker and the VS Code Dev Containers extension, then reopen the project in the container).
 
+Create `.claude/settings.json` with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval. The settings should:
 
-## Step 1.5: Create project planning documentation
+- **Allow without prompting**: `Read(**)`, `Glob`, `Grep`, `Task`, read-only git commands (`git status`, `git log`, `git diff`, `git branch`, `git remote`, `git show`), read-only shell commands (`ls`, `cat`, `head`, `tail`, `wc`, `find`, `du`, `df`, `file`, `which`, `echo`, `pwd`, `tree`, `diff`), `curl` and `wget`, `python` and `python3`, `conda activate/deactivate/env list/list/info`, `mamba activate/deactivate/env list/list/info`, `pip list`, `pip show`
+- **Ask for confirmation**: `Edit(**)`, `Write(**)`, mutating git commands (`git push`, `git commit`, `git checkout`, `git merge`, `git rebase`, `git reset`, `git stash`, `git add`), package management (`conda install/create/remove/env create/env remove/update`, `mamba install/create/remove/env create/env remove/update`, `pip install`, `pip uninstall`), file operations (`cp`, `mv`, `rm`, `mkdir`, `rsync`), `chmod`, `WebFetch`
+- **Deny**: reading sensitive files (`.env`, `.env.*`, `.ssh/**`, `.netrc`, `*credentials*`, `*secret*`, `*token*`, `*.pem`, `*.key`, `.aws/**`), editing sensitive files (same patterns), destructive commands (`rm -rf /`, `sudo`, `su`, `shutdown`, `reboot`, `dd if=`), network probing (`ssh`, `nc`, `netcat`, `nmap`), process killing (`kill -9`, `killall`, `pkill`)
+
+Use the same rule syntax shown in `.claude/settings.json` examples from the managing-security docs. The goal is to let Claude work fluidly for reading and running code while requiring confirmation for anything that modifies files, installs packages, or touches git history.
+
+## Step 3: Create project planning documentation
 
 Before writing any code, create the following:
 - README.md with a project overview and setup instructions
@@ -44,14 +55,18 @@ Ask the user any clarifying questions needed to fill in these documents.
 
 Once finalized, review the plan to make sure there aren't better options for the project structure, environment, or documentation based on the project scope and goals. This is a good time to catch any potential issues before scaffolding the project.
 
-Then prompt the user to ask to commit and move on to the next steps. This ensures they have a clear plan and reference documentation before writing any code, which will help guide development and keep things organized from the start.
+Then prompt the user to ask if they would like to make any changes to the plan or documentation before proceeding. If they want to make changes, help them do so until they're satisfied, and then have them confirm that the plan is finalized.
+
+Once satisfied with the plan, ask if they would like to commit the plan to git.
+
+Then let them know the plan is finalized and committed. Let them know they can close this claude session and start again in the devcontainer to start implementing the project, or they can continue in this session if they prefer.
 
 
-## Step 2: Create the remaining directory structure
+## Step 4: Create the remaining directory structure
 
 Scaffold the project following the `dunnlab-defaults` project structure. Always prefer idiomatic structures for the language and project type.
 
-## Step 3: Update version control
+## Step 5: Update version control
 
 
 
@@ -68,7 +83,7 @@ __pycache__/
 
 Add language-specific ignores (e.g., `target/` for Rust, `.Rhistory` for R).
 
-## Step 4: Set up the environment
+## Step 6: Set up the environment
 
 - **Python**: Create `environment.yml` with the project name, Python version, and initial dependencies. Run `conda env create -f environment.yml` or `mamba env create -f environment.yml`.
 - **R**: Initialize `renv` with `renv::init()`. Install initial packages and snapshot with `renv::snapshot()`.
@@ -78,7 +93,7 @@ Include instructions for environment setup in README.md.
 
 
 
-## Step 6: Enter development mode
+## Step 7: Enter development mode
 
 Break development into atomic, manageable tasks. For example:
 - Get the main function up with arguments parsing and minimal external facing interface (e.g., CLI, API).
@@ -96,7 +111,7 @@ Do not move on to the next task until the current one is fully implemented, test
 After completing each task, commit your changes and then run /clear before starting the next task.
 
 
-## Step 7: Final verification
+## Step 8: Final verification
 
 Run through this checklist when wrapping up:
 

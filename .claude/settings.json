@@ -1,2 +1,136 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+
+  "permissions": {
+    "defaultMode": "acceptEdits",
+
+    "allow": [
+      "Read(**)",
+      "Glob",
+      "Grep",
+      "Task",
+
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote:*)",
+      "Bash(git show:*)",
+
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "Bash(du:*)",
+      "Bash(df:*)",
+      "Bash(file:*)",
+      "Bash(which:*)",
+      "Bash(echo:*)",
+      "Bash(pwd:*)",
+      "Bash(tree:*)",
+      "Bash(diff:*)",
+
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+
+      "Bash(python:*)",
+      "Bash(python3:*)",
+
+      "Bash(conda activate:*)",
+      "Bash(conda deactivate:*)",
+      "Bash(conda env list:*)",
+      "Bash(conda list:*)",
+      "Bash(conda info:*)",
+      "Bash(mamba activate:*)",
+      "Bash(mamba deactivate:*)",
+      "Bash(mamba env list:*)",
+      "Bash(mamba list:*)",
+      "Bash(mamba info:*)",
+
+      "Bash(pip list:*)",
+      "Bash(pip show:*)"
+    ],
+
+    "ask": [
+      "Edit(**)",
+      "Write(**)",
+
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)",
+      "Bash(git rebase:*)",
+      "Bash(git reset:*)",
+      "Bash(git stash:*)",
+      "Bash(git add:*)",
+
+      "Bash(conda install:*)",
+      "Bash(conda create:*)",
+      "Bash(conda remove:*)",
+      "Bash(conda env create:*)",
+      "Bash(conda env remove:*)",
+      "Bash(conda update:*)",
+      "Bash(mamba install:*)",
+      "Bash(mamba create:*)",
+      "Bash(mamba remove:*)",
+      "Bash(mamba env create:*)",
+      "Bash(mamba env remove:*)",
+      "Bash(mamba update:*)",
+      "Bash(pip install:*)",
+      "Bash(pip uninstall:*)",
+
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(rsync:*)",
+
+      "Bash(chmod:*)",
+
+      "WebFetch"
+    ],
+
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/.ssh/**)",
+      "Read(**/.netrc)",
+      "Read(**/*credentials*)",
+      "Read(**/*secret*)",
+      "Read(**/*token*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/.aws/**)",
+
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Edit(**/.ssh/**)",
+      "Edit(**/.netrc)",
+      "Edit(**/*credentials*)",
+      "Edit(**/*secret*)",
+      "Edit(**/*.pem)",
+      "Edit(**/*.key)",
+      "Edit(**/.aws/**)",
+
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf /:*)",
+      "Bash(rm -rf ~:*)",
+      "Bash(sudo:*)",
+      "Bash(su :*)",
+      "Bash(shutdown:*)",
+      "Bash(reboot:*)",
+      "Bash(dd if=:*)",
+
+      "Bash(ssh :*)",
+      "Bash(nc :*)",
+      "Bash(netcat:*)",
+      "Bash(nmap:*)",
+
+      "Bash(kill -9:*)",
+      "Bash(killall:*)",
+      "Bash(pkill:*)"
+    ]
+  }
 }
