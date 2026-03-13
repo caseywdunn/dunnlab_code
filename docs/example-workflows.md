@@ -81,13 +81,13 @@ The `--dangerously-skip-permissions` flag disables all permission prompts, so Cl
 
 ### 6. Have Claude implement the project
 
-With the planning docs already in place from step 2, Claude has all the context it needs. Tell it to start building:
+With the planning docs already in place from step 2, Claude has all the context it needs. Run the new project skill again:
 
 ```
-Implement the project according to the plan in documentation/overview.md.
-Work through it incrementally — implement one component at a time, test it,
-then move on to the next.
+/dunnlab-new-project
 ```
+
+The skill checks which steps have already been completed and picks up where you left off. Since the planning docs and scaffolding are already in place from step 2, Claude will move straight into implementation.
 
 Claude will follow the `dunnlab-new-project` development workflow:
 
