@@ -29,15 +29,15 @@ Full instructions here — loaded only when the skill is invoked.
 
 ### Current skills
 
-- **lab-defaults** — Coding conventions, preferred languages, project structure, testing, and version control practices. This is the foundational skill that other skills reference.
-- **lab-new-project** — Step-by-step workflow for scaffolding new projects. References lab-defaults for conventions.
-- **lab-review** — Code review checklist and feedback process.
+- **dunnlab-defaults** — Coding conventions, preferred languages, project structure, testing, and version control practices. This is the foundational skill that other skills reference.
+- **dunnlab-new-project** — Step-by-step workflow for scaffolding new projects. References dunnlab-defaults for conventions.
+- **dunnlab-review** — Code review checklist and feedback process.
 
 ### Design principles
 
 - **Description budget**: All skill descriptions share ~2% of the context window. Keep descriptions to one concise sentence.
 - **Body size**: The full skill body loads on invocation. Longer skills consume more context. Aim for completeness without redundancy.
-- **Cross-references**: Skills can reference each other by name (e.g., "apply conventions from the `lab-defaults` skill"). They don't need to duplicate shared content.
+- **Cross-references**: Skills can reference each other by name (e.g., "apply conventions from the `dunnlab-defaults` skill"). They don't need to duplicate shared content.
 
 ## Commands
 
@@ -62,7 +62,7 @@ Instructions for Claude when this command is invoked...
 
 ### Current commands
 
-- **/lab-check** — Verifies the plugin is loaded and lists available skills.
+- **/dunnlab-check** — Verifies the plugin is loaded and lists available skills.
 
 ## Hooks
 

@@ -1,5 +1,5 @@
 ---
-name: lab-review
+name: dunnlab-review
 description: >
   Code review checklist and process for Dunn Lab projects. Use when
   reviewing pull requests, auditing code quality, or giving feedback
@@ -43,7 +43,7 @@ When reviewing code in Dunn Lab projects, follow this process and checklist.
 
 ### Style and conventions
 
-- [ ] Does the code follow lab conventions (see `lab-defaults` skill)?
+- [ ] Does the code follow lab conventions (see `dunnlab-defaults` skill)?
 - [ ] Is formatting consistent (ran through `black`/`styler`/`cargo fmt`)?
 - [ ] Are linters clean (`flake8`/`lintr`/`clippy`)?
 - [ ] Are variable and function names descriptive and consistent with the codebase?

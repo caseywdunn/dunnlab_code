@@ -71,14 +71,14 @@ When a lab member opens the project and trusts the folder, they'll be prompted t
 
 Once the plugin is installed, everything is available automatically — no extra activation steps.
 
-- **Skills** load based on context. For example, the `lab-defaults` skill activates when you start a new analysis script or set up a project. You can also invoke skills explicitly as `/dunnlab-code:lab-defaults`.
-- **Slash commands** are available immediately. Try `/lab-check` to verify the plugin is working.
+- **Skills** load based on context. For example, the `dunnlab-defaults` skill activates when you start a new analysis script or set up a project. You can also invoke skills explicitly as `/dunnlab-code:dunnlab-defaults`.
+- **Slash commands** are available immediately. Try `/dunnlab-check` to verify the plugin is working.
 - **Hooks** run automatically in response to events (once configured).
 
 To see what's available, run:
 
 ```
-/lab-check
+/dunnlab-check
 ```
 
 You can disable the plugin without uninstalling it:
@@ -134,11 +134,11 @@ Changes are picked up on the next session automatically — no separate update c
 
 ### Skills
 
-- **lab-defaults** — Lab-wide coding conventions: preferred languages, file naming, project structure
+- **dunnlab-defaults** — Lab-wide coding conventions: preferred languages, file naming, project structure
 - **example-skill** — A template to copy when creating new skills
 
 ### Commands
 
-- **/lab-check** — Verifies the plugin is loaded and lists available skills
+- **/dunnlab-check** — Verifies the plugin is loaded and lists available skills
 
 Full documentation, including onboarding instructions and lab conventions, is available on the [Pages site](https://dunnlab.github.io/dunnlab_code).

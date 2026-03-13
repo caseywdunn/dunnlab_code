@@ -1,5 +1,5 @@
 ---
-name: lab-new-project
+name: dunnlab-new-project
 description: >
   Step-by-step workflow for scaffolding a new Dunn Lab project from
   scratch. Use when creating a new analysis, tool, or pipeline. Sets
@@ -8,7 +8,7 @@ description: >
 
 # Dunn Lab New Project Setup
 
-Follow these steps when starting a new project from scratch. This skill references conventions from the `lab-defaults` skill — apply those standards throughout.
+Follow these steps when starting a new project from scratch. This skill references conventions from the `dunnlab-defaults` skill — apply those standards throughout.
 
 ## Step 1: Define the project scope
 
@@ -36,7 +36,7 @@ Before writing any code, create the following:
 - README.md with a project overview and setup instructions
  `documentation/overview.md` file that outlines the scientific question or engineering goal, key data sources and their formats, and the planned analysis workflow or architecture. This serves as a reference for the project and can be loaded into context by Claude Code when working on relevant parts of the project.
 - Any other documentation/ files needed to document the project (e.g., data model, analysis workflow, interpretation notes). These should be atomic and focused on specific aspects of the project, and should be written in a way that they can be loaded into context by Claude Code when working on relevant parts of the project. The goal is to have a comprehensive set of documentation that covers all aspects of the project and can be easily referenced by both humans and Claude Code as needed. These serve as a guardrail on context.
-- CLAUDE.md with a brief project summary, links to the above documentation, and any project-specific instructions for using Claude Code. Also specify to use the lab-defaults skill for coding conventions and project structure.
+- CLAUDE.md with a brief project summary, links to the above documentation, and any project-specific instructions for using Claude Code. Also specify to use the dunnlab-defaults skill for coding conventions and project structure.
 
 Ask the user any clarifying questions needed to fill in these documents. 
 
@@ -47,7 +47,7 @@ Then prompt the user to ask to commit and move on to the next steps. This ensure
 
 ## Step 2: Create the remaining directory structure
 
-Scaffold the project following the `lab-defaults` project structure. Always prefer idiomatic structures for the language and project type.
+Scaffold the project following the `dunnlab-defaults` project structure. Always prefer idiomatic structures for the language and project type.
 
 ## Step 3: Update version control
 

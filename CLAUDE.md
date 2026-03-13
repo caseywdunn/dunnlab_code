@@ -18,7 +18,7 @@ Distributed as a plugin via `.claude-plugin/plugin.json`.
 
 ```bash
 claude --plugin-dir /path/to/dunnlab_code
-/lab-check
+/dunnlab-check
 ```
 
 ## Key conventions

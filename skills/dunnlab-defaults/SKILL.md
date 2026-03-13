@@ -1,5 +1,5 @@
 ---
-name: lab-defaults
+name: dunnlab-defaults
 description: >
   Applies Dunn Lab coding conventions and defaults. Use when starting
   and modifying new analysis scripts, writing documentation, or setting up project

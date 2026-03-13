@@ -7,7 +7,7 @@ How to add or modify skills, commands, hooks, and documentation in this repo.
 1. Create a directory: `skills/<skill-name>/`
 2. Create `skills/<skill-name>/SKILL.md` with frontmatter (`name`, `description`) and instructions
 3. Keep the `description` to one concise sentence — it's always in context
-4. Reference `lab-defaults` for shared conventions rather than duplicating them
+4. Reference `dunnlab-defaults` for shared conventions rather than duplicating them
 5. Test locally: `claude --plugin-dir /path/to/dunnlab_code`, then invoke your skill
 6. Update `README.md` to list the new skill in the "Skills" section
 

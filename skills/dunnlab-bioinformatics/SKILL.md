@@ -1,5 +1,5 @@
 ---
-name: lab-bioinformatics
+name: dunnlab-bioinformatics
 description: >
   Bioinformatics workflow conventions for the Dunn Lab. Use when building
   or modifying sequence analysis pipelines, phylogenetics, gene annotation,
@@ -9,7 +9,7 @@ description: >
 
 # Dunn Lab Bioinformatics Workflows
 
-Follow these conventions for bioinformatics projects. This skill builds on `lab-defaults` (coding standards, project structure, orchestration) and `lab-new-project` (scaffolding) — apply those skills as well when starting or structuring a bioinformatics project.
+Follow these conventions for bioinformatics projects. This skill builds on `dunnlab-defaults` (coding standards, project structure, orchestration) and `dunnlab-new-project` (scaffolding) — apply those skills as well when starting or structuring a bioinformatics project.
 
 ## Raw data is immutable
 
@@ -82,7 +82,7 @@ Use these tools unless there is a specific reason to choose an alternative:
 | ORF prediction | **TransDecoder** | Predict ORFs from transcriptomes; use `-S` for strand-specific data; retain primary isoforms (`.p1`) only |
 | Completeness assessment | **BUSCO** | Assess transcriptome/proteome/genome completeness; use appropriate lineage database (e.g., `metazoa_odb12`) |
 
-Install all tools via **bioconda** when possible (consistent with `lab-defaults`).
+Install all tools via **bioconda** when possible (consistent with `dunnlab-defaults`).
 
 ## Duplicate and paralog resolution
 
@@ -110,7 +110,7 @@ Not required for every project, but when working with raw sequencing reads — e
 
 ## Project structure additions
 
-Bioinformatics projects extend the standard `lab-defaults` structure, for example:
+Bioinformatics projects extend the standard `dunnlab-defaults` structure, for example:
 
 ```
 project-name/

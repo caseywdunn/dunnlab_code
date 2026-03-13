@@ -32,7 +32,7 @@ Replace `/path/to/dunnlab_code` with the actual path where you cloned the repo.
 Run the following slash command to confirm everything is wired up:
 
 ```
-/lab-check
+/dunnlab-check
 ```
 
 You should see a welcome message and a list of available skills.
@@ -40,7 +40,7 @@ You should see a welcome message and a list of available skills.
 ## 5. What's in the plugin?
 
 - **Skills** are sets of instructions that Claude loads when relevant. They encode lab conventions like preferred languages, file naming, and project structure. See the `skills/` directory.
-- **Commands** are slash commands (like `/lab-check`) that trigger specific Claude behaviors. See the `commands/` directory.
+- **Commands** are slash commands (like `/dunnlab-check`) that trigger specific Claude behaviors. See the `commands/` directory.
 - **Hooks** are event-driven scripts that run automatically in response to Claude Code events (e.g., before a commit or after a file is created). See the `hooks/` directory.
 
 Browse the [Data Analysis](data-analysis.md), [Managing Security](managing-security.md), and [Managing Context](managing-context.md) pages for more.

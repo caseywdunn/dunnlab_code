@@ -20,7 +20,7 @@ mkdir ~/repos/my-new-project
 cd ~/repos/my-new-project
 ```
 
-### 2. Scaffold the project with `/lab-new-project`
+### 2. Scaffold the project with `/dunnlab-new-project`
 
 Launch Claude Code in the new directory:
 
@@ -31,7 +31,7 @@ claude
 Then run the skill:
 
 ```
-/lab-new-project
+/dunnlab-new-project
 ```
 
 Claude will walk you through a structured planning process:
@@ -86,14 +86,14 @@ Work through it incrementally — implement one component at a time, test it,
 then move on to the next.
 ```
 
-Claude will follow the `lab-new-project` development workflow:
+Claude will follow the `dunnlab-new-project` development workflow:
 
 - **Build incrementally** — one component at a time, with tests after each
 - **Run linters and formatters** — maintaining code quality throughout
 - **Update documentation** — keeping the README and docs in sync with the implementation
 - **Commit after each milestone** — so you have a clean git history
 
-Because the planning docs act as a specification, Claude stays on track without needing constant guidance. The `CLAUDE.md` file points it to the `lab-defaults` skill for coding conventions, so the generated code follows lab standards.
+Because the planning docs act as a specification, Claude stays on track without needing constant guidance. The `CLAUDE.md` file points it to the `dunnlab-defaults` skill for coding conventions, so the generated code follows lab standards.
 
 ### 6. Review and iterate
 
