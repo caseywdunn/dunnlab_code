@@ -137,7 +137,20 @@ For fully automated workflows where no human is approving each action — CI pip
 
 ### Dev containers
 
-Running Claude Code inside a container (such as a VS Code dev container or Docker) gives you isolation at the OS level. Claude has full access inside the container but cannot touch your host filesystem, credentials, or network unless you explicitly mount or forward them. This is the recommended approach for automated or unattended use.
+Running Claude Code inside a [development container](https://code.claude.com/docs/en/devcontainer) gives you isolation at the OS level. Claude has full access inside the container but cannot touch your host filesystem, credentials, or network unless you explicitly mount or forward them. This is the recommended approach for automated or unattended use.
+
+Docker Desktop (macOS/Windows) or Docker Engine (Linux) must be installed on the host.
+
+To get started:
+
+1. Install VS Code and the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+2. Add a `.devcontainer/` directory to your project (the `dunnlab-devcontainer` skill can scaffold this for you — just ask Claude to set up a devcontainer).
+3. Open the project in VS Code and click "Reopen in Container" when prompted (or use the Command Palette: `Remote-Containers: Reopen in Container`).
+
+For the full reference implementation, see the [Claude Code .devcontainer directory](https://github.com/anthropics/claude-code/tree/main/.devcontainer).
+
+{: .warning }
+Only use devcontainers with trusted repositories. While the firewall restricts network access, it does not prevent a malicious project from exfiltrating anything accessible inside the container, including Claude Code credentials.
 
 ### `--dangerously-skip-permissions`
 

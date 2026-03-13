@@ -37,34 +37,18 @@ Then run the skill:
 Claude will walk you through a structured planning process:
 
 - **Define scope** — Claude asks about the scientific question, language choice, expected inputs/outputs, and whether this is a one-off analysis or reusable tool.
-- **Create planning docs** — Claude generates a `README.md`, `documentation/overview.md` with the scientific question and planned workflow, and a `CLAUDE.md` that ties everything together.
+- **Scaffold the repo** — Claude creates a `README.md`, `.gitignore`, and initializes git. It also adds a `.devcontainer/` directory using the `dunnlab-devcontainer` skill, which provides a secure, pre-configured container with Claude Code, a restrictive firewall, and VS Code integration.
+- **Create planning docs** — Claude generates `documentation/overview.md` with the scientific question and planned workflow, and a `CLAUDE.md` that ties everything together.
 - **Review the plan** — Before any code is written, you review the project plan and documentation together. This is the time to catch architectural issues or missing requirements.
 - **Commit the plan** — Once you're satisfied, commit the scaffolding. This gives you a clean baseline to build from.
 
-At this point you have a git repo with a clear plan and no code yet. The documentation acts as a specification that will guide Claude's implementation.
+At this point you have a git repo with a clear plan, a dev container configuration, and no code yet. The documentation acts as a specification that will guide Claude's implementation.
 
-### 3. Set up a dev container
+### 3. Open the project in the dev container
 
-Still in the same Claude session (or a new one in the same directory), ask Claude to create a dev container configuration:
+Exit your Claude session, then open the project in VS Code. You'll be prompted to "Reopen in Container" (or use the Command Palette: `Remote-Containers: Reopen in Container`). You can also use the CLI: `devcontainer up`.
 
-```
-Set up a dev container for this project. Include all the dependencies
-from the environment config and make sure the container has the
-dunnlab_code plugin available.
-```
-
-Claude will create a `.devcontainer/` directory with:
-
-- `devcontainer.json` — container configuration, extensions, and settings
-- `Dockerfile` (if needed) — custom image with your project's dependencies
-
-The key details to verify in the generated config:
-
-- The project's language runtime and dependencies are installed
-- The `dunnlab_code` repo is accessible inside the container (via a volume mount or by cloning it during setup)
-- The plugin is registered in the container's Claude Code configuration
-
-Commit the dev container configuration, then exit your Claude session. Open the project in VS Code and reopen in the container (or use `devcontainer up` from the CLI).
+The container includes a [firewall](https://github.com/anthropics/claude-code/blob/main/.devcontainer/init-firewall.sh) that restricts outbound network access to only necessary services (GitHub, npm, Anthropic API, VS Code). This default-deny policy is what makes it safe to run Claude with permissions bypassed. See [Managing Security](managing-security.md) for details.
 
 ### 4. Launch Claude in the container with full autonomy
 
@@ -110,7 +94,7 @@ If anything needs changes, you can continue the conversation inside the containe
 
 The key insight is separating **planning** from **implementation**:
 
-- Steps 1–2 happen interactively, with you guiding the project's direction and reviewing the plan.
-- Steps 4–5 happen autonomously inside an isolated container, with Claude following the plan you approved.
+- Steps 1–2 happen interactively, with you guiding the project's direction and reviewing the plan. The dev container is scaffolded automatically as part of step 2.
+- Steps 4–5 happen autonomously inside the isolated container, with Claude following the plan you approved.
 
 This gives you control over *what* gets built while letting Claude handle *how* it gets built — safely, inside a container where mistakes are cheap and reversible.

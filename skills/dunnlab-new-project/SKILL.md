@@ -25,9 +25,11 @@ Use the answers to guide decisions in the following steps.
 
 Create a README.md with a project title and placeholder sections for the overview, setup instructions, usage examples, and development notes. This will be fleshed out in later steps but serves as a starting point.
 
-Create a .gitignore with .DS_Store and other common ignores
+Create a .gitignore with .DS_Store and other common ignores.
 
 Initialize git repository with `git init`.
+
+Use the `dunnlab-devcontainer` skill to add a `.devcontainer/` directory with the standard Claude Code devcontainer configuration. Add a "Development container" section to README.md explaining how to use it (install Docker and the VS Code Dev Containers extension, then reopen the project in the container).
 
 
 ## Step 1.5: Create project planning documentation

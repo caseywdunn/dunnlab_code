@@ -135,6 +135,7 @@ Changes are picked up on the next session automatically — no separate update c
 ### Skills
 
 - **dunnlab-defaults** — Lab-wide coding conventions: preferred languages, file naming, project structure
+- **dunnlab-devcontainer** — Add a `.devcontainer/` configuration for secure, reproducible Claude Code development environments
 - **example-skill** — A template to copy when creating new skills
 
 ### Commands
