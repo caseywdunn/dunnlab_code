@@ -91,6 +91,8 @@ Use an incremental approach. Once tasks are defined, start implementing them one
 
 Do not move on to the next task until the current one is fully implemented, tested, and documented. This ensures a clean development process and prevents context overload. It is critical to not get too far ahead of yourself.
 
+After completing each task, commit your changes and then run /clear before starting the next task.
+
 
 ## Step 7: Final verification
 
