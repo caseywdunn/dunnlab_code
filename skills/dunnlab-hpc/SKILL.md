@@ -157,6 +157,18 @@ conda activate myenv
 
 **Critical**: No space between `#` and `SBATCH` — otherwise the directive is ignored.
 
+### `batch.sh` conventions
+
+Every computationally intensive script or pipeline should include a companion `batch.sh` SLURM submission script in the same directory. This makes it clear how to run the code and with what resources.
+
+- Name the file `batch.sh` and place it alongside the script it runs. If there are multiple stages, use separate scripts (`batch_align.sh`, `batch_assemble.sh`, etc.).
+- Set `--job-name` to something descriptive (e.g., the analysis name or script name).
+- Direct SLURM output to `logs/` (e.g., `--output=logs/slurm-%j.out`) — ensure the directory exists before submission.
+- Include `module purge` before loading modules to avoid environment conflicts.
+- Size resource requests to match actual needs — check with `jobstats` after initial runs and adjust.
+- For array jobs processing many samples, use `--array` and document the expected input format.
+- Document how to launch jobs in the project README. At minimum, include the submission command (e.g., `sbatch batch.sh`) and any prerequisites such as creating the `logs/` directory or activating a conda environment beforehand.
+
 ### Common directives
 
 | Directive | Short | Default | Purpose |

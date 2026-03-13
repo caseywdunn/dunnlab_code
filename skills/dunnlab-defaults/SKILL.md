@@ -93,6 +93,19 @@ Parallelize where appropriate.
 
 Avoid premature optimization, but keep performance in mind as you write code. Do not write inefficient code for the sake of "getting something working" — aim for clean, efficient code from the start. Do not make big sacrifices in code quality or readability for small performance gains.
 
+## Computationally intensive code
+
+When writing code that is computationally intensive — long-running analyses, large dataset processing, GPU-accelerated training, or anything that would be impractical to run on a laptop — prepare it to run on HPC infrastructure.
+
+Code should target HPC (not local execution) when any of these apply:
+- Runtime exceeds ~10 minutes on a modern laptop
+- Memory requirements exceed available local RAM
+- GPU acceleration is needed (e.g., deep learning training)
+- The task involves processing many samples or files in parallel
+- The analysis is part of a production pipeline that must be reproducible on shared infrastructure
+
+When writing code destined for HPC, **invoke the `dunnlab-hpc` skill** to get cluster-specific details (partitions, storage paths, module names, resource limits). Include a companion `batch.sh` SLURM submission script alongside each computationally intensive script so it is clear how to run the code and with what resources. See the `dunnlab-hpc` skill for batch script templates and conventions.
+
 ## Workflow orchestration
 
 Choose the orchestration tool based on workflow complexity:
