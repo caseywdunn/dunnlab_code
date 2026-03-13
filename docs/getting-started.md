@@ -40,7 +40,7 @@ Follow the official installation instructions at [Claude Code Overview](https://
 ## 2. Clone this repo
 
 ```bash
-git clone https://github.com/dunnlab/dunnlab_code.git
+git clone https://github.com/caseywdunn/dunnlab_code.git
 ```
 
 Put it somewhere stable on your machine — the plugin registration points to this directory.

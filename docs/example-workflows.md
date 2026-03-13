@@ -50,19 +50,35 @@ Exit your Claude session, then open the project in VS Code. You'll be prompted t
 
 The container includes a [firewall](https://github.com/anthropics/claude-code/blob/main/.devcontainer/init-firewall.sh) that restricts outbound network access to only necessary services (GitHub, npm, Anthropic API, VS Code). This default-deny policy is what makes it safe to run Claude with permissions bypassed. See [Managing Security](managing-security.md) for details.
 
-### 4. Launch Claude in the container with full autonomy
+### 4. Authenticate Claude and install the plugin
 
-Once you're inside the running dev container, open a terminal in VS Code and launch Claude with permissions bypassed:
+The dev container is isolated and has no access to your host's authentication. You'll need to log in once each time you create or rebuild the container:
+
+```bash
+claude login
+```
+
+Follow the prompts to authenticate with your Claude account. The session persists for the container's lifetime but is lost when the container is rebuilt.
+
+Next, install the dunnlab plugin so all lab skills and commands are available. The project's `.claude/settings.json` already has the dunnlab marketplace configured (added by `/dunnlab-new-project` in step 2), so you can install directly:
+
+```bash
+claude plugin install dunnlab-code
+```
+
+This pulls the plugin from GitHub and caches it inside the container. You can verify it's working by launching Claude and running `/dunnlab-check`.
+
+### 5. Launch Claude in the container with full autonomy
+
+With authentication and the plugin in place, launch Claude with permissions bypassed:
 
 ```bash
 claude --dangerously-skip-permissions
 ```
 
-There's no need to specify `--plugin-dir` — the `/dunnlab-new-project` skill configures the project's `.claude/settings.json` with an `extraKnownMarketplaces` entry that points to the dunnlab plugin on GitHub. When Claude starts, it automatically loads the plugin from this marketplace configuration.
-
 The `--dangerously-skip-permissions` flag disables all permission prompts, so Claude can create files, run commands, install packages, and execute tests without asking for approval on each step. **This is safe here because the dev container is disposable** — it cannot touch your host filesystem, credentials, or other projects. See [Managing Security](managing-security.md) for why you should never use this flag outside of an isolated container.
 
-### 5. Have Claude implement the project
+### 6. Have Claude implement the project
 
 With the planning docs already in place from step 2, Claude has all the context it needs. Tell it to start building:
 
@@ -81,7 +97,7 @@ Claude will follow the `dunnlab-new-project` development workflow:
 
 Because the planning docs act as a specification, Claude stays on track without needing constant guidance. The `CLAUDE.md` file points it to the `dunnlab-defaults` skill for coding conventions, so the generated code follows lab standards.
 
-### 6. Review and iterate
+### 7. Review and iterate
 
 Once Claude finishes the initial implementation, review the results:
 
@@ -97,6 +113,7 @@ If anything needs changes, you can continue the conversation inside the containe
 The key insight is separating **planning** from **implementation**:
 
 - Steps 1–2 happen interactively, with you guiding the project's direction and reviewing the plan. The dev container is scaffolded automatically as part of step 2.
-- Steps 4–5 happen autonomously inside the isolated container, with Claude following the plan you approved.
+- Steps 4–5 set up authentication and the plugin inside the container.
+- Steps 5–6 happen autonomously inside the isolated container, with Claude following the plan you approved.
 
 This gives you control over *what* gets built while letting Claude handle *how* it gets built — safely, inside a container where mistakes are cheap and reversible.

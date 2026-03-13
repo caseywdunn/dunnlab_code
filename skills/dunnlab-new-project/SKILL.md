@@ -43,7 +43,7 @@ Create `.claude/settings.json` with reasonable permissions for local development
     "dunnlab": {
       "source": {
         "source": "github",
-        "repo": "dunnlab/dunnlab_code"
+        "repo": "caseywdunn/dunnlab_code"
       }
     }
   }

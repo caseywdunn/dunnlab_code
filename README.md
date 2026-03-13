@@ -15,7 +15,7 @@ This repo has two purposes:
 1. Clone the repo somewhere on your machine:
 
    ```bash
-   git clone https://github.com/dunnlab/dunnlab_code.git ~/repos/dunnlab_code
+   git clone https://github.com/caseywdunn/dunnlab_code.git ~/repos/dunnlab_code
    ```
 
 2. Register the plugin:
@@ -50,7 +50,7 @@ To make the plugin available to all lab members via a shared project, add it to 
     "dunnlab": {
       "source": {
         "source": "github",
-        "repo": "dunnlab/dunnlab_code"
+        "repo": "caseywdunn/dunnlab_code"
       }
     }
   }
