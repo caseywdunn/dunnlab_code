@@ -10,15 +10,7 @@ This repo has two purposes:
 
 ## Installation
 
-### Option A: Install from the marketplace (recommended)
-
-Once this plugin is published to a marketplace, install it directly in Claude Code:
-
-```
-/plugin install dunnlab-code@dunnlab
-```
-
-### Option B: Persistent install from a local clone
+### Option A: Persistent install from a local clone
 
 1. Clone the repo somewhere on your machine:
 
@@ -34,7 +26,7 @@ Once this plugin is published to a marketplace, install it directly in Claude Co
 
    This persistently installs the plugin so it's available in every future session. The plugin is copied to Claude's local cache at install time, so after pulling new changes with `git pull` you need to re-run `claude plugin add` to update the cached copy.
 
-### Option C: Per-session loading with `--plugin-dir`
+### Option B: Per-session loading with `--plugin-dir`
 
 If you want to load the plugin for a single session without installing it permanently (useful during development or testing):
 
@@ -48,7 +40,7 @@ There is no way to specify `--plugin-dir` for the Claude VS Code extension. But 
 
 Because `--plugin-dir` reads directly from the directory, changes take effect immediately on the next session — no update command needed.
 
-### Option D: Add as a team marketplace
+### Option C: Add as a team marketplace
 
 To make the plugin available to all lab members via a shared project, add it to your project's `.claude/settings.json`:
 
