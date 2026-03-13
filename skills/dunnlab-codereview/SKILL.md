@@ -1,5 +1,5 @@
 ---
-name: dunnlab-review
+name: dunnlab-codereview
 description: >
   Code review checklist and process for Dunn Lab projects. Use when
   reviewing pull requests, auditing code quality, or giving feedback
