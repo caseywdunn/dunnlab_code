@@ -23,7 +23,6 @@ Create three files in `.devcontainer/` at the project root:
     "dockerfile": "Dockerfile",
     "args": {
       "TZ": "${localEnv:TZ:America/Los_Angeles}",
-      "CLAUDE_CODE_VERSION": "latest",
       "GIT_DELTA_VERSION": "0.18.2",
       "ZSH_IN_DOCKER_VERSION": "1.2.0"
     }
@@ -84,8 +83,6 @@ FROM node:20
 ARG TZ
 ENV TZ="$TZ"
 
-ARG CLAUDE_CODE_VERSION=latest
-
 # Install basic development tools and iptables/ipset
 RUN apt-get update && apt-get install -y --no-install-recommends \
   less \
@@ -106,11 +103,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   jq \
   nano \
   vim \
+  curl \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Ensure default node user has access to /usr/local/share
-RUN mkdir -p /usr/local/share/npm-global && \
-  chown -R node:node /usr/local/share
 
 ARG USERNAME=node
 
@@ -138,10 +132,6 @@ RUN ARCH=$(dpkg --print-architecture) && \
 # Set up non-root user
 USER node
 
-# Install global packages
-ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
-ENV PATH=$PATH:/usr/local/share/npm-global/bin
-
 # Set the default shell to zsh rather than sh
 ENV SHELL=/bin/zsh
 
@@ -159,8 +149,9 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
   -a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
   -x
 
-# Install Claude
-RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
+# Install Claude Code via native installer
+RUN curl -fsSL https://claude.ai/install.sh | bash
+ENV PATH="/home/node/.claude/bin:$PATH"
 
 # Copy and set up firewall script
 COPY init-firewall.sh /usr/local/bin/
@@ -243,6 +234,7 @@ done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q)
 for domain in \
     "registry.npmjs.org" \
     "api.anthropic.com" \
+    "claude.ai" \
     "sentry.io" \
     "statsig.anthropic.com" \
     "statsig.com" \
