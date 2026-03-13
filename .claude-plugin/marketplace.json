@@ -1,0 +1,12 @@
+{
+  "name": "dunnlab",
+  "owner": { "name": "Dunn Lab" },
+  "plugins": [
+    {
+      "name": "dunnlab-code",
+      "source": "./",
+      "description": "Shared Claude Code skills, hooks, and commands for the Dunn Lab",
+      "version": "0.1.0"
+    }
+  ]
+}

@@ -40,24 +40,16 @@ There is no way to specify `--plugin-dir` for the Claude VS Code extension. But 
 
 Because `--plugin-dir` reads directly from the directory, changes take effect immediately on the next session — no update command needed.
 
-### Option C: Add as a team marketplace
+### Option C: Add as a marketplace
 
-To make the plugin available to all lab members via a shared project, add it to your project's `.claude/settings.json`:
+Register the repo as a marketplace, then install the plugin from it:
 
-```json
-{
-  "extraKnownMarketplaces": {
-    "dunnlab": {
-      "source": {
-        "source": "github",
-        "repo": "caseywdunn/dunnlab_code"
-      }
-    }
-  }
-}
+```bash
+claude plugin marketplace add caseywdunn/dunnlab_code
+claude plugin install dunnlab-code
 ```
 
-When a lab member opens the project and trusts the folder, they'll be prompted to install the plugin.
+This pulls the plugin from GitHub and caches it locally. Useful inside dev containers or on machines where you don't want to clone the repo.
 
 ## Using skills and commands
 

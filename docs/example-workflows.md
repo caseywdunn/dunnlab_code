@@ -60,9 +60,10 @@ claude login
 
 Follow the prompts to authenticate with your Claude account. The session persists for the container's lifetime but is lost when the container is rebuilt.
 
-Next, install the dunnlab plugin so all lab skills and commands are available. The project's `.claude/settings.json` already has the dunnlab marketplace configured (added by `/dunnlab-new-project` in step 2), so you can install directly:
+Next, add the dunnlab marketplace and install the plugin so all lab skills and commands are available:
 
 ```bash
+claude plugin marketplace add caseywdunn/dunnlab_code
 claude plugin install dunnlab-code
 ```
 
