@@ -37,23 +37,18 @@ This guide walks you through setting up Claude Code with the Dunn Lab plugin.
 
 Follow the official installation instructions at [Claude Code Overview](https://docs.anthropic.com/en/docs/claude-code/overview). Claude Code runs in your terminal and works alongside your existing editor and tools.
 
-## 2. Clone this repo
+## 2. Install the plugin
+
+Register the dunnlab marketplace and install the plugin:
 
 ```bash
-git clone https://github.com/caseywdunn/dunnlab_code.git
+claude plugin marketplace add caseywdunn/dunnlab_code
+claude plugin install dunnlab-code
 ```
 
-Put it somewhere stable on your machine — the plugin registration points to this directory.
+This pulls the plugin from GitHub and caches it locally. To update after changes are pushed, run `claude plugin update dunnlab-code`.
 
-## 3. Register the plugin
-
-```bash
-claude plugin add /path/to/dunnlab_code
-```
-
-Replace `/path/to/dunnlab_code` with the actual path where you cloned the repo.
-
-## 4. Verify installation
+## 3. Verify installation
 
 Run the following slash command to confirm everything is wired up:
 
@@ -63,7 +58,7 @@ Run the following slash command to confirm everything is wired up:
 
 You should see a welcome message and a list of available skills.
 
-## 5. What's in the plugin?
+## 4. What's in the plugin?
 
 - **Skills** are sets of instructions that Claude loads when relevant. They encode lab conventions like preferred languages, file naming, and project structure. See the `skills/` directory.
 - **Commands** are slash commands (like `/dunnlab-check`) that trigger specific Claude behaviors. See the `commands/` directory.
@@ -71,7 +66,7 @@ You should see a welcome message and a list of available skills.
 
 Browse the [Data Analysis](data-analysis.md), [Managing Security](managing-security.md), and [Managing Context](managing-context.md) pages for more.
 
-## 6. Install recommended marketplace skills
+## 5. Install recommended marketplace skills
 
 The Anthropic official plugin marketplace includes several skills that are useful for coding workflows. Install them via the `/plugin` command or the CLI:
 

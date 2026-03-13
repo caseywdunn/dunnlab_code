@@ -10,27 +10,23 @@ This repo has two purposes:
 
 ## Installation
 
-### Option A: Persistent install from a local clone
+### Option A: Install from the marketplace (recommended)
 
-1. Clone the repo somewhere on your machine:
+Register the repo as a marketplace, then install the plugin:
 
-   ```bash
-   git clone https://github.com/caseywdunn/dunnlab_code.git ~/repos/dunnlab_code
-   ```
+```bash
+claude plugin marketplace add caseywdunn/dunnlab_code
+claude plugin install dunnlab-code
+```
 
-2. Register the plugin:
-
-   ```bash
-   claude plugin add ~/repos/dunnlab_code
-   ```
-
-   This persistently installs the plugin so it's available in every future session. The plugin is copied to Claude's local cache at install time, so after pulling new changes with `git pull` you need to re-run `claude plugin add` to update the cached copy.
+This pulls the plugin from GitHub and caches it locally. Works anywhere — including inside dev containers. To update after changes are pushed, run `claude plugin update dunnlab-code`.
 
 ### Option B: Per-session loading with `--plugin-dir`
 
 If you want to load the plugin for a single session without installing it permanently (useful during development or testing):
 
 ```bash
+git clone https://github.com/caseywdunn/dunnlab_code.git ~/repos/dunnlab_code
 claude --plugin-dir ~/repos/dunnlab_code
 ```
 
@@ -39,17 +35,6 @@ This loads the plugin for that session alongside any other installed plugins —
 There is no way to specify `--plugin-dir` for the Claude VS Code extension. But you can run `claude --plugin-dir` within the VS Code terminal to use the plugin there.
 
 Because `--plugin-dir` reads directly from the directory, changes take effect immediately on the next session — no update command needed.
-
-### Option C: Add as a marketplace
-
-Register the repo as a marketplace, then install the plugin from it:
-
-```bash
-claude plugin marketplace add caseywdunn/dunnlab_code
-claude plugin install dunnlab-code
-```
-
-This pulls the plugin from GitHub and caches it locally. Useful inside dev containers or on machines where you don't want to clone the repo.
 
 ## Using skills and commands
 
