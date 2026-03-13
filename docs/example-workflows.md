@@ -52,11 +52,13 @@ The container includes a [firewall](https://github.com/anthropics/claude-code/bl
 
 ### 4. Launch Claude in the container with full autonomy
 
-Once you're inside the running dev container, open a terminal in VS Code and launch Claude with the plugin and permissions bypassed:
+Once you're inside the running dev container, open a terminal in VS Code and launch Claude with permissions bypassed:
 
 ```bash
-claude --plugin-dir /path/to/dunnlab_code --dangerously-skip-permissions
+claude --dangerously-skip-permissions
 ```
+
+There's no need to specify `--plugin-dir` — the `/dunnlab-new-project` skill configures the project's `.claude/settings.json` with an `extraKnownMarketplaces` entry that points to the dunnlab plugin on GitHub. When Claude starts, it automatically loads the plugin from this marketplace configuration.
 
 The `--dangerously-skip-permissions` flag disables all permission prompts, so Claude can create files, run commands, install packages, and execute tests without asking for approval on each step. **This is safe here because the dev container is disposable** — it cannot touch your host filesystem, credentials, or other projects. See [Managing Security](managing-security.md) for why you should never use this flag outside of an isolated container.
 

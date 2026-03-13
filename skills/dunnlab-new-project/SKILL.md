@@ -35,7 +35,22 @@ Initialize git repository with `git init`.
 
 Use the `dunnlab-devcontainer` skill to add a `.devcontainer/` directory with the standard Claude Code devcontainer configuration. Add a "Development container" section to README.md explaining how to use it (install Docker and the VS Code Dev Containers extension, then reopen the project in the container).
 
-Create `.claude/settings.json` with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval. The settings should:
+Create `.claude/settings.json` with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval. Include the dunnlab plugin as a team marketplace so it's automatically available inside dev containers without needing `--plugin-dir`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "dunnlab": {
+      "source": {
+        "source": "github",
+        "repo": "dunnlab/dunnlab_code"
+      }
+    }
+  }
+}
+```
+
+The settings should also:
 
 - **Allow without prompting**: `Read(**)`, `Glob`, `Grep`, `Task`, read-only git commands (`git status`, `git log`, `git diff`, `git branch`, `git remote`, `git show`), read-only shell commands (`ls`, `cat`, `head`, `tail`, `wc`, `find`, `du`, `df`, `file`, `which`, `echo`, `pwd`, `tree`, `diff`), `curl` and `wget`, `python` and `python3`, `conda activate/deactivate/env list/list/info`, `mamba activate/deactivate/env list/list/info`, `pip list`, `pip show`
 - **Ask for confirmation**: `Edit(**)`, `Write(**)`, mutating git commands (`git push`, `git commit`, `git checkout`, `git merge`, `git rebase`, `git reset`, `git stash`, `git add`), package management (`conda install/create/remove/env create/env remove/update`, `mamba install/create/remove/env create/env remove/update`, `pip install`, `pip uninstall`), file operations (`cp`, `mv`, `rm`, `mkdir`, `rsync`), `chmod`, `WebFetch`
