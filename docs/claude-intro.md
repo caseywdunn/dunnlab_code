@@ -14,11 +14,13 @@ Anthropic offers several ways to interact with Claude models:
 | Interface | What it is |
 |-----------|-----------|
 | **Chat** ([claude.ai](https://claude.ai)) | Web-based conversation interface |
-| **Cowork** | Claude works alongside you in your IDE (VS Code, JetBrains) as a pair programmer |
-| **Code** | CLI-based agentic coding — Claude reads, writes, and runs code in your terminal |
+| **Code** | Agentic coding — Claude reads, writes, and runs code in your terminal or IDE (VS Code, JetBrains) |
+| **Cowork** | Agentic non-coding tasks — document processing, image work, research, and other workflows for less technical users |
 | **API / SDK** | Programmatic access for building Claude into your own applications |
 
-In this lab we primarily use **Claude Code**. It gives Claude direct access to your filesystem and terminal, making it effective for data analysis, scripting, and project development.
+Chat is what you get when you use Claude on the web, like other chatbots. Code and Cowork are agents that interact with local files for complex multistep tasks. Code is optimized for coding — it gives Claude direct access to your filesystem and terminal. Cowork is designed for non-coding tasks like processing documents and images, and is a good fit for users with less technical inclination.
+
+In this lab we primarily use **Claude Code**. It gives Claude direct access to your filesystem and terminal, making it effective for data analysis, scripting, and project development. Some core details differ across Code and Cowork. For example, Cowork operates in a virtual environment, whereas by default Code operates directly on your system (though you can run it in a Dev Container). One implication is that skills, plugins, etc. are handled very differently across the interfaces. Custom skills in Cowork are installed by uploading zipped files via the [Desktop App](https://code.claude.com/docs/en/desktop-quickstart), while in Code they are installed on your filesystem. Skills installed in one are not available in the other.
 
 ## How Claude Code interacts with your computer
 

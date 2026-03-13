@@ -6,7 +6,7 @@ This repo has two purposes:
 - Shared skills, hooks, and commands for the Dunn Lab. The focus is in Claude Code.
 
 
-**[View the full documentation site](https://dunnlab.github.io/dunnlab_code)**
+**[View the full documentation site](https://dunnlab.org/dunnlab_code)**
 
 ## Installation
 
@@ -141,4 +141,4 @@ Changes are picked up on the next session automatically — no separate update c
 
 - **/dunnlab-check** — Verifies the plugin is loaded and lists available skills
 
-Full documentation, including onboarding instructions and lab conventions, is available on the [Pages site](https://dunnlab.github.io/dunnlab_code).
+Full documentation, including onboarding instructions and lab conventions, is available on the [Pages site](https://dunnlab.org/dunnlab_code).

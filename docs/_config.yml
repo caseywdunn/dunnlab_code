@@ -1,7 +1,7 @@
 title: Dunn Lab Code
 description: Claude Code skills and lab practices for the Dunn Lab
 remote_theme: just-the-docs/just-the-docs
-url: "https://caseywdunn.github.io"
+url: "https://dunnlab.org"
 baseurl: "/dunnlab_code"
 
 # Required for remote_theme on GitHub Pages

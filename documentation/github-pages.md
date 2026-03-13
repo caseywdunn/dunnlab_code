@@ -8,7 +8,7 @@ The `docs/` directory contains the GitHub Pages site for this project, providing
 
 - **Theme**: `just-the-docs` via `jekyll-remote-theme`
 - **Config**: `docs/_config.yml`
-- **URL**: `https://dunnlab.github.io/dunnlab_code`
+- **URL**: `https://dunnlab.org/dunnlab_code`
 - **Plugin**: `jekyll-remote-theme` (required for GitHub Pages with remote themes)
 
 ## Page structure
