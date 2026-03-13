@@ -10,7 +10,44 @@ description: >
 
 Follow these steps when starting a new project from scratch. This skill references conventions from the `dunnlab-defaults` skill — apply those standards throughout.
 
-Assume that the skill may already have been run in the repo. Before running a step, check if it has already been completed. If it has, skip that step and move on to the next one. This allows the skill to be run multiple times without causing issues, and lets users pick and choose which steps to run.
+## Progress tracking
+
+This skill persists its progress to `.claude/new-project-progress.yaml` so it can resume after `/clear` or a new session.
+
+### On first invocation (no progress file exists)
+
+1. Inspect the repo to detect which steps have already been completed (e.g., README.md exists, git is initialized, `.devcontainer/` is present).
+2. Build the initial task list and write it to `.claude/new-project-progress.yaml` with this format:
+
+```yaml
+# Dunn Lab new-project progress — do not edit manually
+updated: 2024-01-15T10:30:00
+tasks:
+  - id: step-1
+    name: Define the project scope
+    status: completed  # completed | in-progress | pending | skipped
+    notes: "Python RNA-seq pipeline"
+  - id: step-2
+    name: Create README.md stub, .gitignore, and initial files
+    status: in-progress
+    notes: ""
+  # ... remaining steps
+```
+
+3. Load the task list into TodoWrite so it is visible during the session.
+
+### On subsequent invocations (progress file exists)
+
+1. Read `.claude/new-project-progress.yaml`.
+2. Load it into TodoWrite.
+3. Resume from the first task that is not `completed` or `skipped`.
+
+### Keeping progress up to date
+
+- When you finish a step, mark it `completed` in both TodoWrite and the progress file.
+- When you start a step, mark it `in-progress`.
+- If the plan changes (steps added, removed, reordered, or revised based on user feedback), update the progress file to reflect the new plan. The progress file is the durable source of truth; TodoWrite is the in-session view.
+- Use the `notes` field to capture key decisions (e.g., chosen language, project type) so they survive across sessions.
 
 ## Step 1: Define the project scope
 
