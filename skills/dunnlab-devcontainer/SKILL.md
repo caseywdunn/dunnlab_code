@@ -236,7 +236,7 @@ while read -r cidr; do
         exit 1
     fi
     echo "Adding GitHub range $cidr"
-    ipset add allowed-domains "$cidr"
+    ipset add allowed-domains "$cidr" -exist
 done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q)
 
 # Resolve and add other allowed domains
@@ -262,7 +262,7 @@ for domain in \
             exit 1
         fi
         echo "Adding $ip for $domain"
-        ipset add allowed-domains "$ip"
+        ipset add allowed-domains "$ip" -exist
     done < <(echo "$ips")
 done
 
@@ -322,6 +322,15 @@ When adding these files to a project, adapt as needed:
 - **Base image**: For Python-heavy projects, consider switching from `node:20` to a multi-stage build or adding Python/Conda to the Dockerfile.
 - **Build args**: Adjust `TZ`, version pins, and other build args for the team's needs.
 - **Volumes**: Add additional volume mounts for caching (e.g., conda packages, pip cache) to speed up rebuilds.
+- **Multi-architecture support**: The container may run on x86_64 (Linux/Windows hosts) or arm64 (Apple Silicon Macs). When adding software downloads to the Dockerfile, always detect the architecture at build time rather than hardcoding it. Use `dpkg --print-architecture` for `.deb` packages (returns `amd64` or `arm64`) or `uname -m` for installers that use kernel arch names (returns `x86_64` or `aarch64`). For example, to add Miniconda:
+  ```dockerfile
+  RUN ARCH=$(uname -m) && \
+    wget -q "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-${ARCH}.sh" -O /tmp/miniconda.sh && \
+    bash /tmp/miniconda.sh -b -p /opt/conda && \
+    rm /tmp/miniconda.sh && \
+    /opt/conda/bin/conda clean -afy
+  ENV PATH="/opt/conda/bin:$PATH"
+  ```
 
 ## Important notes
 

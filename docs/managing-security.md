@@ -145,7 +145,7 @@ To get started:
 
 1. Install VS Code and the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
 2. Add a `.devcontainer/` directory to your project (the `dunnlab-devcontainer` skill can scaffold this for you — just ask Claude to set up a devcontainer).
-3. Open the project in VS Code and click "Reopen in Container" when prompted (or use the Command Palette: `Remote-Containers: Reopen in Container`).
+3. Open the project in VS Code and click "Reopen in Container" when prompted (or use the Command Palette: `Dev Containers: Reopen in Container`).
 
 For the full reference implementation, see the [Claude Code .devcontainer directory](https://github.com/anthropics/claude-code/tree/main/.devcontainer).
 

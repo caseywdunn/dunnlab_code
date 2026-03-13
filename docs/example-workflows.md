@@ -46,7 +46,7 @@ At this point you have a git repo with a clear plan, a dev container configurati
 
 ### 3. Open the project in the dev container
 
-Exit your Claude session, then open the project in VS Code. You'll be prompted to "Reopen in Container" (or use the Command Palette: `Remote-Containers: Reopen in Container`). You can also use the CLI: `devcontainer up`.
+Exit your Claude session, then open the project in VS Code. You'll be prompted to "Reopen in Container" (or use the Command Palette: `Dev Containers: Reopen in Container`). You can also use the CLI: `devcontainer up`.
 
 The container includes a [firewall](https://github.com/anthropics/claude-code/blob/main/.devcontainer/init-firewall.sh) that restricts outbound network access to only necessary services (GitHub, npm, Anthropic API, VS Code). This default-deny policy is what makes it safe to run Claude with permissions bypassed. See [Managing Security](managing-security.md) for details.
 
