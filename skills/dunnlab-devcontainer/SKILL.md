@@ -130,8 +130,20 @@ RUN ARCH=$(dpkg --print-architecture) && \
   sudo dpkg -i "git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb" && \
   rm "git-delta_${GIT_DELTA_VERSION}_${ARCH}.deb"
 
+# Install Miniconda
+RUN ARCH=$(uname -m) && \
+  wget -q "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-${ARCH}.sh" -O /tmp/miniconda.sh && \
+  bash /tmp/miniconda.sh -b -p /opt/conda && \
+  rm /tmp/miniconda.sh && \
+  /opt/conda/bin/conda clean -afy && \
+  chown -R node:node /opt/conda
+ENV PATH="/opt/conda/bin:$PATH"
+
 # Set up non-root user
 USER node
+
+# Initialize conda for zsh and bash
+RUN conda init zsh && conda init bash
 
 # Set the default shell to zsh rather than sh
 ENV SHELL=/bin/zsh
@@ -245,7 +257,11 @@ for domain in \
     "statsig.com" \
     "marketplace.visualstudio.com" \
     "vscode.blob.core.windows.net" \
-    "update.code.visualstudio.com"; do
+    "update.code.visualstudio.com" \
+    "repo.anaconda.com" \
+    "conda.anaconda.org" \
+    "pypi.org" \
+    "files.pythonhosted.org"; do
     echo "Resolving $domain..."
     ips=$(dig +noall +answer A "$domain" | awk '$4 == "A" {print $5}')
     if [ -z "$ips" ]; then
@@ -318,6 +334,7 @@ When this skill is invoked with the argument `test`, create a minimal test proje
 
 1. Create a temporary test directory at `/tmp/dunnlab-devcontainer-test/`.
 2. Scaffold the three `.devcontainer/` files (devcontainer.json, Dockerfile, init-firewall.sh) exactly as specified above into that directory.
+   **IMPORTANT:** When writing `init-firewall.sh`, ensure awk `$` variables (e.g., `$4`, `$5`) are preserved literally. The awk command `awk '$4 == "A" {print $5}'` must not have its `$4`/`$5` stripped or interpolated. Verify the written file contains these variables after writing.
 3. Initialize a git repo (`git init`) — required for the devcontainer to work.
 4. Create a `README.md` with the manual validation checklist (see below).
 5. Build the Docker image:
@@ -340,6 +357,8 @@ After a successful build, run these checks with `docker run --rm` and report pas
 | Node.js available | `docker run --rm dunnlab-devcontainer-test node --version` | Output starts with `v20` |
 | Git delta installed | `docker run --rm dunnlab-devcontainer-test delta --version` | Exit code 0 |
 | Workspace writable | `docker run --rm dunnlab-devcontainer-test bash -c 'touch /workspace/t && rm /workspace/t && echo OK'` | Output is `OK` |
+| Conda installed | `docker run --rm dunnlab-devcontainer-test conda --version` | Exit code 0, output shows version |
+| Python available | `docker run --rm dunnlab-devcontainer-test python --version` | Exit code 0, output shows version |
 | Firewall script present | `docker run --rm dunnlab-devcontainer-test bash -c 'test -x /usr/local/bin/init-firewall.sh && echo OK'` | Output is `OK` |
 
 If any check fails, include the full command output to aid debugging.
