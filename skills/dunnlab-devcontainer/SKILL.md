@@ -23,6 +23,7 @@ Create three files in `.devcontainer/` at the project root:
     "dockerfile": "Dockerfile",
     "args": {
       "TZ": "${localEnv:TZ:America/Los_Angeles}",
+      "CLAUDE_CODE_VERSION": "latest",
       "GIT_DELTA_VERSION": "0.18.2",
       "ZSH_IN_DOCKER_VERSION": "1.2.0"
     }
@@ -149,9 +150,13 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
   -a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
   -x
 
-# Install Claude Code via native installer
-RUN curl -fsSL https://claude.ai/install.sh | bash
-ENV PATH="/home/node/.claude/bin:$PATH"
+# Install global packages
+ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
+ENV PATH=$PATH:/usr/local/share/npm-global/bin
+
+# Install Claude Code
+ARG CLAUDE_CODE_VERSION=latest
+RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
 # Copy and set up firewall script
 COPY init-firewall.sh /usr/local/bin/
@@ -304,6 +309,92 @@ else
     echo "Firewall verification passed - able to reach https://api.github.com as expected"
 fi
 ```
+
+## Test mode
+
+When this skill is invoked with the argument `test`, create a minimal test project to validate the devcontainer configuration and the user's Docker setup. Do NOT apply this to the current project — instead create an isolated test folder.
+
+### Steps
+
+1. Create a temporary test directory at `/tmp/dunnlab-devcontainer-test/`.
+2. Scaffold the three `.devcontainer/` files (devcontainer.json, Dockerfile, init-firewall.sh) exactly as specified above into that directory.
+3. Initialize a git repo (`git init`) — required for the devcontainer to work.
+4. Create a `README.md` with the validation checklist below.
+5. Attempt to build the container using the devcontainer CLI: `devcontainer build --workspace-folder /tmp/dunnlab-devcontainer-test`. If the `devcontainer` CLI is not available, report this and include manual instructions instead.
+6. If the build succeeds, start the container and run the validation commands listed below. Report results for each check.
+7. Clean up: inform the user they can remove the test directory with `rm -rf /tmp/dunnlab-devcontainer-test` when done.
+
+### README.md content for the test project
+
+Write a README.md with this content:
+
+```markdown
+# Devcontainer Test
+
+Temporary project to validate the dunnlab-devcontainer configuration.
+Created by `/dunnlab-devcontainer test`. Safe to delete after validation.
+
+## How to validate manually
+
+Open this folder in VS Code and run **Dev Containers: Reopen in Container**.
+Once the container starts, open a terminal and run these checks:
+
+### 1. Claude Code is installed
+    claude --version
+
+### 2. Shell is zsh with powerline theme
+    echo $SHELL
+    # Expected: /bin/zsh
+
+### 3. Firewall is active (postStartCommand ran)
+    sudo iptables -L -n | head -20
+    # Should show DROP policies and allowed-domains rules
+
+### 4. Allowed traffic works
+    curl -s https://api.github.com/zen
+    # Should return a GitHub zen phrase
+
+    curl -s https://api.anthropic.com/ -o /dev/null -w "%{http_code}"
+    # Should return a status code (not a connection error)
+
+### 5. Blocked traffic is rejected
+    curl --connect-timeout 5 https://example.com
+    # Should fail with "Connection refused" or similar
+
+### 6. Git delta is installed
+    delta --version
+
+### 7. Workspace permissions
+    touch /workspace/test-write && rm /workspace/test-write
+    # Should succeed without permission errors
+
+### 8. Node.js is available
+    node --version
+    # Should show v20.x
+
+## Automated checks
+
+If using `devcontainer exec`, these commands run the same checks non-interactively:
+
+    devcontainer exec --workspace-folder . bash -c "claude --version && echo SHELL=\$SHELL && delta --version && node --version && curl -sf https://api.github.com/zen && ! curl --connect-timeout 5 https://example.com 2>/dev/null && echo ALL_CHECKS_PASSED"
+```
+
+### Automated validation commands
+
+When the devcontainer CLI is available, run these checks programmatically after build and report pass/fail for each:
+
+| Check | Command | Pass condition |
+|-------|---------|----------------|
+| Claude Code installed | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test claude --version` | Exit code 0 |
+| Shell is zsh | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test bash -c 'echo $SHELL'` | Output contains `/bin/zsh` |
+| Node.js available | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test node --version` | Output starts with `v20` |
+| Git delta installed | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test delta --version` | Exit code 0 |
+| Firewall active | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test sudo iptables -L OUTPUT -n` | Output contains `allowed-domains` |
+| Allowed traffic | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test curl -sf https://api.github.com/zen` | Exit code 0 |
+| Blocked traffic | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test curl --connect-timeout 5 https://example.com` | Exit code non-zero |
+| Workspace writable | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test bash -c 'touch /workspace/t && rm /workspace/t'` | Exit code 0 |
+
+Report a summary table with pass/fail status for each check. If any check fails, include the command output to aid debugging.
 
 ## Customization guidance
 
