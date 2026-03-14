@@ -118,9 +118,9 @@ RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhisto
 # Set `DEVCONTAINER` environment variable to help with orientation
 ENV DEVCONTAINER=true
 
-# Create workspace and config directories and set permissions
-RUN mkdir -p /workspace /home/node/.claude && \
-  chown -R node:node /workspace /home/node/.claude
+# Create workspace, config, and npm global directories and set permissions
+RUN mkdir -p /workspace /home/node/.claude /usr/local/share/npm-global && \
+  chown -R node:node /workspace /home/node/.claude /usr/local/share/npm-global
 
 WORKDIR /workspace
 
@@ -319,10 +319,38 @@ When this skill is invoked with the argument `test`, create a minimal test proje
 1. Create a temporary test directory at `/tmp/dunnlab-devcontainer-test/`.
 2. Scaffold the three `.devcontainer/` files (devcontainer.json, Dockerfile, init-firewall.sh) exactly as specified above into that directory.
 3. Initialize a git repo (`git init`) — required for the devcontainer to work.
-4. Create a `README.md` with the validation checklist below.
-5. Attempt to build the container using the devcontainer CLI: `devcontainer build --workspace-folder /tmp/dunnlab-devcontainer-test`. If the `devcontainer` CLI is not available, report this and include manual instructions instead.
-6. If the build succeeds, start the container and run the validation commands listed below. Report results for each check.
-7. Clean up: inform the user they can remove the test directory with `rm -rf /tmp/dunnlab-devcontainer-test` when done.
+4. Create a `README.md` with the manual validation checklist (see below).
+5. Build the Docker image:
+   ```bash
+   docker build -t dunnlab-devcontainer-test /tmp/dunnlab-devcontainer-test/.devcontainer
+   ```
+   If `docker` is not available, stop and inform the user they need Docker installed.
+6. Run the automated validation checks (see table below). Report a pass/fail summary table.
+7. Inform the user about manual-only checks (firewall, network) that require the full devcontainer.
+8. Clean up: inform the user they can remove the test directory with `rm -rf /tmp/dunnlab-devcontainer-test` and the image with `docker rmi dunnlab-devcontainer-test` when done.
+
+### Automated validation checks
+
+After a successful build, run these checks with `docker run --rm` and report pass/fail for each:
+
+| Check | Command | Pass condition |
+|-------|---------|----------------|
+| Claude Code installed | `docker run --rm dunnlab-devcontainer-test claude --version` | Exit code 0, output shows version |
+| Shell is zsh | `docker run --rm dunnlab-devcontainer-test bash -c 'echo $SHELL'` | Output is `/bin/zsh` |
+| Node.js available | `docker run --rm dunnlab-devcontainer-test node --version` | Output starts with `v20` |
+| Git delta installed | `docker run --rm dunnlab-devcontainer-test delta --version` | Exit code 0 |
+| Workspace writable | `docker run --rm dunnlab-devcontainer-test bash -c 'touch /workspace/t && rm /workspace/t && echo OK'` | Output is `OK` |
+| Firewall script present | `docker run --rm dunnlab-devcontainer-test bash -c 'test -x /usr/local/bin/init-firewall.sh && echo OK'` | Output is `OK` |
+
+If any check fails, include the full command output to aid debugging.
+
+### Manual-only checks (require full devcontainer)
+
+The following checks require `NET_ADMIN`/`NET_RAW` capabilities and the `postStartCommand` to run, so they can only be validated by opening the test project in VS Code with **Dev Containers: Reopen in Container**:
+
+- **Firewall active**: `sudo iptables -L -n | head -20` — should show DROP policies and allowed-domains rules
+- **Allowed traffic**: `curl -s https://api.github.com/zen` — should return a GitHub zen phrase
+- **Blocked traffic**: `curl --connect-timeout 5 https://example.com` — should fail with connection refused
 
 ### README.md content for the test project
 
@@ -334,67 +362,41 @@ Write a README.md with this content:
 Temporary project to validate the dunnlab-devcontainer configuration.
 Created by `/dunnlab-devcontainer test`. Safe to delete after validation.
 
-## How to validate manually
+## Automated checks (already run)
+
+The following were validated during `docker build` + `docker run`:
+- Claude Code installed
+- Shell is zsh
+- Node.js v20.x available
+- Git delta installed
+- Workspace writable by node user
+- Firewall script present and executable
+
+## Manual checks (require full devcontainer)
 
 Open this folder in VS Code and run **Dev Containers: Reopen in Container**.
 Once the container starts, open a terminal and run these checks:
 
-### 1. Claude Code is installed
-    claude --version
-
-### 2. Shell is zsh with powerline theme
-    echo $SHELL
-    # Expected: /bin/zsh
-
-### 3. Firewall is active (postStartCommand ran)
+### 1. Firewall is active (postStartCommand ran)
     sudo iptables -L -n | head -20
     # Should show DROP policies and allowed-domains rules
 
-### 4. Allowed traffic works
+### 2. Allowed traffic works
     curl -s https://api.github.com/zen
     # Should return a GitHub zen phrase
 
     curl -s https://api.anthropic.com/ -o /dev/null -w "%{http_code}"
     # Should return a status code (not a connection error)
 
-### 5. Blocked traffic is rejected
+### 3. Blocked traffic is rejected
     curl --connect-timeout 5 https://example.com
     # Should fail with "Connection refused" or similar
 
-### 6. Git delta is installed
-    delta --version
+## Cleanup
 
-### 7. Workspace permissions
-    touch /workspace/test-write && rm /workspace/test-write
-    # Should succeed without permission errors
-
-### 8. Node.js is available
-    node --version
-    # Should show v20.x
-
-## Automated checks
-
-If using `devcontainer exec`, these commands run the same checks non-interactively:
-
-    devcontainer exec --workspace-folder . bash -c "claude --version && echo SHELL=\$SHELL && delta --version && node --version && curl -sf https://api.github.com/zen && ! curl --connect-timeout 5 https://example.com 2>/dev/null && echo ALL_CHECKS_PASSED"
+    rm -rf /tmp/dunnlab-devcontainer-test
+    docker rmi dunnlab-devcontainer-test
 ```
-
-### Automated validation commands
-
-When the devcontainer CLI is available, run these checks programmatically after build and report pass/fail for each:
-
-| Check | Command | Pass condition |
-|-------|---------|----------------|
-| Claude Code installed | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test claude --version` | Exit code 0 |
-| Shell is zsh | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test bash -c 'echo $SHELL'` | Output contains `/bin/zsh` |
-| Node.js available | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test node --version` | Output starts with `v20` |
-| Git delta installed | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test delta --version` | Exit code 0 |
-| Firewall active | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test sudo iptables -L OUTPUT -n` | Output contains `allowed-domains` |
-| Allowed traffic | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test curl -sf https://api.github.com/zen` | Exit code 0 |
-| Blocked traffic | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test curl --connect-timeout 5 https://example.com` | Exit code non-zero |
-| Workspace writable | `devcontainer exec --workspace-folder /tmp/dunnlab-devcontainer-test bash -c 'touch /workspace/t && rm /workspace/t'` | Exit code 0 |
-
-Report a summary table with pass/fail status for each check. If any check fails, include the command output to aid debugging.
 
 ## Customization guidance
 
