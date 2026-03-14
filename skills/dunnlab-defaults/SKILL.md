@@ -184,7 +184,7 @@ project-name/
 ├── .gitignore
 ├── README.md
 ├── CLAUDE.md
-├── documentation/
+├── dev_docs/
 │   ├── overview.md
 │   └── data-model.md # These are example documents
 ├── CONTRIBUTING.md
@@ -202,12 +202,12 @@ project-name/
 
 README.md should include a project overview, setup instructions (for environment, dependencies, and the project itself), and usage examples. Also include a Development section at the running tests and any relevant notes about data sources or analysis workflows.
 
-documentation/ should include any relevant documentation for the project, such as an overview of the data model, descriptions of analysis workflows, or notes on interpretation of results. It is intended to be both human readable and to be loaded into context by Claude Code when working on relevant parts of the project.
+dev_docs/ should include any relevant documentation for the project, such as an overview of the data model, descriptions of analysis workflows, or notes on interpretation of results. It is intended to be both human readable and to be loaded into context by Claude Code when working on relevant parts of the project.
 
 CLAUDE.md should document how to use Claude Code for this project, including any custom skills or commands. Keep it to 100 lines or less. It must also include links and descriptions to the following files at a minimum so they can be loaded into context as needed:
 - README.md
 - CONTRIBUTING.md
-- Each file in `documentation/` (e.g., `overview.md`, `data-model.md`)
+- Each file in `dev_docs/` (e.g., `overview.md`, `data-model.md`)
 
 CONTRIBUTING.md should include all details needed for formatting, linting, testing, and any other project-specific development practices.
 
@@ -246,5 +246,5 @@ Use descriptive commit messages that explain *why* a change was made, not just *
 
 ### Updating documentation before commits
 
-- Update README.md and documentation/ files as needed to reflect changes in functionality, usage, or project structure.
-- If the change introduces new features or modifies existing ones, update the relevant sections in README.md and any relevant documentation/ files to keep documentation accurate and up to date.
+- Update README.md and dev_docs/ files as needed to reflect changes in functionality, usage, or project structure.
+- If the change introduces new features or modifies existing ones, update the relevant sections in README.md and any relevant dev_docs/ files to keep documentation accurate and up to date.
