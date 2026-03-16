@@ -74,13 +74,14 @@ The goal of this phase is to get the repo initialized and permissions configured
 
 ### Step 1: Define the project scope
 
-Before writing any code, clarify with the user:
+Before writing any code, understand what the user wants to build. Start by asking about the **goal** — what scientific question or engineering problem are they solving? Then follow up conversationally based on their answer to fill in any gaps:
 
-- **What is the goal?** (e.g., analyze single-cell RNA-seq data, build a phylogenetic pipeline, create a CLI tool)
-- **What language(s) will be used?** (default to Python unless there's a reason for R or Rust)
-- **What are the expected inputs and outputs?**
-- **Will this be a one-off analysis, a reusable tool, or a package?**
-- **Would they like to use a devcontainer?** Explain that devcontainers provide a reproducible, isolated environment via Docker and VS Code, but are optional. Record the choice in the progress file.
+- **Language**: Default to Python unless the user mentions R-specific packages (e.g., Seurat, DESeq2) or performance needs that suggest Rust. If the answer is obvious from context, confirm rather than ask.
+- **Inputs and outputs**: What data goes in, what results come out?
+- **Project type**: One-off analysis, reusable tool, or package? Infer from context when possible (e.g., "analyze some RNA-seq data" → analysis; "build a CLI" → tool).
+- **Devcontainer**: Ask whether they'd like one. Briefly explain that devcontainers provide a reproducible, isolated environment via Docker and VS Code, but are optional. Record the choice in the progress file.
+
+If the user gives a brief prompt (e.g., "new project for phylogenomics"), infer sensible defaults (Python, analysis, no devcontainer) and confirm them in a single message rather than asking each question individually.
 
 If there are problems with the user's plans (e.g., they suggest inappropriate tools, there are missing or unnecessary steps, there are better approaches, the data can't be used for this purpose, etc.), point out the issues and suggest better approaches.
 
@@ -154,9 +155,15 @@ __pycache__/
 
 Add language-specific ignores (e.g., `target/` for Rust; `.Rhistory`, `.RData`, `.Rproj.user/` for R).
 
+Scaffold test infrastructure alongside the directory structure:
+
+- **Python**: Create `tests/` with an empty `conftest.py` and a placeholder test file.
+- **R**: Set up `tests/testthat/` with a `testthat.R` runner and a placeholder test file.
+- **Rust**: The default `cargo init` includes a test module; add a `tests/` directory for integration tests if appropriate.
+
 ### Step 7: Set up the environment
 
-- **Python**: Create `environment.yml` with the project name, Python version, and initial dependencies. Run `conda env create -f environment.yml` or `mamba env create -f environment.yml`. If creation fails (usually dependency conflicts), read the error, adjust versions or channels in `environment.yml`, and retry — don't skip environment setup.
+- **Python**: Create `environment.yml` with the project name, Python version, and initial dependencies. If running inside a devcontainer, conda/mamba is already installed — create the environment directly. Otherwise, ensure conda or mamba is available first. Run `conda env create -f environment.yml` or `mamba env create -f environment.yml`. If creation fails (usually dependency conflicts), read the error, adjust versions or channels in `environment.yml`, and retry — don't skip environment setup.
 - **R**: Initialize `renv` with `renv::init()`. Install initial packages and snapshot with `renv::snapshot()`. If the project needs Bioconductor packages, configure the Bioconductor repository in `renv` before installing them. If `renv::restore()` fails on a package, check whether it needs a system library (common with spatial/genomics packages) and note the dependency in README.md.
 - **Rust**: `Cargo.toml` is created by `cargo init`. Add dependencies as needed.
 
@@ -180,7 +187,7 @@ Write the finalized tasks into the progress file and TodoWrite. Then implement t
 
 Do not move on to the next task until the current one is fully implemented, tested, and documented. Each task should be small enough to complete in a single session — this prevents context overload and keeps diffs reviewable.
 
-After completing each task, commit your changes and then run /clear before starting the next task.
+After completing each task, commit your changes and then run /clear before starting the next task. When the user re-invokes this skill after clearing, it will automatically resume from the progress file — no need to start over.
 
 ### Step 9: Final verification
 
@@ -189,7 +196,7 @@ Run through this checklist when wrapping up. For each item, actually run the rel
 - [ ] **Environment from scratch**: delete and recreate the environment from the config file (`environment.yml`, `renv.lock`, or `Cargo.toml`) to confirm it builds cleanly
 - [ ] **Starter script runs**: execute the main entry point or pipeline with sample/test input and verify it completes without errors
 - [ ] **Tests pass**: run the full test suite (`pytest`, `cargo test`, `testthat`, etc.)
-- [ ] **Linters and formatters clean**: run the project's linter and formatter (`ruff check && ruff format --check`, `cargo clippy`, etc.) and fix any issues
+- [ ] **Linters and formatters clean**: run the project's linter and formatter (`black --check . && flake8 .`, `cargo clippy`, etc.) and fix any issues
 - [ ] **Code review**: look over the project for performance issues, security concerns, or potential bugs — if a refactor is needed, break it into a new task and implement it before moving on
 - [ ] **README accurate**: follow the setup instructions in README.md as if you were a new user — do they actually work?
 - [ ] **CLAUDE.md and dev_docs/ current**: verify these files reflect the final state of the project, not the initial plan
