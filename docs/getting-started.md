@@ -106,7 +106,7 @@ You should see a welcome message and a list of available skills.
 - **Commands** are slash commands (like `/dunnlab-check`) that trigger specific Claude behaviors. See the `commands/` directory.
 - **Hooks** are event-driven scripts that run automatically in response to Claude Code events (e.g., before a commit or after a file is created). See the `hooks/` directory.
 
-Browse the [Data Analysis](data-analysis.md), [Managing Security](managing-security.md), and [Managing Context](managing-context.md) pages for more.
+Browse the [Managing Security](managing-security.md) and [Managing Context](managing-context.md) pages for more.
 
 ## 5. Install recommended marketplace skills
 
