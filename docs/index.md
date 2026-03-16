@@ -9,7 +9,7 @@ Welcome! This site documents the Dunn Lab's shared Claude Code plugin — a coll
 
 ## Table of Contents
 
-- [Getting Started](getting-started.md) — Install Claude Code and register the Dunn Lab plugin
+- [Getting Started](getting-started.md) — An introduction to the computational stack we use in the lab.
 - [Claude Code Concepts](claude-intro.md) — How Claude Code works: interfaces, working directory, and extensibility
 - [Lab Practices](lab-practices.md) — Conventions for AI-assisted work and contributing
 - [Data Analysis](data-analysis.md) — Using Claude Code for data analysis workflows
@@ -19,7 +19,7 @@ Welcome! This site documents the Dunn Lab's shared Claude Code plugin — a coll
 
 ## For new lab members
 
-If you're just getting started, head to the [Getting Started](getting-started.md) guide. It walks you through installing Claude Code, registering the plugin, and verifying everything works.
+If you're just getting started, head to the [Getting Started](getting-started.md) guide. 
 
 ## For contributors
 
