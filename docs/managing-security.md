@@ -129,7 +129,7 @@ File rules use gitignore-style glob patterns:
 
 ## Example: HPC cluster settings
 
-For a full working example, see [assets/settings.json](https://github.com/caseywdunn/dunnlab_code/blob/main/assets/settings.json) — a settings file designed for use on the Yale YCRC McCleary cluster. It starts in plan mode, allows read-only commands freely, requires confirmation for job submissions and file modifications, and denies destructive system operations.
+For a full working example, see [assets/settings.json](https://github.com/caseywdunn/dunnlab_code/blob/main/assets/settings.json) — a settings file designed for use on the Yale YCRC McCleary cluster. Place it in your `~/.claude/` folder on McCleary and other clusters where you would use Claude Code. It starts in plan mode, allows read-only commands freely, requires confirmation for job submissions and file modifications, and denies destructive system operations.
 
 ## Sandboxed environments
 
