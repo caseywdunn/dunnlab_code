@@ -34,7 +34,7 @@ How to add or modify skills, commands, hooks, and documentation in this repo.
 
 - Pages live in `docs/` and use Jekyll with the just-the-docs remote theme.
 - Each page has YAML frontmatter with `title` and `nav_order`.
-- See `documentation/github-pages.md` for configuration details.
+- See `dev_docs/github-pages.md` for configuration details.
 - Preview locally: `cd docs && bundle exec jekyll serve`
 
 ## Updating the example settings.json

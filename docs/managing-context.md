@@ -140,7 +140,7 @@ The skill-creator will:
 
 The benchmark highlights three things:
 
-- **Discriminating assertions** — checks that pass with the skill but fail without it. These measure what value the skill actually adds. For example, a project scaffolding skill might always produce `CLAUDE.md` and `documentation/overview.md` while the baseline never does.
+- **Discriminating assertions** — checks that pass with the skill but fail without it. These measure what value the skill actually adds. For example, a project scaffolding skill might always produce `CLAUDE.md` and `dev_docs/overview.md` while the baseline never does.
 - **Non-discriminating assertions** — checks that pass in both conditions. These validate correctness but don't justify the skill's existence. If all your assertions are non-discriminating, the skill may not be adding value.
 - **Cost tradeoff** — skills typically increase token usage and execution time. The benchmark quantifies this so you can decide whether the added structure is worth the cost.
 

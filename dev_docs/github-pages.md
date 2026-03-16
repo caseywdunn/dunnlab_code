@@ -2,7 +2,7 @@
 
 The `docs/` directory contains the GitHub Pages site for this project, providing user-facing documentation for lab members on installing, using, and contributing to the plugin.
 
-**Important**: `docs/` is for the Jekyll site served to users. It is **not** the `documentation/` directory (which is developer reference for working on this repo).
+**Important**: `docs/` is for the Jekyll site served to users. It is **not** the `dev_docs/` directory (which is developer reference for working on this repo).
 
 ## Configuration
 

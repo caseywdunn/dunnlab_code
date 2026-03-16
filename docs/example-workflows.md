@@ -38,7 +38,7 @@ Claude will walk you through a structured planning process:
 
 - **Define scope** — Claude asks about the scientific question, language choice, expected inputs/outputs, and whether this is a one-off analysis or reusable tool.
 - **Scaffold the repo** — Claude creates a `README.md`, `.gitignore`, and initializes git. It also adds a `.devcontainer/` directory using the `dunnlab-devcontainer` skill, which provides a secure, pre-configured container with Claude Code, a restrictive firewall, and VS Code integration.
-- **Create planning docs** — Claude generates `documentation/overview.md` with the scientific question and planned workflow, and a `CLAUDE.md` that ties everything together.
+- **Create planning docs** — Claude generates `dev_docs/overview.md` with the scientific question and planned workflow, and a `CLAUDE.md` that ties everything together.
 - **Review the plan** — Before any code is written, you review the project plan and documentation together. This is the time to catch architectural issues or missing requirements.
 - **Commit the plan** — Once you're satisfied, commit the scaffolding. This gives you a clean baseline to build from.
 
