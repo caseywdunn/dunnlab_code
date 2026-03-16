@@ -6,6 +6,10 @@ description: >
   package — including when the user says "new project", "set up a repo",
   "start a new analysis", "initialize a project", or asks to create
   project structure, directory layout, or boilerplate for a new codebase.
+  Also trigger when the user describes a new analysis goal (e.g., "I need
+  to analyze some RNA-seq data", "let's build a phylogenetics pipeline")
+  and the working directory is empty or lacks project structure (no
+  README.md, no CLAUDE.md, no src/ or scripts/ directory).
 ---
 
 # Dunn Lab New Project Setup
@@ -18,7 +22,15 @@ This skill persists its progress to `.claude/new-project-progress.yaml` so it ca
 
 ### On first invocation (no progress file exists)
 
-1. Inspect the repo to detect which steps have already been completed (e.g., README.md exists, git is initialized, `.devcontainer/` is present).
+1. Inspect the repo to detect which steps have already been completed. Use these heuristics to mark steps as `completed` or `skipped` in the initial task list:
+   - `.git/` exists → skip git init in Step 2
+   - `.claude/settings.json` exists → skip permissions setup in Step 2
+   - `.gitignore` exists → skip initial .gitignore in Step 2 (still update it in Step 6)
+   - `.devcontainer/` exists → skip Step 3
+   - `README.md` exists → mark as pre-existing in Step 4 notes (still review/update it)
+   - `CLAUDE.md` exists → same as README
+   - `dev_docs/` exists → same as README
+   - `environment.yml`, `renv.lock`, or `Cargo.toml` exists → skip Step 7
 2. Build the initial task list and write it to `.claude/new-project-progress.yaml` with this format:
 
 ```yaml
@@ -80,7 +92,7 @@ Do these in order — settings.json first so all subsequent tool calls benefit f
 
 1. **Initialize git** with `git init` (skip if already initialized).
 
-2. **Create `.claude/settings.json`** with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval — this lets Claude work fluidly for reading and running code while still requiring confirmation for file modifications, package installs, and git mutations. Read `references/settings-permissions.md` for the full permission rules (allow, ask, deny), then generate the settings file using the same rule syntax shown in `.claude/settings.json` examples from the managing-security docs.
+2. **Create `.claude/settings.json`** with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval — this lets Claude work fluidly for reading and running code while still requiring confirmation for file modifications, package installs, and git mutations. Read `references/settings-permissions.md` for the full permission rules and JSON format, then generate the settings file.
 
 3. **Create a minimal `.gitignore`** with `.DS_Store` and other common ignores. This will be expanded in a later step once the language and project type are known.
 
@@ -144,8 +156,8 @@ Add language-specific ignores (e.g., `target/` for Rust; `.Rhistory`, `.RData`, 
 
 ### Step 7: Set up the environment
 
-- **Python**: Create `environment.yml` with the project name, Python version, and initial dependencies. Run `conda env create -f environment.yml` or `mamba env create -f environment.yml`.
-- **R**: Initialize `renv` with `renv::init()`. Install initial packages and snapshot with `renv::snapshot()`. If the project needs Bioconductor packages, configure the Bioconductor repository in `renv` before installing them.
+- **Python**: Create `environment.yml` with the project name, Python version, and initial dependencies. Run `conda env create -f environment.yml` or `mamba env create -f environment.yml`. If creation fails (usually dependency conflicts), read the error, adjust versions or channels in `environment.yml`, and retry — don't skip environment setup.
+- **R**: Initialize `renv` with `renv::init()`. Install initial packages and snapshot with `renv::snapshot()`. If the project needs Bioconductor packages, configure the Bioconductor repository in `renv` before installing them. If `renv::restore()` fails on a package, check whether it needs a system library (common with spatial/genomics packages) and note the dependency in README.md.
 - **Rust**: `Cargo.toml` is created by `cargo init`. Add dependencies as needed.
 
 Include instructions for environment setup in README.md.
@@ -154,11 +166,13 @@ Include instructions for environment setup in README.md.
 
 Read `dev_docs/overview.md` and the project scope notes from the progress file, then break development into atomic tasks tailored to the project type. The decomposition depends on what's being built:
 
-- **Analysis/pipeline**: first task gets a minimal end-to-end pipeline running (read input → stub processing → write output), then subsequent tasks fill in each processing step.
-- **CLI tool**: first task sets up argument parsing and the entry point, then subsequent tasks implement each subcommand or feature.
-- **Package/library**: first task defines the public API with stub implementations and a test file, then subsequent tasks implement each function.
+- **Analysis/pipeline**: first task gets a minimal end-to-end pipeline running (read input → stub processing → write output), then subsequent tasks fill in each processing step. Aim for 3–6 tasks for a typical pipeline — one per major processing stage.
+- **CLI tool**: first task sets up argument parsing and the entry point, then subsequent tasks implement each subcommand or feature. Aim for one task per subcommand plus one for integration tests.
+- **Package/library**: first task defines the public API with stub implementations and a test file, then subsequent tasks implement each function. Aim for one task per public function or logical group of functions.
 
-Write these tasks into the progress file and TodoWrite. Then implement them one by one. After each task:
+Present the proposed task breakdown to the user for review before starting implementation — they may want to reorder, merge, or split tasks based on their priorities.
+
+Write the finalized tasks into the progress file and TodoWrite. Then implement them one by one. After each task:
 - Run tests to verify functionality.
 - Run linters and formatters to maintain code quality.
 - Update documentation to reflect new functionality or changes.
@@ -170,12 +184,12 @@ After completing each task, commit your changes and then run /clear before start
 
 ### Step 9: Final verification
 
-Run through this checklist when wrapping up:
+Run through this checklist when wrapping up. For each item, actually run the relevant command rather than just eyeballing it:
 
-- [ ] Environment can be created from scratch using the config file
-- [ ] The starter script runs without errors
-- [ ] Look over the project for performance issues, security concerns, or potential bugs. If a refactor is needed, break it into a new task and implement it before moving on.
-- [ ] Tests pass
-- [ ] Linters and formatters run clean
-- [ ] README setup instructions are accurate and complete
-- [ ] CLAUDE.md and dev_docs/ files are comprehensive and up to date
+- [ ] **Environment from scratch**: delete and recreate the environment from the config file (`environment.yml`, `renv.lock`, or `Cargo.toml`) to confirm it builds cleanly
+- [ ] **Starter script runs**: execute the main entry point or pipeline with sample/test input and verify it completes without errors
+- [ ] **Tests pass**: run the full test suite (`pytest`, `cargo test`, `testthat`, etc.)
+- [ ] **Linters and formatters clean**: run the project's linter and formatter (`ruff check && ruff format --check`, `cargo clippy`, etc.) and fix any issues
+- [ ] **Code review**: look over the project for performance issues, security concerns, or potential bugs — if a refactor is needed, break it into a new task and implement it before moving on
+- [ ] **README accurate**: follow the setup instructions in README.md as if you were a new user — do they actually work?
+- [ ] **CLAUDE.md and dev_docs/ current**: verify these files reflect the final state of the project, not the initial plan
