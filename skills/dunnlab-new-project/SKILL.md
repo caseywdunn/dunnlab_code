@@ -2,8 +2,10 @@
 name: dunnlab-new-project
 description: >
   Step-by-step workflow for scaffolding a new Dunn Lab project from
-  scratch. Use when creating a new analysis, tool, or pipeline. Sets
-  up directory structure, environment, git, and documentation.
+  scratch. Use whenever starting a new analysis, pipeline, tool, or
+  package — including when the user says "new project", "set up a repo",
+  "start a new analysis", "initialize a project", or asks to create
+  project structure, directory layout, or boilerplate for a new codebase.
 ---
 
 # Dunn Lab New Project Setup
@@ -41,8 +43,9 @@ tasks:
 ### On subsequent invocations (progress file exists)
 
 1. Read `.claude/new-project-progress.yaml`.
-2. Load it into TodoWrite.
-3. Resume from the first task that is not `completed` or `skipped`.
+2. If `devcontainer: true` and `in_devcontainer: false`, check whether you're now inside a container (e.g., `/.dockerenv` exists or `$REMOTE_CONTAINERS` is set). If so, update `in_devcontainer: true` in the progress file — this confirms the user successfully reopened in the devcontainer and you can continue to Phase 2.
+3. Load it into TodoWrite.
+4. Resume from the first task that is not `completed` or `skipped`.
 
 ### Keeping progress up to date
 
@@ -77,11 +80,7 @@ Do these in order — settings.json first so all subsequent tool calls benefit f
 
 1. **Initialize git** with `git init` (skip if already initialized).
 
-2. **Create `.claude/settings.json`** with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval. The settings should:
-   - **Allow without prompting**: `Read(**)`, `Glob`, `Grep`, `Task`, read-only git commands (`git status`, `git log`, `git diff`, `git branch`, `git remote`, `git show`), read-only shell commands (`ls`, `cat`, `head`, `tail`, `wc`, `find`, `du`, `df`, `file`, `which`, `echo`, `pwd`, `tree`, `diff`), `curl` and `wget`, `python` and `python3`, `conda activate/deactivate/env list/list/info`, `mamba activate/deactivate/env list/list/info`, `pip list`, `pip show`
-   - **Ask for confirmation**: `Edit(**)`, `Write(**)`, mutating git commands (`git push`, `git commit`, `git checkout`, `git merge`, `git rebase`, `git reset`, `git stash`, `git add`), package management (`conda install/create/remove/env create/env remove/update`, `mamba install/create/remove/env create/env remove/update`, `pip install`, `pip uninstall`), file operations (`cp`, `mv`, `rm`, `mkdir`, `rsync`), `chmod`, `WebFetch`
-   - **Deny**: reading sensitive files (`.env`, `.env.*`, `.ssh/**`, `.netrc`, `*credentials*`, `*secret*`, `*token*`, `*.pem`, `*.key`, `.aws/**`), editing sensitive files (same patterns), destructive commands (`rm -rf /`, `sudo`, `su`, `shutdown`, `reboot`, `dd if=`), network probing (`ssh`, `nc`, `netcat`, `nmap`), process killing (`kill -9`, `killall`, `pkill`)
-   Use the same rule syntax shown in `.claude/settings.json` examples from the managing-security docs. The goal is to let Claude work fluidly for reading and running code while requiring confirmation for anything that modifies files, installs packages, or touches git history.
+2. **Create `.claude/settings.json`** with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval — this lets Claude work fluidly for reading and running code while still requiring confirmation for file modifications, package installs, and git mutations. Read `references/settings-permissions.md` for the full permission rules (allow, ask, deny), then generate the settings file using the same rule syntax shown in `.claude/settings.json` examples from the managing-security docs.
 
 3. **Create a minimal `.gitignore`** with `.DS_Store` and other common ignores. This will be expanded in a later step once the language and project type are known.
 
@@ -107,9 +106,9 @@ If the user did not opt for a devcontainer:
 
 Before writing any code, create the following:
 
-- **README.md** with a project title and placeholder sections for the overview, setup instructions, usage examples, and development notes. If using a devcontainer, include a "Development container" section explaining how to use it (install Docker and the VS Code Dev Containers extension, then reopen the project in the container).
+- **README.md** with a project title and placeholder sections for the overview, setup instructions, usage examples, and development notes. If `devcontainer: true` in the progress file, include a "Development container" section explaining how to use it (install Docker and the VS Code Dev Containers extension, then reopen the project in the container).
 - **`dev_docs/overview.md`** outlining the scientific question or engineering goal, key data sources and their formats, and the planned analysis workflow or architecture. This serves as a reference that can be loaded into context by Claude Code when working on relevant parts of the project.
-- **Additional `dev_docs/` files** as needed to document the project (e.g., data model, analysis workflow, interpretation notes). These should be atomic and focused on specific aspects of the project, written so they can be loaded into context by Claude Code as needed. These serve as a guardrail on context.
+- **Additional `dev_docs/` files** as needed to document the project (e.g., data model, analysis workflow, interpretation notes). Keep each file atomic and focused on a single topic — this way Claude Code can load only the relevant file into context rather than pulling in the entire project's documentation, which helps stay within the context window on larger projects.
 - **CLAUDE.md** with a brief project summary, links to the above documentation, and any project-specific instructions for using Claude Code. Also specify to use the dunnlab-defaults skill for coding conventions and project structure.
 
 Ask the user any clarifying questions needed to fill in these documents.
@@ -141,30 +140,31 @@ __pycache__/
 .DS_Store
 ```
 
-Add language-specific ignores (e.g., `target/` for Rust, `.Rhistory` for R).
+Add language-specific ignores (e.g., `target/` for Rust; `.Rhistory`, `.RData`, `.Rproj.user/` for R).
 
 ### Step 7: Set up the environment
 
 - **Python**: Create `environment.yml` with the project name, Python version, and initial dependencies. Run `conda env create -f environment.yml` or `mamba env create -f environment.yml`.
-- **R**: Initialize `renv` with `renv::init()`. Install initial packages and snapshot with `renv::snapshot()`.
+- **R**: Initialize `renv` with `renv::init()`. Install initial packages and snapshot with `renv::snapshot()`. If the project needs Bioconductor packages, configure the Bioconductor repository in `renv` before installing them.
 - **Rust**: `Cargo.toml` is created by `cargo init`. Add dependencies as needed.
 
 Include instructions for environment setup in README.md.
 
 ### Step 8: Enter development mode
 
-Break development into atomic, manageable tasks. For example:
-- Get the main function up with argument parsing and minimal external-facing interface (e.g., CLI, API).
-- Implement core functionality with placeholder logic.
-- Add error handling and edge case management.
+Read `dev_docs/overview.md` and the project scope notes from the progress file, then break development into atomic tasks tailored to the project type. The decomposition depends on what's being built:
 
-Use an incremental approach. Once tasks are defined, start implementing them one by one. After each task:
+- **Analysis/pipeline**: first task gets a minimal end-to-end pipeline running (read input → stub processing → write output), then subsequent tasks fill in each processing step.
+- **CLI tool**: first task sets up argument parsing and the entry point, then subsequent tasks implement each subcommand or feature.
+- **Package/library**: first task defines the public API with stub implementations and a test file, then subsequent tasks implement each function.
+
+Write these tasks into the progress file and TodoWrite. Then implement them one by one. After each task:
 - Run tests to verify functionality.
 - Run linters and formatters to maintain code quality.
 - Update documentation to reflect new functionality or changes.
 - Commit changes with descriptive messages.
 
-Do not move on to the next task until the current one is fully implemented, tested, and documented. This ensures a clean development process and prevents context overload. It is critical to not get too far ahead of yourself.
+Do not move on to the next task until the current one is fully implemented, tested, and documented. Each task should be small enough to complete in a single session — this prevents context overload and keeps diffs reviewable.
 
 After completing each task, commit your changes and then run /clear before starting the next task.
 
