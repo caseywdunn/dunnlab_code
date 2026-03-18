@@ -56,6 +56,9 @@ Languages for performant critical code:
 Always include idiomatic dependency management. For example, an `environment.yml` (for Python) or `renv.lock` (for R) to specify dependencies. For Rust, ensure `Cargo.toml` is up to date.
 
 - Use `conda` or `mamba` for managing Python environments. Create an `environment.yml` file to specify dependencies.
+  - For complex workflows with multiple stages, consider using separate environment files in an `env/` folder at the project root (e.g., `env/environment_data.yml`, `env/environment_analysis.yml`).
+  - This keeps environments organized, allows for more efficient dependency management, and prevents problems resolving complex dependencies.
+  - If using Snakemake with multiple `.snk` files for different stages, each can have its own environment file.
 - Use `renv` for R projects to manage package dependencies and ensure reproducibility.
 - For Rust projects, manage dependencies with `Cargo.toml` and use `cargo` for building and testing.
 
@@ -117,6 +120,8 @@ Use **Snakemake** when a workflow involves multiple independent tools, fan-out/f
 - Define each stage as a rule with explicit `input` and `output` files.
 - Use `conda:` directives per rule to isolate tool environments.
 - Store the `Snakefile` at the project root and keep per-rule wrapper scripts in `scripts/` if rule logic exceeds a few lines.
+
+- If the workflow is complex with many distinct steps, dependencies, and parallelization needs, create a `rules/` folder with multiple `.snk` files for different stages. The main Snakefile at the project root can then include these with `include: "rules/step1.snk"`, etc. This keeps the workflow organized and maintainable as it grows.
 
 ### Bash or Python orchestrators for simple workflows
 
