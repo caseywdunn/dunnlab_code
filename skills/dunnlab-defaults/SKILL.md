@@ -59,6 +59,7 @@ Always include idiomatic dependency management. For example, an `environment.yml
   - For complex workflows with multiple stages, consider using separate environment files in an `env/` folder at the project root (e.g., `env/environment_data.yml`, `env/environment_analysis.yml`).
   - This keeps environments organized, allows for more efficient dependency management, and prevents problems resolving complex dependencies.
   - If using Snakemake with multiple `.snk` files for different stages, each can have its own environment file.
+  - Whether there are one or multiple environment files, the README should document how to set up the environments before explaining how to use the workflow.
 - Use `renv` for R projects to manage package dependencies and ensure reproducibility.
 - For Rust projects, manage dependencies with `Cargo.toml` and use `cargo` for building and testing.
 
