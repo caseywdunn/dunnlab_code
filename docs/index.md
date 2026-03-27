@@ -5,7 +5,9 @@ nav_order: 1
 
 # Dunn Lab Code
 
-Welcome! This site documents the Dunn Lab's shared Claude Code plugin — a collection of skills, hooks, and slash commands that standardize how we use AI-assisted coding across the lab.
+Welcome! This manual documents coding practices in the [Dunn Lab](https://dunnlab.org/). It is packaged as a Claude Code plugin — a collection of skills, hooks, and slash commands that standardize how we use AI-assisted coding across the lab.
+
+The plugin, with manual source documents, is available at <https://github.com/caseywdunn/dunnlab_code>.
 
 ## Table of Contents
 
