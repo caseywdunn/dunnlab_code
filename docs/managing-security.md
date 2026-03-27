@@ -129,6 +129,10 @@ File rules use gitignore-style glob patterns:
 
 ## Example: HPC cluster settings
 
+When using agents such as claude code on a cluster, it is essential to follow all policies. These tools are still new so these may change rapidly. See [YCRC's guidance on using coding agents on Yale clusters](https://docs.ycrc.yale.edu/ai/aicodingtools/).
+
+Furthermore, because these are shared powerful resources it is essential to have highly restricted permissions. The risks are high - you could harm the cluster (creating work for cluster maintainers and denying others access), you could delete or leak other peoples' work, or you could erase or silently modify your own data in ways you didn't expect.
+
 For a full working example, see [assets/settings.json](https://github.com/caseywdunn/dunnlab_code/blob/main/assets/settings.json) — a settings file designed for use on the Yale YCRC McCleary cluster. Place it in your `~/.claude/` folder on McCleary and other clusters where you would use Claude Code. It starts in plan mode, allows read-only commands freely, requires confirmation for job submissions and file modifications, and denies destructive system operations.
 
 ## Sandboxed environments
