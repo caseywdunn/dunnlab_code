@@ -10,6 +10,17 @@ description: >
 
 Add a `.devcontainer/` directory to the current project with a production-ready configuration for Claude Code. Based on the [official Claude Code devcontainer](https://code.claude.com/docs/en/devcontainer) and [reference implementation](https://github.com/anthropics/claude-code/tree/main/.devcontainer).
 
+## Firewall modes
+
+The skill supports two firewall modes for the `init-firewall.sh` script:
+
+- **`locked-down` (default)** — Default-deny outbound policy with an allowlist for GitHub, npm, Anthropic APIs, conda, PyPI, and a few VS Code endpoints. Use for untrusted code or when egress should be restricted.
+- **`open`** — Flushes all rules and sets default-accept policies. The container can reach any host the host machine can. Use only for trusted projects where the firewall is more friction than protection (e.g., projects that need to reach many third-party APIs, package mirrors, or internal services).
+
+Ask the user which mode they want if they have not specified. If the skill is invoked with the argument `open`, scaffold the open variant; otherwise default to locked-down.
+
+Both modes still require `NET_ADMIN` and `NET_RAW` capabilities and run the same `postStartCommand` — only the contents of `init-firewall.sh` differ.
+
 ## What to create
 
 Create three files in `.devcontainer/` at the project root:
@@ -181,6 +192,10 @@ USER node
 
 ### 3. `.devcontainer/init-firewall.sh`
 
+Choose **one** of the two variants below based on the firewall mode (see "Firewall modes" above). Write only the chosen variant to disk.
+
+#### Locked-down variant (default)
+
 ```bash
 #!/bin/bash
 set -euo pipefail  # Exit on error, undefined vars, and pipeline failures
@@ -326,6 +341,21 @@ else
 fi
 ```
 
+#### Open variant (allow all)
+
+Use this when the skill is invoked with `open`. It clears any existing rules and sets default-accept policies so the container has unrestricted outbound access.
+
+```bash
+#!/bin/bash
+set -euo pipefail
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -F
+iptables -X
+echo "Firewall: allow-all mode"
+```
+
 ## Test mode
 
 When this skill is invoked with the argument `test`, create a minimal test project to validate the devcontainer configuration and the user's Docker setup. Do NOT apply this to the current project — instead create an isolated test folder.
@@ -438,8 +468,8 @@ When adding these files to a project, adapt as needed:
 
 ## Important notes
 
-- The firewall's default-deny policy means `--dangerously-skip-permissions` can be used more safely inside the container, since network access is restricted to whitelisted domains only.
-- The `NET_ADMIN` and `NET_RAW` capabilities are required for the firewall to function.
+- The locked-down firewall's default-deny policy means `--dangerously-skip-permissions` can be used more safely inside the container, since network access is restricted to whitelisted domains only. The open variant does **not** provide that protection — treat an open-firewall container the same as running Claude Code on the host for trust purposes.
+- The `NET_ADMIN` and `NET_RAW` capabilities are required for either firewall variant to function.
 - Docker must be installed on the host machine. Docker Desktop works on macOS and Windows.
 - Shell history and Claude configuration persist across container restarts via named volumes.
 - Only use devcontainers with trusted repositories — the container does not prevent exfiltration of anything accessible inside it, including Claude Code credentials.
