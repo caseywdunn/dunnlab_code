@@ -1,6 +1,6 @@
 {
   "name": "dunnlab-code",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Shared Claude Code skills, hooks, and commands for the Dunn Lab",
   "author": {
     "name": "Dunn Lab"
