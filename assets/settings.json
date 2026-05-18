@@ -5,8 +5,7 @@
     "Claude Code settings for the Yale YCRC McCleary HPC cluster.",
     "Philosophy: SECURITY FIRST. Prompt for confirmation on anything destructive.",
     "These settings favor safety over speed — you will be asked before writes,",
-    "deletions, job submissions, and network access. This protects shared storage,",
-    "other users' files, and prevents accidental resource waste on the cluster.",
+    "deletions, and most network access.",
     "",
     "DEPENDENCY MANAGEMENT: Always prefer conda/mamba for installing packages.",
     "Use pip only when a package is not available via conda-forge. When creating",
@@ -230,24 +229,16 @@
       "Bash(tree:*)",
       "Bash(diff:*)",
       "Bash(md5sum:*)",
-      "Bash(sha256sum:*)"
-    ],
-
-    "ask": [
-      "Edit(**)",
-      "Write(**)",
+      "Bash(sha256sum:*)",
 
       "Bash(sbatch:*)",
       "Bash(salloc:*)",
       "Bash(srun:*)",
       "Bash(scancel:*)",
 
-      "Bash(git push:*)",
       "Bash(git commit:*)",
       "Bash(git checkout:*)",
       "Bash(git merge:*)",
-      "Bash(git rebase:*)",
-      "Bash(git reset:*)",
       "Bash(git stash:*)",
       "Bash(git add:*)",
 
@@ -258,8 +249,6 @@
       "Bash(conda env remove:*)",
       "Bash(conda env export:*)",
       "Bash(conda update:*)",
-      "Bash(pip install:*)",
-      "Bash(pip uninstall:*)",
       "Bash(mamba install:*)",
       "Bash(mamba create:*)",
       "Bash(mamba remove:*)",
@@ -269,7 +258,13 @@
 
       "Bash(module load:*)",
       "Bash(module purge:*)",
-      "Bash(module swap:*)",
+      "Bash(module swap:*)"
+
+    ],
+
+    "ask": [
+      "Edit(**)",
+      "Write(**)",
 
       "Bash(cp:*)",
       "Bash(mv:*)",
@@ -284,16 +279,22 @@
       "Bash(chown:*)",
       "Bash(setfacl:*)",
 
-      "Bash(apptainer:*)",
-      "Bash(singularity:*)",
-
-      "Bash(curl:*)",
-      "Bash(wget:*)",
-
       "Bash(tmux:*)",
       "Bash(screen:*)",
 
-      "WebFetch"
+      "Bash(git push:*)",
+      "Bash(git rebase:*)",
+      "Bash(git reset:*)",
+
+      "WebFetch",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+
+      "Bash(pip install:*)",
+      "Bash(pip uninstall:*)",
+
+      "Bash(apptainer:*)",
+      "Bash(singularity:*)"
     ],
 
     "deny": [
