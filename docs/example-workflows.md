@@ -74,10 +74,10 @@ This pulls the plugin from GitHub and caches it inside the container. You can ve
 With authentication and the plugin in place, launch Claude with permissions bypassed:
 
 ```bash
-claude --dangerously-skip-permissions
+claude --permission-mode bypassPermissions
 ```
 
-The `--dangerously-skip-permissions` flag disables all permission prompts, so Claude can create files, run commands, install packages, and execute tests without asking for approval on each step. **This is safe here because the dev container is disposable** — it cannot touch your host filesystem, credentials, or other projects. See [Managing Security](managing-security.md) for why you should never use this flag outside of an isolated container.
+`bypassPermissions` mode (equivalent to the older `--dangerously-skip-permissions` flag) disables all permission prompts, so Claude can create files, run commands, install packages, and execute tests without asking for approval on each step. **This is safe here because the dev container is disposable** — it cannot touch your host filesystem, credentials, or other projects. See [Managing Security](managing-security.md) for why you should never use this mode outside of an isolated container.
 
 ### 6. Have Claude implement the project
 

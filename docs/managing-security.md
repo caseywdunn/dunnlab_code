@@ -60,17 +60,22 @@ Permissions are defined in three arrays inside `settings.json`:
 
 Rules are evaluated in order: **deny > ask > allow**. A deny rule always wins over an allow rule at the same scope.
 
-## Default mode
+## Permission modes
 
-The `defaultMode` setting controls Claude's baseline behavior:
+A permission mode sets Claude's baseline behavior — how often it pauses to ask before editing a file, running a command, or making a network request. You can cycle modes mid-session with `Shift+Tab` in the CLI (or the mode selector in VS Code, Desktop, and claude.ai), start in a mode with `claude --permission-mode <mode>`, or set a persistent `defaultMode` in `settings.json`. For the full reference, see the official [permission modes documentation](https://code.claude.com/docs/en/permission-modes).
 
-| Mode | Behavior |
-|------|----------|
-| `"default"` | Prompts on first use of each tool |
-| `"acceptEdits"` | Automatically accepts file edits |
-| `"plan"` | Read-only — Claude can analyze but not modify anything |
-| `"dontAsk"` | Auto-denies tools unless pre-approved in `allow` |
-| `"bypassPermissions"` | Skips all prompts (only for isolated containers) |
+| Mode | What runs without asking | Best for |
+|------|--------------------------|----------|
+| `"default"` | Reads only | Getting started, sensitive work |
+| `"acceptEdits"` | Reads, file edits, and common filesystem commands (`mkdir`, `mv`, `cp`, etc.) | Iterating on code you're reviewing |
+| `"plan"` | Reads only — Claude analyzes and proposes but never modifies | Exploring a codebase before changing it |
+| `"auto"` | Everything, with background safety checks | Long tasks, reducing prompt fatigue |
+| `"dontAsk"` | Only pre-approved tools | Locked-down CI and scripts |
+| `"bypassPermissions"` | Everything, no checks | Isolated containers and VMs only |
+
+**For most day-to-day work, prefer `auto` mode.** It lets Claude work in long uninterrupted stretches, but a separate classifier model reviews each action before it runs and blocks anything that escalates beyond your request, targets unrecognized infrastructure, or appears driven by hostile content Claude read in a file or web page. You get far fewer prompts than `default` without surrendering the safety net that `bypassPermissions` removes entirely. (Auto mode is a research preview with model and plan requirements — see the [docs](https://code.claude.com/docs/en/permission-modes) if it doesn't appear in your `Shift+Tab` cycle.)
+
+In every mode except `bypassPermissions`, `deny` rules and explicit `ask` rules still apply, and writes to protected paths (`.git`, `.claude`, shell configs, etc.) are never auto-approved.
 
 ## Permission rule syntax
 
@@ -156,6 +161,19 @@ For the full reference implementation, see the [Claude Code .devcontainer direct
 {: .warning }
 Only use devcontainers with trusted repositories. While the firewall restricts network access, it does not prevent a malicious project from exfiltrating anything accessible inside the container, including Claude Code credentials.
 
-### `--dangerously-skip-permissions`
+### `bypassPermissions` mode
 
-Claude Code accepts a `--dangerously-skip-permissions` flag that disables all permission checks. As the name suggests, this is dangerous — Claude will execute any command, edit any file, and access any resource without asking. Only use this inside a disposable container or VM where there is nothing sensitive to protect and nothing important to break. Never use it on your host machine or a shared system.
+`bypassPermissions` mode disables permission prompts and safety checks so tool calls execute immediately. Start in it from the CLI:
+
+```bash
+claude --permission-mode bypassPermissions
+```
+
+(The older `--dangerously-skip-permissions` flag is equivalent and still works.)
+
+{: .warning }
+`bypassPermissions` offers **no protection against prompt injection or unintended actions** — Claude will execute any command, edit any file, and access any resource without asking. Malicious content hidden in a cloned repo, a fetched web page, or a tool output can hijack the session with nothing to stop it. Only use this inside a disposable container or VM where there is nothing sensitive to protect and nothing important to break. Never use it on your host machine or a shared system.
+
+For long, mostly-unattended runs where you still want a safety net, reach for [`auto` mode](#permission-modes) instead: it eliminates most prompts but keeps a background classifier that blocks escalations and injection-driven actions. Use `bypassPermissions` only when isolation — not the classifier — is what protects you.
+
+For unattended use, Claude Code refuses to start `bypassPermissions` as `root`/`sudo` outside a recognized sandbox; the [dev container](https://code.claude.com/docs/en/devcontainer) configuration runs as a non-root user so it works there.
