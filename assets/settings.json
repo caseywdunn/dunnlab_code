@@ -262,10 +262,18 @@
 
     ],
 
-    "ask": [
-      "Edit(**)",
-      "Write(**)",
+    "_comment_edits": [
+      "Edit/Write are intentionally NOT listed here. Permission rules are",
+      "evaluated deny -> ask -> allow BEFORE the permission mode is consulted,",
+      "so an 'ask' rule on Edit(**)/Write(**) would force a prompt in EVERY mode",
+      "and defeat acceptEdits/auto. Leaving edits unlisted makes them mode-driven:",
+      "blocked in plan mode, prompted in default mode, auto-accepted in",
+      "acceptEdits/auto mode. The deny block below is the hard floor for edits —",
+      "it is enforced first and even under bypassPermissions, so secrets/keys/.env",
+      "stay protected regardless of mode."
+    ],
 
+    "ask": [
       "Bash(cp:*)",
       "Bash(mv:*)",
       "Bash(rm:*)",
