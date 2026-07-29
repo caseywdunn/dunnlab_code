@@ -75,3 +75,4 @@ No lab-specific hooks have been implemented yet. See `hooks/README.md` for the p
 The `assets/` directory contains shared resources distributed with the plugin:
 
 - **settings.json** — Example Claude Code settings for the Yale YCRC McCleary HPC cluster. Includes permission rules, cluster quick reference, SLURM templates, and conda workflow guidance. Users can copy or adapt this for their own `~/.claude/settings.json`.
+- **tmux/** — A shared tmux setup for working over SSH on cluster login nodes. `tmux.conf` (copy to `~/.tmux.conf`) fixes mouse scrolling and enables system-clipboard copy over SSH via OSC 52; `tmux.md` is the matching cheat sheet.
