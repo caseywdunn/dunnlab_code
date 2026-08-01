@@ -69,7 +69,9 @@ We make extensive use of Yale's excellent High Performance Computing (HPC) resou
 
 You will interact with the clusters mostly (or entirely) with [OOD](https://docs.ycrc.yale.edu/clusters-at-yale/access/ood/#remote-desktop).
 
-We use McCleary for all analyses that touch raw sequence data. We use Bouchet for all other analyses.
+[Bouchet](https://docs.ycrc.yale.edu/clusters/bouchet/) is our primary cluster — use it for all analyses. We use [McCleary](https://docs.ycrc.yale.edu/clusters/mccleary/) only for work on raw YCGA sequence data. YCRC [decommissioned Grace and downsized McCleary in 2026](https://docs.ycrc.yale.edu/clusters/grace-mccleary-decommission/); McCleary will persist as a YCGA-only cluster, so anything that is not YCGA data belongs on Bouchet.
+
+Bouchet's account and path conventions differ from the older clusters, which will break scripts copied over: your primary group is your NetID, PI groups are `pi_<netid>`, storage is under `/nfs/roberts/` (there is no GPFS or `/vast/palmer`), and conda environments must be rebuilt rather than copied. See the [Bouchet getting started guide](https://docs.ycrc.yale.edu/clusters/bouchet_getting_started/).
 
 ## Setting up Claude Code
 
