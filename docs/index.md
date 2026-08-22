@@ -11,16 +11,16 @@ The plugin, with manual source documents, is available at <https://github.com/ca
 
 ## Table of Contents
 
-- [Getting Started](getting-started.md) — An introduction to the computational stack we use in the lab.
-- [Lab Practices](lab-practices.md) — Conventions for AI-assisted work and contributing
-- [Claude Code Concepts](claude-intro.md) — How Claude Code works: interfaces, working directory, and extensibility
-- [Managing Security](managing-security.md) — Configuring permissions with settings.json
-- [Managing Context](managing-context.md) — Providing Claude Code with the right context
-- [Example Workflows](example-workflows.md) — Step-by-step walkthroughs for common tasks
+- [Getting Started](getting-started.md) — The computational stack we use, AI in academic science, and how to set up Claude Code.
+- [Lab Practices](lab-practices.md) — What we expect of each other when using these tools: review, disclosure, and data handling.
+- [Claude Code Concepts](claude-intro.md) — How Claude Code works: interfaces, working directory, and extensibility.
+- [Managing Security](managing-security.md) — Permissions, sandboxing, and containers.
+- [Managing Context](managing-context.md) — CLAUDE.md, rules, memory, skills, and plugins.
+- [Example Workflows](example-workflows.md) — Step-by-step walkthroughs for common tasks.
 
 ## For new lab members
 
-If you're just getting started, head to the [Getting Started](getting-started.md) guide. 
+If you're just getting started, head to the [Getting Started](getting-started.md) guide, then read [Lab Practices](lab-practices.md) before you commit anything.
 
 ## For contributors
 
