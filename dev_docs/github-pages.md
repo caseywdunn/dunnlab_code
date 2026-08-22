@@ -29,20 +29,25 @@ nav_order: 3
 | File | nav_order | Content |
 |------|-----------|---------|
 | `index.md` | 1 | Home page with table of contents |
-| `getting-started.md` | 2 | Installation and setup walkthrough |
+| `getting-started.md` | 2 | Computational stack, AI in academic science, and setup |
 | `lab-practices.md` | 3 | Conventions for AI-assisted work |
-| `data-analysis.md` | 4 | Using Claude Code for data analysis (placeholder) |
-| `managing-security.md` | 5 | Permission system and settings.json guide |
-| `managing-context.md` | 6 | Context window, CLAUDE.md, and skills |
+| `claude-intro.md` | 4 | How Claude Code works: interfaces, working directory, extensibility |
+| `managing-security.md` | 5 | Permissions, sandboxing, and settings.json |
+| `managing-context.md` | 6 | Context window, CLAUDE.md, rules, memory, skills, plugins |
+| `example-workflows.md` | 7 | Step-by-step walkthroughs |
+
+Keep this table in sync with the frontmatter. `nav_order` values must be contiguous and must match what `docs/index.md` implies, or the sidebar and the table of contents disagree.
 
 ## Adding a new page
 
 1. Create a markdown file in `docs/` with frontmatter (`title`, `nav_order`)
-2. Choose a `nav_order` that places it logically in the sidebar
-3. Link to it from `docs/index.md` in the table of contents
-4. Push to `main` — GitHub Actions builds and deploys automatically
+2. Choose a `nav_order` that places it logically in the sidebar, and renumber the pages after it so the sequence stays contiguous
+3. Link to it from `docs/index.md` in the table of contents, and add a row to the table above
+4. Push to `main` — GitHub Pages builds and deploys automatically
 
 ## Local preview
+
+Requires Ruby. `docs/Gemfile` pins the `github-pages` gem set so a local build matches what GitHub deploys.
 
 ```bash
 cd docs
@@ -51,6 +56,8 @@ bundle exec jekyll serve
 ```
 
 The site will be available at `http://localhost:4000/dunnlab_code/`.
+
+Local preview is optional. The site is built and deployed by GitHub Pages' built-in Jekyll build on every push to `main` — there is no workflow file in `.github/`, and the build shows up in the repo's Actions tab as `pages-build-deployment`. If a page renders wrong after a push, check there first.
 
 ## Linking conventions
 

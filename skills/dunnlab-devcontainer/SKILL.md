@@ -1,18 +1,82 @@
 ---
 name: dunnlab-devcontainer
 description: >
-  Add a .devcontainer configuration to a project for secure, reproducible
-  Claude Code development environments. Use when setting up devcontainers,
-  Docker-based dev environments, or configuring container-based workflows.
+  Add a .devcontainer configuration to a project for isolated, reproducible
+  Claude Code development environments. Offers a standard setup using the
+  official Claude Code dev container feature, and a hardened variant with an
+  egress firewall. Use when setting up devcontainers, Docker-based dev
+  environments, or configuring container-based workflows.
 ---
 
 # Devcontainer Setup
 
-Add a `.devcontainer/` directory to the current project with a production-ready configuration for Claude Code. Based on the [official Claude Code devcontainer](https://code.claude.com/docs/en/devcontainer) and [reference implementation](https://github.com/anthropics/claude-code/tree/main/.devcontainer).
+Add a `.devcontainer/` directory to the current project so Claude Code runs in an isolated, reproducible environment. Based on the [official devcontainer guide](https://code.claude.com/docs/en/devcontainer).
 
-## Firewall modes
+## Choose a path first
 
-The skill supports two firewall modes for the `init-firewall.sh` script:
+There are two configurations, and they answer different needs. **Ask the user which they want** unless the argument makes it obvious.
+
+| Path | Use when | Trade-off |
+|------|----------|-----------|
+| **Standard** (default) | You want isolation from the host and a reproducible toolchain | Simple, little to maintain, but no egress restriction |
+| **Hardened** | You are running with permissions bypassed, or working with code you don't fully trust | Default-deny firewall, but a custom Dockerfile you now own |
+
+Invoke with `hardened` for the second path, `open` for the hardened layout with the firewall disabled, or `test` to validate a build (see [Test mode](#test-mode)). Default to standard.
+
+---
+
+## Standard path (default)
+
+Use the official **Claude Code Dev Container Feature**, which installs Claude Code into any base image. This is the configuration to reach for unless the project needs egress restriction.
+
+Create one file, `.devcontainer/devcontainer.json`:
+
+```json
+{
+  "name": "Claude Code",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {},
+    "ghcr.io/devcontainers/features/conda:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "eamodio.gitlens"
+      ]
+    }
+  },
+  "mounts": [
+    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume",
+    "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume"
+  ],
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  },
+  "remoteUser": "vscode"
+}
+```
+
+Notes to pass on to the user:
+
+- The `:1.0` tag pins the **feature's install script**, not the Claude Code release. The feature installs the current Claude Code, which then auto-updates inside the container. To pin a CLI version instead, install it from a Dockerfile with `npm install -g @anthropic-ai/claude-code@X.Y.Z` and set `DISABLE_AUTOUPDATER`.
+- **The volume mount and `CLAUDE_CONFIG_DIR` must both be present.** Claude Code stores its OAuth account and per-project trust in `~/.claude.json`, which sits *outside* `~/.claude`, so mounting the directory alone does not keep the user signed in. Setting `CLAUDE_CONFIG_DIR` to the mount point puts both inside the volume, and sign-in then survives a container rebuild.
+- `${devcontainerId}` scopes the volume per project. Drop it to share one login across all containers.
+- Adjust `remoteUser` and the mount paths together if you change the base image — they must agree.
+- For a Python-first project, `mcr.microsoft.com/devcontainers/python:3.12` works as the base image; drop the conda feature if the project uses pip or uv instead.
+
+If the build fails with `Failed to install Node.js and npm`, add `"ghcr.io/devcontainers/features/node:1": {}` above the Claude Code feature.
+
+---
+
+## Hardened path
+
+A custom Dockerfile plus an egress firewall, adapted from the [Claude Code reference container](https://github.com/anthropics/claude-code/tree/main/.devcontainer). Choose this when the container's network access should be restricted — in particular when the user intends to run with `bypassPermissions`, where the firewall is much of what makes that defensible.
+
+### Firewall modes
 
 - **`locked-down` (default)** — Default-deny outbound policy with an allowlist for GitHub, npm, Anthropic APIs, conda, PyPI, and a few VS Code endpoints. Use for untrusted code or when egress should be restricted.
 - **`open`** — Flushes all rules and sets default-accept policies. The container can reach any host the host machine can. Use only for trusted projects where the firewall is more friction than protection (e.g., projects that need to reach many third-party APIs, package mirrors, or internal services).
@@ -21,11 +85,13 @@ Ask the user which mode they want if they have not specified. If the skill is in
 
 Both modes still require `NET_ADMIN` and `NET_RAW` capabilities and run the same `postStartCommand` — only the contents of `init-firewall.sh` differ.
 
-## What to create
+Before writing the allowlist, check the current [network access requirements](https://code.claude.com/docs/en/network-config#network-access-requirements) — the inference and authentication domains change, and a stale allowlist produces failures that look like bugs rather than blocked traffic.
+
+### What to create
 
 Create three files in `.devcontainer/` at the project root:
 
-### 1. `.devcontainer/devcontainer.json`
+#### 1. `.devcontainer/devcontainer.json`
 
 ```json
 {
@@ -87,7 +153,7 @@ Create three files in `.devcontainer/` at the project root:
 }
 ```
 
-### 2. `.devcontainer/Dockerfile`
+#### 2. `.devcontainer/Dockerfile`
 
 ```dockerfile
 FROM node:20
@@ -107,6 +173,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   unzip \
   gnupg2 \
   gh \
+  wget \
   iptables \
   ipset \
   iproute2 \
@@ -190,11 +257,11 @@ RUN chmod +x /usr/local/bin/init-firewall.sh && \
 USER node
 ```
 
-### 3. `.devcontainer/init-firewall.sh`
+#### 3. `.devcontainer/init-firewall.sh`
 
 Choose **one** of the two variants below based on the firewall mode (see "Firewall modes" above). Write only the chosen variant to disk.
 
-#### Locked-down variant (default)
+##### Locked-down variant (default)
 
 ```bash
 #!/bin/bash
@@ -341,7 +408,7 @@ else
 fi
 ```
 
-#### Open variant (allow all)
+##### Open variant (allow all)
 
 Use this when the skill is invoked with `open`. It clears any existing rules and sets default-accept policies so the container has unrestricted outbound access.
 
@@ -356,9 +423,11 @@ iptables -X
 echo "Firewall: allow-all mode"
 ```
 
+---
+
 ## Test mode
 
-When this skill is invoked with the argument `test`, create a minimal test project to validate the devcontainer configuration and the user's Docker setup. Do NOT apply this to the current project — instead create an isolated test folder.
+When this skill is invoked with the argument `test`, create a minimal test project to validate the **hardened** configuration and the user's Docker setup. Do NOT apply this to the current project — instead create an isolated test folder.
 
 ### Steps
 
@@ -390,6 +459,7 @@ After a successful build, run these checks with `docker run --rm` and report pas
 | Conda installed | `docker run --rm dunnlab-devcontainer-test conda --version` | Exit code 0, output shows version |
 | Python available | `docker run --rm dunnlab-devcontainer-test python --version` | Exit code 0, output shows version |
 | Firewall script present | `docker run --rm dunnlab-devcontainer-test bash -c 'test -x /usr/local/bin/init-firewall.sh && echo OK'` | Output is `OK` |
+| Firewall allowlist resolves | `docker run --rm dunnlab-devcontainer-test bash -c 'for d in api.anthropic.com registry.npmjs.org pypi.org conda.anaconda.org; do dig +short A $d >/dev/null \|\| echo "FAIL $d"; done; echo done'` | No `FAIL` lines — a domain that no longer resolves is one the firewall will silently block |
 
 If any check fails, include the full command output to aid debugging.
 
@@ -447,13 +517,15 @@ Once the container starts, open a terminal and run these checks:
     docker rmi dunnlab-devcontainer-test
 ```
 
+---
+
 ## Customization guidance
 
-When adding these files to a project, adapt as needed:
+When adding the hardened files to a project, adapt as needed:
 
 - **Extensions**: Add project-relevant VS Code extensions to `devcontainer.json` (e.g., `ms-python.python` for Python projects, `ms-toolsai.jupyter` for notebooks).
-- **Firewall domains**: If the project needs access to additional services (e.g., PyPI, Conda, Docker Hub, cloud APIs), add them to the `init-firewall.sh` domain list.
-- **Base image**: For Python-heavy projects, consider switching from `node:20` to a multi-stage build or adding Python/Conda to the Dockerfile.
+- **Firewall domains**: If the project needs additional services (Docker Hub, cloud APIs, an institutional mirror), add them to the `init-firewall.sh` domain list. Re-check the Anthropic domains against the [network access requirements](https://code.claude.com/docs/en/network-config#network-access-requirements) rather than trusting the list baked in here.
+- **Base image**: The Dockerfile starts from `node:20` because Claude Code ships as an npm package. For Python-heavy projects, either keep it and rely on the bundled Miniconda, or start from a Python image and install Node alongside. If you don't need the firewall, the standard path handles this more cleanly through features.
 - **Build args**: Adjust `TZ`, version pins, and other build args for the team's needs.
 - **Volumes**: Add additional volume mounts for caching (e.g., conda packages, pip cache) to speed up rebuilds.
 - **Multi-architecture support**: The container may run on x86_64 (Linux/Windows hosts) or arm64 (Apple Silicon Macs). When adding software downloads to the Dockerfile, always detect the architecture at build time rather than hardcoding it. Use `dpkg --print-architecture` for `.deb` packages (returns `amd64` or `arm64`) or `uname -m` for installers that use kernel arch names (returns `x86_64` or `aarch64`). For example, to add Miniconda:
@@ -466,10 +538,14 @@ When adding these files to a project, adapt as needed:
   ENV PATH="/opt/conda/bin:$PATH"
   ```
 
+---
+
 ## Important notes
 
-- The locked-down firewall's default-deny policy means `--dangerously-skip-permissions` can be used more safely inside the container, since network access is restricted to whitelisted domains only. The open variant does **not** provide that protection — treat an open-firewall container the same as running Claude Code on the host for trust purposes.
+- **`bypassPermissions` mode** (the older `--dangerously-skip-permissions` flag is equivalent and still works) is defensible inside a locked-down container because egress is restricted to an allowlist. The **open** variant and the **standard** path do not provide that, so treat a container without the firewall the same as running Claude Code on the host for trust purposes. Where you want fewer prompts but not zero safety checks, `auto` mode is the better choice — a classifier reviews each action and it is now the default mode on Pro, Max, and Team plans.
+- Claude Code refuses to start `bypassPermissions` as root. Both paths here run as a non-root user (`node` for hardened, `vscode` for standard), so this works; keep it that way if you change the base image.
 - The `NET_ADMIN` and `NET_RAW` capabilities are required for either firewall variant to function.
-- Docker must be installed on the host machine. Docker Desktop works on macOS and Windows.
-- Shell history and Claude configuration persist across container restarts via named volumes.
-- Only use devcontainers with trusted repositories — the container does not prevent exfiltration of anything accessible inside it, including Claude Code credentials.
+- Docker must be installed on the host. Docker Desktop works on macOS and Windows.
+- **Sign-in persists across rebuilds only because of the volume mount *and* `CLAUDE_CONFIG_DIR` together.** `~/.claude.json` holds the OAuth account and lives outside `~/.claude`, so mounting the directory by itself leaves the user logging in after every rebuild. Both configurations here set both.
+- Only use devcontainers with trusted repositories. The container does not prevent a malicious project from exfiltrating anything reachable inside it, including Claude Code credentials. Avoid mounting host secrets such as `~/.ssh`; prefer repository-scoped or short-lived tokens.
+- To apply organization policy inside the container, copy a `managed-settings.json` to `/etc/claude-code/` from the Dockerfile. Note that anyone with write access to the repo can edit that step, so it is a convenience, not an enforcement boundary.

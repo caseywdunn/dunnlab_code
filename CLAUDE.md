@@ -9,25 +9,29 @@ Distributed as a plugin via `.claude-plugin/plugin.json`.
 |-----------------|---------|
 | `skills/`       | Claude Code skills (each in `<name>/SKILL.md`) |
 | `commands/`     | Slash commands (`<name>.md`) |
-| `hooks/`        | Event-driven automation (placeholder for now) |
+| `hooks/`        | Event-driven automation (placeholder; plugin hooks go in `hooks/hooks.json`) |
 | `docs/`         | GitHub Pages site (Jekyll, just-the-docs theme) — **not** Claude Code documentation |
-| `assets/`       | Shared resources (e.g., example `settings.json` for HPC) |
+| `assets/`       | Shared resources: example HPC `settings.json`, tmux config and cheat sheet |
 | `dev_docs/`     | Developer docs for this repo — load into context as needed |
+| `workshops/`    | Slide decks and workshop material |
 
 ## Testing changes locally
 
 ```bash
 claude --plugin-dir /path/to/dunnlab_code
-/dunnlab-check
+# then, in-session:
+/dunnlab-code:dunnlab-check
 ```
+
+Run `claude plugin validate . --strict` before opening a PR. After editing a skill, `/reload-plugins` — plugin skills are not detected live.
 
 ## Key conventions
 
-- Skills use YAML frontmatter with `name` and `description` fields
-- Skill descriptions must be concise — they consume ~2% of context budget
+- Skills use YAML frontmatter; `description` is what matters, and in a plugin skill `name` sets the last segment of the namespaced command (`/dunnlab-code:<name>`)
+- Skill descriptions must be concise — they share a listing budget of ~1% of the context window, and overflow gets descriptions truncated (check with `/doctor`)
 - The `docs/` directory is for the GitHub Pages site (user-facing), not for Claude Code context
 - The `dev_docs/` directory is for developer reference when working on this repo
-- When writing docs, link to [official Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code) rather than repeating it
+- When writing docs, link to the [official Claude Code documentation](https://code.claude.com/docs/en/overview) rather than repeating it
 
 ## Documentation
 

@@ -93,7 +93,7 @@ Do these in order — settings.json first so all subsequent tool calls benefit f
 
 1. **Initialize git** with `git init` (skip if already initialized).
 
-2. **Create `.claude/settings.json`** with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval — this lets Claude work fluidly for reading and running code while still requiring confirmation for file modifications, package installs, and git mutations. Read `references/settings-permissions.md` for the full permission rules and JSON format, then generate the settings file.
+2. **Create `.claude/settings.json`** with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval, while package installs, git mutations, and network access still prompt. Read `references/settings-permissions.md` for the full permission rules, the JSON format, and the rule-syntax gotchas, then generate the settings file.
 
 3. **Create a minimal `.gitignore`** with `.DS_Store` and other common ignores. This will be expanded in a later step once the language and project type are known.
 
@@ -196,7 +196,7 @@ Run through this checklist when wrapping up. For each item, actually run the rel
 - [ ] **Environment from scratch**: delete and recreate the environment from the config file (`environment.yml`, `renv.lock`, or `Cargo.toml`) to confirm it builds cleanly
 - [ ] **Starter script runs**: execute the main entry point or pipeline with sample/test input and verify it completes without errors
 - [ ] **Tests pass**: run the full test suite (`pytest`, `cargo test`, `testthat`, etc.)
-- [ ] **Linters and formatters clean**: run the project's linter and formatter (`black --check . && flake8 .`, `cargo clippy`, etc.) and fix any issues
+- [ ] **Linters and formatters clean**: run the project's linter and formatter (`ruff format --check . && ruff check .`, `cargo clippy`, etc.) and fix any issues
 - [ ] **Code review**: look over the project for performance issues, security concerns, or potential bugs — if a refactor is needed, break it into a new task and implement it before moving on
 - [ ] **README accurate**: follow the setup instructions in README.md as if you were a new user — do they actually work?
 - [ ] **CLAUDE.md and dev_docs/ current**: verify these files reflect the final state of the project, not the initial plan

@@ -1,6 +1,6 @@
 ---
 title: Managing Context
-nav_order: 7
+nav_order: 6
 ---
 
 # Managing Context
@@ -9,7 +9,16 @@ nav_order: 7
 
 Every conversation with Claude has a finite context window — the total amount of text (your messages, Claude's responses, file contents, tool outputs) that fits in working memory. When a conversation grows long, older content is compressed or dropped to make room. This means Claude can forget earlier instructions, lose track of decisions, or re-read files it already saw.
 
-Managing context well means giving Claude the right information at the right time without filling the window with noise. Two mechanisms help with this: CLAUDE.md files provide persistent project instructions, and skills inject task-specific guidance on demand.
+Managing context well means giving Claude the right information at the right time without filling the window with noise. Four mechanisms help, in rough order of how eagerly they load:
+
+| Mechanism | Loads |
+|-----------|-------|
+| **CLAUDE.md** | Every session |
+| **Rules** (`.claude/rules/`) | Every session, or only when Claude touches matching files |
+| **Auto memory** | Every session (the index only) |
+| **Skills** | Only when invoked |
+
+Use `/context` at any point to see what actually loaded and what it cost.
 
 ### The `/clear` command
 
@@ -23,14 +32,18 @@ CLAUDE.md files are markdown files that Claude reads at the start of every sessi
 
 | Location | Scope |
 |----------|-------|
+| Managed policy (e.g. `/etc/claude-code/CLAUDE.md`) | Organization-wide; cannot be excluded |
 | `~/.claude/CLAUDE.md` | Personal preferences, applied to all projects |
 | `./CLAUDE.md` or `./.claude/CLAUDE.md` | Project-level, committed to git |
+| `./CLAUDE.local.md` | Personal, project-specific; add to `.gitignore` |
 
-Claude also discovers CLAUDE.md files in parent directories (loaded at startup) and subdirectories (loaded on demand when you work in those directories).
+Claude also discovers CLAUDE.md files in parent directories (loaded at startup) and subdirectories (loaded on demand when you work in those directories). Everything discovered is concatenated rather than overriding, ordered from the filesystem root down, so the file closest to where you launched Claude is read last.
+
+A CLAUDE.md can pull in other files with `@path/to/file` syntax. Imports are expanded at launch, so this helps organization but does not save context — the imported text is loaded either way. To reference a path without importing it, wrap it in backticks.
 
 ### Keep it short
 
-CLAUDE.md content is loaded into the context window at session start. Longer files consume more of your context budget and reduce Claude's adherence to instructions. **Keep each CLAUDE.md under 100 lines.** If you need more detail, point Claude to where it can find the information rather than including it inline:
+CLAUDE.md content is loaded into the context window at session start. Longer files consume more of your context budget and reduce Claude's adherence to instructions. The [official guidance](https://code.claude.com/docs/en/memory) targets under 200 lines; **as a lab convention we keep each CLAUDE.md under 100 lines**, deliberately stricter. If you need more detail, put it in a [rule](#rules) or point Claude to where it can find the information rather than including it inline:
 
 ```markdown
 ## Architecture
@@ -50,9 +63,59 @@ This way Claude loads the detailed context only when it's relevant to the curren
 - Pointers to files with additional context (as shown above)
 - Common workflows and gotchas
 
-Use `/memory` to see which CLAUDE.md files are loaded in your current session.
+Use `/context` to see which CLAUDE.md files actually loaded in the current session — `/memory` lists the locations and lets you open them, but `/context` is what shows you what Claude received.
 
-For full documentation, see the [official CLAUDE.md reference](https://docs.anthropic.com/en/docs/claude-code/memory).
+In a large monorepo, `claudeMdExcludes` in your settings skips ancestor CLAUDE.md files from other teams.
+
+For full documentation, see the [official CLAUDE.md reference](https://code.claude.com/docs/en/memory).
+
+## Rules
+
+When project guidance outgrows a 100-line CLAUDE.md, the answer is usually `.claude/rules/` rather than a longer CLAUDE.md. Rules are markdown files, one topic each, discovered recursively:
+
+```
+.claude/
+├── CLAUDE.md
+└── rules/
+    ├── snakemake.md
+    ├── plotting.md
+    └── hpc.md
+```
+
+A rule with no frontmatter loads at launch, at the same priority as `.claude/CLAUDE.md`. **A rule with a `paths:` field loads only when Claude touches a matching file** — which is what makes this worth doing:
+
+```markdown
+---
+paths:
+  - "scripts/**/*.py"
+---
+
+# Analysis scripts
+
+- Every script takes `--input` and `--output`; never hardcode paths.
+- Write intermediate files to `data/processed/`, never back into `data/raw/`.
+- Log to `logs/{script_name}.log` rather than printing to stdout.
+```
+
+That guidance costs nothing until Claude opens a file under `scripts/`. Detailed conventions can live in the repo without being paid for in every session.
+
+Personal rules go in `~/.claude/rules/` and apply to every project on your machine. The directory supports symlinks, so a shared set of rules can be linked into several repos.
+
+## Auto memory
+
+Separately from anything you write, Claude keeps its own notes across sessions — your working preferences, corrections you have given it, and project context it cannot derive from the code. These live in `~/.claude/projects/<project>/memory/`, with a `MEMORY.md` index whose first 200 lines (or 25 KB) load at the start of every session; the topic files are read on demand.
+
+It is on by default. Browse and edit what it has saved with `/memory`, which also has the toggle. To turn it off for one project:
+
+```json
+{
+  "autoMemoryEnabled": false
+}
+```
+
+Or set `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` for all of them.
+
+**Auto memory is machine-local and is not in version control.** It is not a substitute for CLAUDE.md, rules, or `dev_docs/` for anything a collaborator — or you on a different machine — needs to know. Treat it as convenience, not documentation.
 
 ## Skills
 
@@ -69,7 +132,11 @@ Each skill has a short **description** that is always present in context (so Cla
 
 ### Viewing loaded context
 
-Use `/context` to see which skills are loaded and whether any have been excluded due to context budget limits. Skill descriptions share a budget of roughly 2% of the context window — if you have many skills, some may be dropped.
+Use `/context` to see the size of the skill listing, and `/doctor` for an estimate of which skills contribute most to it.
+
+Skill descriptions share a listing budget of **1% of the model's context window** by default. When the listing overflows that budget, Claude Code does not drop skills — every skill name stays available. It **shortens descriptions**, starting with the skills you invoke least, which can strip the keywords Claude needs to match a request to the right skill. Each entry's `description` is separately capped at 1,536 characters.
+
+If you have enough skills to hit this, raise the budget with `skillListingBudgetFraction` (e.g. `0.02` for 2%), or trim the descriptions themselves, putting the key use case first.
 
 ### Adding skills
 
@@ -85,14 +152,15 @@ The `SKILL.md` frontmatter defines metadata:
 
 ```yaml
 ---
-name: my-skill
-description: One-line summary of what this skill does
+description: One-line summary of what this skill does, and when to use it
 ---
 
 # Instructions
 
 Your skill instructions here...
 ```
+
+`description` is the only field that really matters — it is what Claude reads to decide whether the skill applies. For a personal or project skill the directory name becomes the command, so `name` is optional; in a plugin skill it sets the last segment of the namespaced command. Add `disable-model-invocation: true` for skills you want to trigger yourself and never have Claude start on its own.
 
 Skills can be added at three levels:
 
@@ -104,49 +172,37 @@ Skills can be added at three levels:
 
 ### Updating skills
 
-Edit the `SKILL.md` file directly. Claude Code detects changes automatically — no restart needed.
+Edit the `SKILL.md` file directly. Personal and project skills are picked up automatically, with no restart. **Skills that come from a plugin are not** — run `/reload-plugins` after editing one.
 
-For full documentation, see the [official skills reference](https://docs.anthropic.com/en/docs/claude-code/skills).
+Note also that once a skill has been invoked, its content stays in context for the rest of the session. Claude does not re-read the file on later turns, so write guidance that should hold throughout a task as standing instructions rather than one-time steps.
+
+For full documentation, see the [official skills reference](https://code.claude.com/docs/en/skills).
 
 ### Creating and evaluating skills
 
-The **skill-creator** skill (available from the Anthropic official plugin marketplace) provides a structured workflow for building new skills and measuring their effectiveness. Install it via `/plugin` or use it if it's already available in your environment.
+The **skill-creator** plugin, from the official Anthropic marketplace, provides a structured workflow for building skills and measuring whether they actually help:
 
-#### The development loop
+```bash
+claude plugin install skill-creator@claude-plugins-official
+```
 
-1. **Define intent** — clarify what the skill should do, when it should trigger, and what output it produces
-2. **Draft the SKILL.md** — write frontmatter and instructions following the patterns in [Adding skills](#adding-skills)
-3. **Run test cases** — the skill-creator generates realistic test prompts and runs them both *with* and *without* your skill, using isolated subagents
-4. **Review and grade** — an eval viewer opens in your browser showing side-by-side outputs and quantitative benchmarks
-5. **Iterate** — revise the skill based on feedback, re-run, and compare against previous iterations
-
-#### Running an evaluation
-
-To evaluate an existing skill, invoke the skill-creator and ask it to evaluate your skill by path:
+It operates in four modes — **Create**, **Eval**, **Improve**, and **Benchmark** — backed by separate agents that run a skill against eval prompts, grade the outputs against expectations, compare two versions blind, and suggest changes. Invoke it and describe what you want:
 
 ```
 /skill-creator Evaluate the skill at skills/my-skill/SKILL.md
 ```
 
-The skill-creator will:
+The core idea, whatever the interface details: each test prompt is run **twice**, once with your skill and once without. Comparing the two is the only way to know whether the skill is doing anything.
 
-- **Generate test prompts** — 2–3 realistic user requests that should trigger your skill. You review and approve these before they run.
-- **Run with-skill and baseline comparisons** — each test prompt is executed twice: once following your skill's instructions, once without any skill. Both runs happen in isolated worktrees so no files are modified in your working directory.
-- **Grade against assertions** — objective checks (file exists, content matches pattern) are evaluated programmatically. Results are saved as `grading.json` per run.
-- **Aggregate a benchmark** — pass rates, token usage, and timing are compared between with-skill and baseline runs, with analyst observations about which assertions discriminate (measure skill value) vs. which pass regardless.
-- **Open an eval viewer** — a browser-based tool with an "Outputs" tab for browsing files produced by each run and a "Benchmark" tab showing quantitative results.
-
-#### What the benchmark tells you
+#### What a benchmark tells you
 
 The benchmark highlights three things:
 
-- **Discriminating assertions** — checks that pass with the skill but fail without it. These measure what value the skill actually adds. For example, a project scaffolding skill might always produce `CLAUDE.md` and `dev_docs/overview.md` while the baseline never does.
-- **Non-discriminating assertions** — checks that pass in both conditions. These validate correctness but don't justify the skill's existence. If all your assertions are non-discriminating, the skill may not be adding value.
-- **Cost tradeoff** — skills typically increase token usage and execution time. The benchmark quantifies this so you can decide whether the added structure is worth the cost.
+- **Discriminating checks** — pass with the skill and fail without it. These are the ones that measure what the skill adds. A project scaffolding skill might reliably produce `CLAUDE.md` and `dev_docs/overview.md` while the baseline never does.
+- **Non-discriminating checks** — pass in both conditions. They validate correctness but don't justify the skill's existence. If *every* check is non-discriminating, the skill is not earning its context cost.
+- **Cost** — skills increase token usage and runtime. Weigh that against what they add.
 
-#### Description optimization
-
-After the skill content is finalized, the skill-creator can also optimize the `description` field for better triggering accuracy. It generates a set of should-trigger and should-not-trigger test queries, then iteratively refines the description to maximize correct triggering while minimizing false positives.
+Once the content is settled, the same tooling can tune the `description` for triggering accuracy: generate should-trigger and should-not-trigger queries, then refine until it fires on the right ones and stays quiet on the rest.
 
 ## Plugins
 
@@ -201,7 +257,9 @@ The `marketplace.json` lists each plugin with a name and source:
 }
 ```
 
-Plugin sources can be relative paths (for monorepos), GitHub repos, git URLs, or npm packages. See the [official marketplace documentation](https://docs.anthropic.com/en/docs/claude-code/plugins) for the full `marketplace.json` schema and source types.
+Plugin sources can be relative paths (for monorepos), GitHub repos, git URLs, or npm packages. See the [official marketplace documentation](https://code.claude.com/docs/en/plugin-marketplaces) for the full `marketplace.json` schema and source types.
+
+Run `claude plugin validate <path>` before publishing; add `--strict` to treat warnings as errors.
 
 ### Installing plugins
 
@@ -246,6 +304,6 @@ claude plugin update plugin-name@marketplace-name
 
 ### Context impact
 
-Plugin skill descriptions count toward the same ~2% context budget as other skills. Use `/context` to see which plugin skills are loaded and their token cost.
+Plugin skill descriptions count toward the same skill-listing budget as everything else. Use `/context` for the total and `/doctor` to see which plugins contribute most. The `/plugin` **Discover** tab also shows a context-cost estimate before you install, and the **Installed** tab flags plugins you haven't used in a while — both are worth checking periodically, since an unused plugin still costs you context every turn.
 
-For full documentation, see the [official plugins reference](https://docs.anthropic.com/en/docs/claude-code/plugins).
+For full documentation, see the [official plugins reference](https://code.claude.com/docs/en/plugins-reference).

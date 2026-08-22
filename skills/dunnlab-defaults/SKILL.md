@@ -23,8 +23,8 @@ Languages for performant critical code:
 - Use **Rust** for performance-critical code.
 
 ### Python best practices
-- Follow PEP 8 style guidelines, using `black` for formatting and `flake8` for linting.
-- Use type hints and `mypy` for static type checking.
+- Follow PEP 8 style guidelines, using [`ruff`](https://docs.astral.sh/ruff/) for both formatting (`ruff format`) and linting (`ruff check`). Ruff replaces the older `black` + `flake8` + `isort` combination; configure it in `pyproject.toml`.
+- Use type hints and `mypy` for static type checking. Ruff does not type check.
 - Use `pydantic` for data validation and settings management.
 - Prefer the following libraries for common tasks:
   - Data manipulation: `pandas`
@@ -58,7 +58,7 @@ Always include idiomatic dependency management. For example, an `environment.yml
 - Use `conda` or `mamba` for managing Python environments. Create an `environment.yml` file to specify dependencies.
   - For complex workflows with multiple stages, consider using separate environment files in an `env/` folder at the project root (e.g., `env/environment_data.yml`, `env/environment_analysis.yml`).
   - This keeps environments organized, allows for more efficient dependency management, and prevents problems resolving complex dependencies.
-  - If using Snakemake with multiple `.snk` files for different stages, each can have its own environment file.
+  - If using Snakemake with multiple `.smk` files for different stages, each can have its own environment file.
   - Whether there are one or multiple environment files, the README should document how to set up the environments before explaining how to use the workflow.
 - Use `renv` for R projects to manage package dependencies and ensure reproducibility.
 - For Rust projects, manage dependencies with `Cargo.toml` and use `cargo` for building and testing.
@@ -67,7 +67,7 @@ Use bioconda for installing bioinformatics tools when possible.
 
 ## File naming conventions
 
-Always follow idiomatic conventsions for the language you're using. For example:
+Always follow idiomatic conventions for the language you're using. For example:
   - Python: `snake_case.py` for scripts, `PascalCase` for classes
   - R: `snake_case.R` for scripts, `snake_case` for functions
   - Rust: `snake_case.rs` for modules, `PascalCase` for structs and enums
@@ -122,7 +122,7 @@ Use **Snakemake** when a workflow involves multiple independent tools, fan-out/f
 - Use `conda:` directives per rule to isolate tool environments.
 - Store the `Snakefile` at the project root and keep per-rule wrapper scripts in `scripts/` if rule logic exceeds a few lines.
 
-- If the workflow is complex with many distinct steps, dependencies, and parallelization needs, create a `rules/` folder with multiple `.snk` files for different stages. The main Snakefile at the project root can then include these with `include: "rules/step1.snk"`, etc. This keeps the workflow organized and maintainable as it grows.
+- If the workflow is complex with many distinct steps, dependencies, and parallelization needs, create a `rules/` folder with multiple `.smk` files for different stages. The main Snakefile at the project root can then include these with `include: "rules/step1.smk"`, etc. This keeps the workflow organized and maintainable as it grows.
 
 ### Bash or Python orchestrators for simple workflows
 
@@ -193,6 +193,8 @@ project-name/
 ├── dev_docs/
 │   ├── overview.md
 │   └── data-model.md # These are example documents
+├── .claude/
+│   └── rules/        # Path-scoped guidance, loaded on demand
 ├── CONTRIBUTING.md
 ├── data/
 │   ├── raw/          # Never modify raw data
@@ -206,14 +208,30 @@ project-name/
 └── environment.yml   # or requirements.txt
 ```
 
-README.md should include a project overview, setup instructions (for environment, dependencies, and the project itself), and usage examples. Also include a Development section at the running tests and any relevant notes about data sources or analysis workflows.
+README.md should include a project overview, setup instructions (for environment, dependencies, and the project itself), and usage examples. Also include a Development section covering how to run the tests, plus any relevant notes about data sources or analysis workflows.
 
 dev_docs/ should include any relevant documentation for the project, such as an overview of the data model, descriptions of analysis workflows, or notes on interpretation of results. It is intended to be both human readable and to be loaded into context by Claude Code when working on relevant parts of the project.
 
-CLAUDE.md should document how to use Claude Code for this project, including any custom skills or commands. Keep it to 100 lines or less. It must also include links and descriptions to the following files at a minimum so they can be loaded into context as needed:
+CLAUDE.md should document how to use Claude Code for this project, including any custom skills or commands. **Keep it to 100 lines or less** — the [official guidance](https://code.claude.com/docs/en/memory) targets 200, and we hold to a stricter limit because everything in it is paid for in every session. It must also include links and descriptions to the following files at a minimum so they can be loaded into context as needed:
 - README.md
 - CONTRIBUTING.md
 - Each file in `dev_docs/` (e.g., `overview.md`, `data-model.md`)
+
+When project guidance outgrows that limit, put it in `.claude/rules/` rather than lengthening CLAUDE.md. A rule file with a `paths:` frontmatter field loads only when Claude opens a matching file, so detailed conventions cost nothing until they are relevant:
+
+```markdown
+---
+paths:
+  - "scripts/**/*.py"
+---
+
+# Analysis scripts
+
+- Every script takes `--input` and `--output`; never hardcode paths.
+- Write intermediates to `data/processed/`, never back into `data/raw/`.
+```
+
+Rules without a `paths:` field load every session, at the same priority as CLAUDE.md.
 
 CONTRIBUTING.md should include all details needed for formatting, linting, testing, and any other project-specific development practices.
 
@@ -238,7 +256,7 @@ Use descriptive commit messages that explain *why* a change was made, not just *
 ### Running formatting and linting before commits
 
 - Always run formatters and linters before committing. Use pre-commit hooks to automate this where possible.
-- For Python, run `black .` and `flake8 .` before committing.
+- For Python, run `ruff format .` and `ruff check --fix .` before committing.
 - For R, run `styler::style_dir()` and `lintr::lint_dir()` before committing.
 - For Rust, run `cargo fmt` and `cargo clippy` before committing.
 
