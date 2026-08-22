@@ -71,27 +71,7 @@ Run the following slash command to confirm everything is wired up:
 
 You should see a welcome message and a list of available skills. Plugin skills are namespaced by the plugin name; the bare `/dunnlab-check` also works as long as nothing else has claimed that name.
 
-### 4. What's in the plugin?
-
-- **Skills** are sets of instructions that Claude loads when relevant. They encode lab conventions like preferred languages, file naming, and project structure. See the `skills/` directory.
-- **Commands** are slash commands that trigger specific Claude behaviors. See the `commands/` directory.
-- **Hooks** are event-driven scripts that run automatically in response to Claude Code events. None are defined yet.
-
-The skills currently included:
-
-| Skill | Covers |
-|-------|--------|
-| `dunnlab-defaults` | Coding conventions, project structure, testing, version control |
-| `dunnlab-new-project` | Scaffolding a new project from scratch |
-| `dunnlab-hpc` | YCRC clusters: partitions, storage, SLURM, Snakemake |
-| `dunnlab-bioinformatics` | Sequence analysis conventions and default tools |
-| `dunnlab-devcontainer` | Setting up an isolated container to work in |
-| `dunnlab-codereview` | Code review checklist |
-| `dunnlab-biblio` | BibTeX conventions for manuscripts |
-
-Browse the [Managing Security](managing-security.md) and [Managing Context](managing-context.md) pages for more.
-
-### 5. Know what you already have
+### 4. Know what you already have
 
 Claude Code ships with a set of **bundled skills** that are available in every session with nothing to install. Several are worth knowing about:
 
@@ -107,7 +87,7 @@ Claude Code ships with a set of **bundled skills** that are available in every s
 
 Type `/` to see everything available in the current session.
 
-### 6. Install recommended plugins
+### 5. Install recommended plugins
 
 These are actual plugins and do need installing, from Anthropic's official marketplace:
 

@@ -188,6 +188,31 @@ PYEOF
 if [[ -z "$res" ]]; then ok "internal links and anchors resolve"
 else while IFS= read -r l; do bad "$l"; done <<< "$res"; fi
 
+# Bracketed text with no target is not a link -- it renders as literal
+# brackets. This is how an unfinished table-of-contents entry escapes the
+# link checker entirely, since there is no target for it to resolve.
+res=$(python3 - <<'PYEOF'
+import pathlib, re
+bad = []
+for p in pathlib.Path('docs').rglob('*.md'):
+    t = p.read_text()
+    clean = re.sub(r'```.*?```', '', t, flags=re.S); clean = re.sub(r'`[^`]*`', '', clean)
+    for i, line in enumerate(clean.split('\n'), 1):
+        # a [label] not followed by (target), [ref], or a :  definition
+        for m in re.finditer(r'(?<!\!)\[([^\]\[]*)\](?![\(\[:])', line):
+            label = m.group(1)
+            # Legitimate bracket uses that are not links: task-list checkboxes,
+            # numeric footnote markers, and GitHub alert syntax.
+            if label.strip() in ('', 'x', 'X'): continue
+            if label.isdigit(): continue
+            if label.startswith('!'): continue
+            bad.append(f"{p}:{i}: '[{label}]' has no link target")
+for b in bad: print(b)
+PYEOF
+)
+if [[ -z "$res" ]]; then ok "no bracketed text without a link target"
+else while IFS= read -r l; do bad "$l"; done <<< "$res"; fi
+
 # ------------------------------------------------------------------- links
 if [[ $CHECK_LINKS -eq 1 ]]; then
   head_ "External links"

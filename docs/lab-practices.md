@@ -1,6 +1,6 @@
 ---
 title: Dunn Lab Practices
-nav_order: 9
+nav_order: 10
 ---
 
 # Dunn Lab Practices
@@ -9,29 +9,11 @@ This chapter is the most opinionated in the manual, and deliberately so. Everyth
 
 If you are outside the lab, treat it as a worked example rather than a recommendation. The value is less in our specific choices than in the fact that they are written down and encoded somewhere a tool can apply them — the alternative is a convention that exists only in the head of whoever set it up.
 
-## Where our conventions actually live
+## The choices worth knowing about
 
-They are not in this chapter. They are in the plugin, as skills, so that Claude applies them while you work rather than requiring you to remember them.
+These conventions are encoded as skills in [the plugin](plugin.md), so Claude applies them as you work — that chapter maps what is in there. What follows is the reasoning, which the skills themselves do not carry.
 
-That is the whole design: a convention in a document is one somebody has to read and recall; a convention in a skill is one that gets applied. This chapter is a map of what is in there, not a substitute for it.
-
-You can read any of them directly at `skills/<name>/SKILL.md` in [the repository](https://github.com/caseywdunn/dunnlab_code/tree/main/skills), or invoke one with `/dunnlab-code:<name>`.
-
-### What each skill encodes
-
-| Skill | What it settles |
-|-------|-----------------|
-| **`dunnlab-defaults`** | The foundational one. Preferred languages and their best practices, dependency and environment management, file naming, project structure, workflow orchestration, testing, and version control. The other skills build on it. |
-| **`dunnlab-new-project`** | A staged workflow for starting a project: define scope, initialize the repo and permissions, write planning documents before any code, then build in reviewable increments. Tracks its own progress so it survives `/clear` and resumes in a later session. |
-| **`dunnlab-bioinformatics`** | Sequence analysis conventions: input validation, gene name sanitization, globally unique cross-species gene IDs, paralog resolution, contamination screening, and our default tool for each job. |
-| **`dunnlab-hpc`** | YCRC cluster reference — partitions, storage, SLURM templates, Snakemake integration. See [Computing at Yale](yale.md). |
-| **`dunnlab-devcontainer`** | Scaffolds an isolated container to work in, either the standard configuration or a hardened one with an egress firewall. |
-| **`dunnlab-codereview`** | The review checklist and process, including how to give feedback that distinguishes blocking issues from nits. |
-| **`dunnlab-biblio`** | BibTeX conventions for manuscripts: entry keys, full author lists, title capitalization, and a strict rule against ever guessing a bibliographic field. |
-
-### The choices worth knowing about
-
-A few of these are more consequential than a style preference, and they are the ones most likely to surprise someone joining:
+A few are more consequential than a style preference, and they are the ones most likely to surprise someone joining:
 
 **Python by default, R when a library requires it.** We prefer industry-standard tools over domain-specific ones, as [Getting Started](getting-started.md#languages) argues. R remains the right answer when the analysis needs a package that only exists there, when it is what you know and it works, or when a collaboration has already chosen it.
 
