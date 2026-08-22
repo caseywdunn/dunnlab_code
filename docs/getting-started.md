@@ -87,20 +87,20 @@ Register the dunnlab marketplace and install the plugin:
 
 ```bash
 claude plugin marketplace add caseywdunn/dunnlab_code
-claude plugin install dunnlab-code
+claude plugin install dunnlab-code@dunnlab
 ```
 
-This pulls the plugin from GitHub and caches it locally. To update after changes are pushed, run `claude plugin update dunnlab-code`.
+This pulls the plugin from GitHub and caches it locally. To pick up changes later, run `/plugin update dunnlab-code@dunnlab`. Auto-update is off by default for third-party marketplaces like this one, so nothing arrives on its own unless you enable it under `/plugin` → **Marketplaces**.
 
 ## 3. Verify installation
 
 Run the following slash command to confirm everything is wired up:
 
 ```
-/dunnlab-check
+/dunnlab-code:dunnlab-check
 ```
 
-You should see a welcome message and a list of available skills.
+You should see a welcome message and a list of available skills. Plugin skills are namespaced by the plugin name; the bare `/dunnlab-check` also works as long as nothing else has claimed that name.
 
 ## 4. What's in the plugin?
 

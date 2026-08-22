@@ -1,6 +1,6 @@
 ---
 title: Example Workflows
-nav_order: 8
+nav_order: 7
 ---
 
 # Example Workflows
@@ -52,22 +52,22 @@ The container includes a [firewall](https://github.com/anthropics/claude-code/bl
 
 ### 4. Authenticate Claude and install the plugin
 
-The dev container is isolated and has no access to your host's authentication. You'll need to log in once each time you create or rebuild the container:
+The dev container is isolated and has no access to your host's authentication, so you sign in inside it:
 
 ```bash
-claude login
+claude auth login
 ```
 
-Follow the prompts to authenticate with your Claude account. The session persists for the container's lifetime but is lost when the container is rebuilt.
+Or just run `claude` and follow the prompt. Because the `dunnlab-devcontainer` configuration mounts a named volume at `~/.claude` and points `CLAUDE_CONFIG_DIR` at it, your sign-in survives a **Dev Containers: Rebuild Container** — you log in once per project, not once per rebuild.
 
-Next, add the dunnlab marketplace and install the plugin so all lab skills and commands are available:
+Next, add the dunnlab marketplace and install the plugin so all lab skills are available:
 
 ```bash
 claude plugin marketplace add caseywdunn/dunnlab_code
-claude plugin install dunnlab-code
+claude plugin install dunnlab-code@dunnlab
 ```
 
-This pulls the plugin from GitHub and caches it inside the container. You can verify it's working by launching Claude and running `/dunnlab-check`.
+This pulls the plugin from GitHub and caches it inside the container. Verify it by launching Claude and running `/dunnlab-code:dunnlab-check`.
 
 ### 5. Launch Claude in the container with full autonomy
 

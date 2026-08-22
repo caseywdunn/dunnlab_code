@@ -29,11 +29,14 @@ nav_order: 3
 | File | nav_order | Content |
 |------|-----------|---------|
 | `index.md` | 1 | Home page with table of contents |
-| `getting-started.md` | 2 | Installation and setup walkthrough |
+| `getting-started.md` | 2 | Computational stack, AI in academic science, and setup |
 | `lab-practices.md` | 3 | Conventions for AI-assisted work |
-| `data-analysis.md` | 4 | Using Claude Code for data analysis (placeholder) |
-| `managing-security.md` | 5 | Permission system and settings.json guide |
-| `managing-context.md` | 6 | Context window, CLAUDE.md, and skills |
+| `claude-intro.md` | 4 | How Claude Code works: interfaces, working directory, extensibility |
+| `managing-security.md` | 5 | Permissions, sandboxing, and settings.json |
+| `managing-context.md` | 6 | Context window, CLAUDE.md, rules, memory, skills, plugins |
+| `example-workflows.md` | 7 | Step-by-step walkthroughs |
+
+Keep this table in sync with the frontmatter. `nav_order` values must be contiguous and must match what `docs/index.md` implies, or the sidebar and the table of contents disagree.
 
 ## Adding a new page
 

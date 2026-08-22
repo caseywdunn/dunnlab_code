@@ -8,8 +8,9 @@ How to add or modify skills, commands, hooks, and documentation in this repo.
 2. Create `skills/<skill-name>/SKILL.md` with frontmatter (`name`, `description`) and instructions
 3. Keep the `description` to one concise sentence — it's always in context
 4. Reference `dunnlab-defaults` for shared conventions rather than duplicating them
-5. Test locally: `claude --plugin-dir /path/to/dunnlab_code`, then invoke your skill
-6. Update `README.md` to list the new skill in the "Skills" section
+5. Test locally: `claude --plugin-dir /path/to/dunnlab_code`, then invoke it as `/dunnlab-code:<skill-name>`
+6. Update `README.md` and `dev_docs/plugin-architecture.md` to list the new skill
+7. Run `claude plugin validate . --strict` before opening a PR
 
 ## Adding a new command
 
@@ -20,13 +21,13 @@ How to add or modify skills, commands, hooks, and documentation in this repo.
 ## Adding a hook
 
 1. Create a script in `hooks/` (e.g., `pre-commit-check.sh`)
-2. Register it in `.claude/settings.json` under the `hooks` key
+2. Register it in `hooks/hooks.json` at the repo root — plugin hooks live there, not in `.claude/settings.json`
 3. Document it in `hooks/README.md`
 4. Test by triggering the relevant event
 
 ## Modifying existing skills
 
-- Edit the `SKILL.md` file directly. Claude Code detects changes without restart.
+- Edit the `SKILL.md` file directly, then run `/reload-plugins` to pick it up. Personal and project skills are detected live, but **plugin skills are not** — this repo's skills need the reload.
 - If changing a skill's scope or purpose, update its `description` frontmatter.
 - If the change affects how other skills reference it, check cross-references.
 
