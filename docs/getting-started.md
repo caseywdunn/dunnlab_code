@@ -39,21 +39,6 @@ Other conventions regarding Python:
 
 We prefer **[Rust](https://www.rust-lang.org/)** when writing code where performance is a top concern.
 
-## High performance computing
-
-We make extensive use of Yale's excellent High Performance Computing (HPC) resources at [YCRC](https://docs.ycrc.yale.edu/clusters/). They have detailed [documentation](https://docs.ycrc.yale.edu/clusters-at-yale/) on using the clusters, including the [SLURM](https://docs.ycrc.yale.edu/clusters-at-yale/job-scheduling/) system you will use to launch and run analyses.
-
-You will interact with the clusters mostly (or entirely) with [OOD](https://docs.ycrc.yale.edu/clusters-at-yale/access/ood/#remote-desktop).
-
-[Bouchet](https://docs.ycrc.yale.edu/clusters/bouchet/) is our primary cluster — use it for all analyses. We use [McCleary](https://docs.ycrc.yale.edu/clusters/mccleary/) only for work on raw YCGA sequence data. YCRC [decommissioned Grace and downsized McCleary in 2026](https://docs.ycrc.yale.edu/clusters/grace-mccleary-decommission/); McCleary will persist as a YCGA-only cluster, so anything that is not YCGA data belongs on Bouchet.
-
-Bouchet's account and path conventions differ from the older clusters, which will break scripts copied over: your primary group is your NetID, PI groups are `pi_<netid>`, storage is under `/nfs/roberts/` (there is no GPFS or `/vast/palmer`), and conda environments must be rebuilt rather than copied. See the [Bouchet getting started guide](https://docs.ycrc.yale.edu/clusters/bouchet_getting_started/).
-
-{: .warning }
-**Scratch on Bouchet is purged at 30 days**, not the 60 you may be used to from Grace and McCleary. Scratch is not backed up. Anything you want to keep belongs in project storage, and that includes conda environments — never build one in scratch.
-
-The `dunnlab-hpc` skill in this plugin carries the partition tables, storage quotas, SLURM templates, and Snakemake integration, so you can ask Claude about cluster specifics rather than looking them up.
-
 ## Setting up Claude Code
 
 This section walks you through setting up Claude Code on your own computer with the Dunn Lab plugin. The plugin helps Claude follow lab conventions and speeds up development.

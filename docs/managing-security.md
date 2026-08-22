@@ -185,16 +185,6 @@ Read and Edit rules apply to Claude's own file tools and to file commands it rec
 ]
 ```
 
-## Example: HPC cluster settings
-
-When using agents such as claude code on a cluster, it is essential to follow all policies. These tools are still new so these may change rapidly. See [YCRC's guidance on using coding agents on Yale clusters](https://docs.ycrc.yale.edu/ai/aicodingtools/).
-
-Furthermore, because these are shared powerful resources it is essential to have highly restricted permissions. The risks are high — you could harm the cluster (creating work for cluster maintainers and denying others access), you could delete or leak other people's work, or you could erase or silently modify your own data in ways you didn't expect.
-
-For a full working example, see [assets/settings.json](https://github.com/caseywdunn/dunnlab_code/blob/main/assets/settings.json) — a settings file designed for use on the Yale YCRC Bouchet cluster. Place it in your `~/.claude/` folder on Bouchet and other clusters where you would use Claude Code. It starts in plan mode, allows read-only commands freely, requires confirmation for file modifications and network access, and denies destructive system operations.
-
-Also run `/sandbox` once on the cluster to see whether the [Bash sandbox](#the-bash-sandbox) is available there. Permission rules only constrain what Claude decides to run; the sandbox constrains what a running job can reach, which is the guarantee you actually want on shared storage.
-
 ## Sandboxed environments
 
 Permission rules govern what Claude will *choose* to do. Sandboxing governs what a command *can* do once it runs — an enforcement boundary rather than a judgment call. The two are complementary, and for unattended work you want both.
@@ -224,7 +214,9 @@ Selecting a mode in the panel writes to that project's `.claude/settings.local.j
 **Platform support**: macOS uses the built-in Seatbelt framework, with nothing to install. Linux and WSL2 need `bubblewrap` and `socat` (`sudo apt-get install bubblewrap socat`). Native Windows is not supported — run Claude Code inside WSL2 there.
 
 {: .warning }
-**If the sandbox cannot start, Claude Code warns and runs your commands unsandboxed.** This matters on the clusters: bubblewrap needs unprivileged user namespaces, which shared systems often restrict. Run `/sandbox` on Bouchet and check whether a Dependencies tab appears rather than assuming you are protected. Set `sandbox.failIfUnavailable` to `true` to make an unavailable sandbox a hard error instead of a silent fallback.
+**If the sandbox cannot start, Claude Code warns and runs your commands unsandboxed.** Bubblewrap needs unprivileged user namespaces, which shared and managed systems commonly restrict, so this is a real possibility rather than an edge case. Run `/sandbox` and check whether a Dependencies tab appears rather than assuming you are protected. Set `sandbox.failIfUnavailable` to `true` to make an unavailable sandbox a hard error instead of a silent fallback.
+
+If you work on an HPC cluster, see [Computing at Yale](yale.md#claude-code-on-the-clusters) — the stakes are higher there and the sandbox is less likely to be available.
 
 A good pairing for local work: Manual mode plus sandbox auto-allow. You get few prompts, and what you get in exchange is a real kernel-enforced boundary rather than a model's judgment.
 
