@@ -79,7 +79,7 @@ A permission mode sets Claude's baseline behavior — how often it pauses to ask
 | `"dontAsk"` | Only pre-approved tools | Locked-down CI and scripts |
 | `"bypassPermissions"` | Everything | Isolated containers and VMs only |
 
-The `"default"` mode is labelled **Manual** in the CLI, the VS Code and JetBrains extensions, and the desktop app. Its config value is still `default`, and `manual` is accepted as an alias wherever you type it.
+The `"default"` mode is labeled **Manual** in the CLI, the VS Code and JetBrains extensions, and the desktop app. Its config value is still `default`, and `manual` is accepted as an alias wherever you type it.
 
 **For most day-to-day work, prefer `auto` mode** — on Pro, Max, and Team plans it is now the mode sessions start in by default. See [Auto mode](#auto-mode) below for how it decides.
 
