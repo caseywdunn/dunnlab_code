@@ -6,3 +6,9 @@ _site/
 .jekyll-cache/
 .sass-cache/
 *-workspace/
+
+# Jekyll local preview
+docs/_site/
+docs/.jekyll-cache/
+docs/.jekyll-metadata
+docs/Gemfile.lock

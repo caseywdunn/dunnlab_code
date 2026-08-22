@@ -25,7 +25,7 @@ Check your target journal's AI guidelines before starting a project. Policies va
 
 - Most journals allow AI for coding assistance but require disclosure of how it was used
 - Many journals prohibit AI-generated text in manuscripts, or require specific disclosure
-- Journals generally do not allow AI to be listed as an author — see [COPE's position on AI and authorship](https://publicationethics.org/news-opinion/artificial-intelligence-and-authorship)
+- Journals generally do not allow AI to be listed as an author — see [COPE's position statement on authorship and AI tools](https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools). AI tools cannot be authors because they cannot take responsibility for the work, but their use should be declared
 
 Consult the specific guidelines early so you can plan your workflow and documentation accordingly.
 

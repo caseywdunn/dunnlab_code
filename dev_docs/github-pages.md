@@ -41,11 +41,13 @@ Keep this table in sync with the frontmatter. `nav_order` values must be contigu
 ## Adding a new page
 
 1. Create a markdown file in `docs/` with frontmatter (`title`, `nav_order`)
-2. Choose a `nav_order` that places it logically in the sidebar
-3. Link to it from `docs/index.md` in the table of contents
-4. Push to `main` — GitHub Actions builds and deploys automatically
+2. Choose a `nav_order` that places it logically in the sidebar, and renumber the pages after it so the sequence stays contiguous
+3. Link to it from `docs/index.md` in the table of contents, and add a row to the table above
+4. Push to `main` — GitHub Pages builds and deploys automatically
 
 ## Local preview
+
+Requires Ruby. `docs/Gemfile` pins the `github-pages` gem set so a local build matches what GitHub deploys.
 
 ```bash
 cd docs
@@ -54,6 +56,8 @@ bundle exec jekyll serve
 ```
 
 The site will be available at `http://localhost:4000/dunnlab_code/`.
+
+Local preview is optional. The site is built and deployed by GitHub Pages' built-in Jekyll build on every push to `main` — there is no workflow file in `.github/`, and the build shows up in the repo's Actions tab as `pages-build-deployment`. If a page renders wrong after a push, check there first.
 
 ## Linking conventions
 

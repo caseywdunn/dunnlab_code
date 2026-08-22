@@ -36,7 +36,7 @@ How to add or modify skills, commands, hooks, and documentation in this repo.
 - Pages live in `docs/` and use Jekyll with the just-the-docs remote theme.
 - Each page has YAML frontmatter with `title` and `nav_order`.
 - See `dev_docs/github-pages.md` for configuration details.
-- Preview locally: `cd docs && bundle exec jekyll serve`
+- Preview locally: `cd docs && bundle install && bundle exec jekyll serve` (requires Ruby; optional)
 
 ## Updating the example settings.json
 
@@ -50,4 +50,4 @@ How to add or modify skills, commands, hooks, and documentation in this repo.
 1. Create a branch from `main`
 2. Make changes and test locally
 3. Open a PR with a description of what changed and why
-4. Ensure the GitHub Pages site builds correctly (check the Actions tab after push)
+4. After the merge, check the repo's Actions tab — the `pages-build-deployment` run tells you whether the site built

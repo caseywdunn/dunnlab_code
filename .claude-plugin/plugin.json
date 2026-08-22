@@ -5,7 +5,7 @@
   "author": {
     "name": "Dunn Lab"
   },
-  "homepage": "https://dunnlab.org/dunnlab_code",
+  "homepage": "https://dunnlab.org/dunnlab_code/",
   "repository": "https://github.com/caseywdunn/dunnlab_code",
   "license": "MIT",
   "keywords": ["bioinformatics", "hpc", "slurm", "research", "science"]

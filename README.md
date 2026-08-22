@@ -5,7 +5,7 @@ This repo has two purposes:
 - Documenting our best practices, onboarding, and instruction on using AI in our research.
 - Shared skills, hooks, and commands for the Dunn Lab. The focus is on Claude Code.
 
-**[View the full documentation site](https://dunnlab.org/dunnlab_code)**
+**[View the full documentation site](https://dunnlab.org/dunnlab_code/)**
 
 ## Installation
 
@@ -25,7 +25,7 @@ The [Getting Started](https://dunnlab.org/dunnlab_code/getting-started.html) gui
 To load the plugin from a working copy without installing it — useful while developing it:
 
 ```bash
-git clone https://github.com/caseywdunn/dunnlab_code.git ~/repos/dunnlab_code
+git clone https://github.com/caseywdunn/dunnlab_code ~/repos/dunnlab_code
 claude --plugin-dir ~/repos/dunnlab_code
 ```
 
@@ -92,4 +92,4 @@ If you are loading a local copy with `--plugin-dir`, just `git pull`. Changes ar
 
 - **/dunnlab-check** — Verifies the plugin is loaded and lists available skills.
 
-Full documentation, including onboarding instructions and lab conventions, is on the [Pages site](https://dunnlab.org/dunnlab_code).
+Full documentation, including onboarding instructions and lab conventions, is on the [Pages site](https://dunnlab.org/dunnlab_code/).
