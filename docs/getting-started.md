@@ -9,30 +9,6 @@ This manual is not a comprehensive guide to the tools we use in the lab. It is a
 
 There are many excellent resources for learning about all the technologies mentioned here. To learn more about them, ask your favorite LLM, consult the documentation, and find some tutorials.
 
-## AI in academic science
-
-Generative AI changes how scientific work can be done, but it does not change the responsibilities of scientists and authors. The same scholarly standards apply as before — evaluate your sources, be skeptical, and review your own work carefully. You are accountable for everything you submit, whether you wrote it by hand or with AI assistance.
-
-AI poses particular challenges for code. If you do not understand generated code well enough to review it, you cannot vouch for its correctness. For this reason, you still need to learn coding even when using AI tools for data analysis. These tools are most effective when you can read, evaluate, and modify what they produce.
-
-AI also presents exciting opportunities for code. AI can help you work faster, explore further, and gain new insight. On the technical coding front, it can achieve better test coverage, perform regular automated code review, and learn new coding methods as you work. It can introduce errors you need to find, but it can also help find errors that you introduce manually.
-
-Be cautious when using AI to directly transform data (e.g., reformatting tables or restructuring files). Always review the results, and prefer having AI write a script you can inspect and re-run rather than having it act directly on your data.
-
-### Journal policies
-
-Check your target journal's AI guidelines before starting a project. Policies vary, but common patterns include:
-
-- Most journals allow AI for coding assistance but require disclosure of how it was used
-- Many journals prohibit AI-generated text in manuscripts, or require specific disclosure
-- Journals generally do not allow AI to be listed as an author — see [COPE's position statement on authorship and AI tools](https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools). AI tools cannot be authors because they cannot take responsibility for the work, but their use should be declared
-
-Consult the specific guidelines early so you can plan your workflow and documentation accordingly.
-
-### Funding agency policies
-
-Many of the same considerations apply to writing grants as to writing manuscripts. Make sure you understand AI policy *before* you start writing a proposal for a particular funding agency.
-
 ## Conventions
 
 When possible, we use industry-standard tools rather than domain-specific tools. This lets us tap into the massive investment industry makes in data analysis tools, and gives you skills that are the most portable. There are also many more resources available for learning widely used tools.
