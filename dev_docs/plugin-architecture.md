@@ -2,7 +2,7 @@
 
 This repo is a Claude Code plugin, defined by `.claude-plugin/plugin.json`. When it is loaded — installed from the marketplace, or passed with `--plugin-dir` — Claude Code discovers the `skills/`, `commands/`, and `hooks/` directories automatically.
 
-There is no `claude plugin add` subcommand. The ways to load a plugin are `claude plugin install <name>@<marketplace>`, `claude --plugin-dir <path>`, `claude --plugin-url <url>`, and `claude plugin init` for a skills-directory plugin. See the [plugins reference](https://code.claude.com/docs/en/plugins-reference).
+There is no `claude plugin add` subcommand. <!-- check-ignore --> The ways to load a plugin are `claude plugin install <name>@<marketplace>`, `claude --plugin-dir <path>`, `claude --plugin-url <url>`, and `claude plugin init` for a skills-directory plugin. See the [plugins reference](https://code.claude.com/docs/en/plugins-reference).
 
 ## Skills
 

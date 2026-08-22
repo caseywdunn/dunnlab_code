@@ -1,0 +1,49 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly, so external link rot and moved vendor docs surface on their own
+    # rather than when someone happens to click.
+    - cron: '17 6 * * 1'
+
+jobs:
+  structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Structural checks
+        run: ./scripts/check.sh
+
+  links:
+    # Network-dependent, so it does not gate a PR — it reports.
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: External link check
+        run: ./scripts/check.sh --links
+
+  devcontainer:
+    # Only when the skill that defines the container changes.
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Did the devcontainer skill change?
+        id: changed
+        run: |
+          base='${{ github.event.pull_request.base.sha }}'
+          [ -n "$base" ] || base=$(git rev-parse HEAD~1 2>/dev/null) || base=''
+          if [ -z "$base" ] || git diff --name-only "$base" HEAD | grep -q 'dunnlab-devcontainer'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Build and validate the hardened devcontainer
+        if: steps.changed.outputs.run == 'true'
+        run: ./scripts/test-devcontainer.sh
