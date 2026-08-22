@@ -93,7 +93,7 @@ Do these in order — settings.json first so all subsequent tool calls benefit f
 
 1. **Initialize git** with `git init` (skip if already initialized).
 
-2. **Create `.claude/settings.json`** with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval — this lets Claude work fluidly for reading and running code while still requiring confirmation for file modifications, package installs, and git mutations. Read `references/settings-permissions.md` for the full permission rules and JSON format, then generate the settings file.
+2. **Create `.claude/settings.json`** with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval, while package installs, git mutations, and network access still prompt. Read `references/settings-permissions.md` for the full permission rules, the JSON format, and the rule-syntax gotchas, then generate the settings file.
 
 3. **Create a minimal `.gitignore`** with `.DS_Store` and other common ignores. This will be expanded in a later step once the language and project type are known.
 

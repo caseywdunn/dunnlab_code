@@ -290,6 +290,19 @@
 
     ],
 
+    "_comment_deny_rm": [
+      "Claude Code now refuses to let any allow rule or PreToolUse hook approve",
+      "an rm/rmdir against a 'critical path' (/, its top-level directories, your",
+      "home directory, your working directory and its parents). In most modes it",
+      "asks you instead. The rm rules in deny below are kept anyway because a",
+      "deny BLOCKS outright, in every mode including bypassPermissions, where",
+      "the built-in check only prompts.",
+      "",
+      "Two rules that used to live here were removed because they never matched:",
+      "'Bash(nohup:*)' (nohup is stripped as a wrapper before rules are matched,",
+      "so the rule was tested against the inner command) and 'Bash(:> /*)'."
+    ],
+
     "_comment_edits": [
       "Edit/Write are intentionally NOT listed here. Permission rules are",
       "evaluated deny -> ask -> allow BEFORE the permission mode is consulted,",
@@ -335,7 +348,40 @@
       "Bash(module purge:*)"
     ],
 
+    "_comment_deny_paths": [
+      "IMPORTANT: file rules are anchored by their leading characters.",
+      "A pattern with no prefix, like '**/.ssh/**', resolves relative to the",
+      "CURRENT WORKING DIRECTORY — in a user settings file that means it only",
+      "matches inside whatever project you happen to have launched Claude in.",
+      "'~/' anchors at your home directory and '//' at the filesystem root.",
+      "Both forms are listed below: the '~/' entries protect your real",
+      "credentials, the '**/' entries catch copies checked into a project.",
+      "",
+      "Only Read() and Edit() are consulted for paths. Rules written for",
+      "Write(), NotebookEdit(), or Glob() are accepted and then ignored, with",
+      "a warning at startup. Edit() already covers every file-writing tool,",
+      "and a Read() deny also blocks writes to the same path.",
+      "",
+      "These rules bound Claude's own file tools and the file commands it",
+      "recognizes in Bash (cat, head, sed, ...). They do NOT stop a script",
+      "Claude runs from opening the same file itself. For that you need OS-level",
+      "enforcement: run /sandbox to check whether the Bash sandbox is available",
+      "on this machine. On clusters it often is not, and the default behavior",
+      "when it cannot start is to warn and run UNSANDBOXED."
+    ],
+
     "deny": [
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.kube/**)",
+      "Read(~/.config/gcloud/**)",
+      "Read(~/.netrc)",
+      "Read(~/.gitconfig)",
+      "Read(~/.bash_history)",
+      "Read(~/.zsh_history)",
+      "Read(~/.python_history)",
+      "Read(~/.env)",
+
       "Read(**/.env)",
       "Read(**/.env.*)",
       "Read(**/.ssh/**)",
@@ -352,6 +398,10 @@
       "Read(**/.config/gcloud/**)",
       "Read(**/.kube/**)",
 
+      "Edit(~/.ssh/**)",
+      "Edit(~/.aws/**)",
+      "Edit(~/.netrc)",
+
       "Edit(**/.env)",
       "Edit(**/.env.*)",
       "Edit(**/.ssh/**)",
@@ -361,13 +411,12 @@
       "Edit(**/*credentials*)",
       "Edit(**/*secret*)",
 
-      "Bash(rm -rf /*)",
+      "Bash(rm -rf /:*)",
+      "Bash(rm -rf ~:*)",
       "Bash(rm -rf /home:*)",
       "Bash(rm -rf /nfs:*)",
       "Bash(rm -rf /vast:*)",
       "Bash(rm -rf /gpfs:*)",
-      "Bash(rm -rf ~:*)",
-      "Bash(rm -rf /:*)",
       "Bash(sudo:*)",
       "Bash(su :*)",
       "Bash(shutdown:*)",
@@ -378,8 +427,6 @@
       "Bash(umount:*)",
       "Bash(dd if=:*)",
       "Bash(crontab:*)",
-      "Bash(nohup:*)",
-      "Bash(:> /*)",
 
       "Bash(ssh :*)",
       "Bash(sshpass:*)",
