@@ -29,6 +29,8 @@ Transfer nodes: `transfer-bouchet.ycrc.yale.edu`, `transfer-mccleary.ycrc.yale.e
 
 ## Login node policy
 
+Run `/sandbox` once on the cluster to check whether Claude Code's Bash sandbox is available. It needs `bubblewrap` and `socat` and unprivileged user namespaces, which shared systems often restrict — and when it cannot start, Claude Code warns and runs commands unsandboxed rather than failing. Do not assume you are protected without checking.
+
 **Never run heavy computation on login nodes.** The following lightweight tasks are acceptable on login nodes:
 
 - Snakemake orchestration (dispatching jobs to SLURM)
