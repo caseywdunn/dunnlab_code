@@ -5,7 +5,9 @@ nav_order: 7
 
 # Example Workflows
 
-Step-by-step walkthroughs for common tasks in the lab. Each workflow combines multiple skills and tools into a complete process you can follow from start to finish.
+A complete walkthrough, from an empty directory to working code, combining what the previous chapters covered separately.
+
+The skill names below (`dunnlab-new-project`, `dunnlab-devcontainer`) are this lab's instance of the pattern, not the pattern itself. The shape — plan interactively, review before any code exists, then let the assistant implement autonomously inside a container against that plan — is what transfers. Substitute your own skills, or none, and the sequence still holds.
 
 ## New project: from idea to working code
 

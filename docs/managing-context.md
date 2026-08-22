@@ -5,6 +5,10 @@ nav_order: 6
 
 # Managing Context
 
+Claude only knows what is in front of it. This chapter is about putting the right things there — standing instructions, task-specific guidance, and the project's own documentation — without filling the window with noise.
+
+Most complaints that Claude "forgot" something or "ignored" an instruction are context problems, and most of them are fixable from here.
+
 ## What is the context window?
 
 Every conversation with Claude has a finite context window — the total amount of text (your messages, Claude's responses, file contents, tool outputs) that fits in working memory. When a conversation grows long, older content is compressed or dropped to make room. This means Claude can forget earlier instructions, lose track of decisions, or re-read files it already saw.

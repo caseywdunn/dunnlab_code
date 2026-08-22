@@ -148,25 +148,42 @@ else
 fi
 
 # internal relative links and same-file anchors
-res=$(python3 - <<'PY'
+res=$(python3 - <<'PYEOF'
 import pathlib,re
-bad=[]
+
+def anchors(path):
+    """Heading anchors a file offers as link targets.
+
+    Strip fenced and inline code FIRST: a '# comment' inside a bash block is
+    not a heading, and counting it would let a bad anchor resolve."""
+    t = path.read_text()
+    clean = re.sub(r'```.*?```','',t,flags=re.S); clean = re.sub(r'`[^`]*`','',clean)
+    a = [re.sub(r'[^a-z0-9 -]','',h.lower()).replace(' ','-') for h in re.findall(r'^#+ +(.+)$',clean,re.M)]
+    return set(a) | set(re.findall(r'id="([^"]+)"', t))
+
+cache = {}
+def anchors_cached(p):
+    if p not in cache: cache[p] = anchors(p)
+    return cache[p]
+
+bad = []
 for p in pathlib.Path('.').rglob('*.md'):
     if '.git' in p.parts or 'workshops' in p.parts: continue
-    t=p.read_text()
-    # Strip fenced and inline code FIRST: a '# comment' inside a bash block is
-    # not a heading, and treating it as one would let a bad anchor resolve.
-    clean=re.sub(r'```.*?```','',t,flags=re.S); clean=re.sub(r'`[^`]*`','',clean)
-    heads=[re.sub(r'[^a-z0-9 -]','',h.lower()).replace(' ','-') for h in re.findall(r'^#+ +(.+)$',clean,re.M)]
-    heads+=re.findall(r'id="([^"]+)"',t)
-    for m in re.finditer(r'\]\(([^)]+)\)',clean):
-        tgt=m.group(1)
+    t = p.read_text()
+    clean = re.sub(r'```.*?```','',t,flags=re.S); clean = re.sub(r'`[^`]*`','',clean)
+    for m in re.finditer(r'\]\(([^)]+)\)', clean):
+        tgt = m.group(1)
         if tgt.startswith(('http','mailto:')): continue
-        path,_,anc=tgt.partition('#')
-        if path and not (p.parent/path).exists(): bad.append(f"{p}: broken link -> {path}")
-        if anc and not path and anc not in heads: bad.append(f"{p}: broken anchor -> #{anc}")
+        path, _, anc = tgt.partition('#')
+        target = (p.parent/path) if path else p
+        if path and not target.exists():
+            bad.append(f"{p}: broken link -> {path}"); continue
+        # Cross-file anchors matter most during a restructure, when a section
+        # moves between pages and every link into it silently rots.
+        if anc and anc not in anchors_cached(target):
+            bad.append(f"{p}: broken anchor -> {tgt}")
 for b in bad: print(b)
-PY
+PYEOF
 )
 if [[ -z "$res" ]]; then ok "internal links and anchors resolve"
 else while IFS= read -r l; do bad "$l"; done <<< "$res"; fi

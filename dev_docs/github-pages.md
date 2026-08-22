@@ -26,17 +26,23 @@ nav_order: 3
 
 ### Current pages
 
-| File | nav_order | Content |
-|------|-----------|---------|
-| `index.md` | 1 | Home page with table of contents |
-| `getting-started.md` | 2 | Computational stack, AI in academic science, and setup |
-| `lab-practices.md` | 3 | Conventions for AI-assisted work |
-| `claude-intro.md` | 4 | How Claude Code works: interfaces, working directory, extensibility |
-| `managing-security.md` | 5 | Permissions, sandboxing, and settings.json |
-| `managing-context.md` | 6 | Context window, CLAUDE.md, rules, memory, skills, plugins |
-| `example-workflows.md` | 7 | Step-by-step walkthroughs |
+The chapters are ordered by how widely they apply, narrowing as they go. Keep new pages in the tier they belong to rather than appending them at the end.
 
-Keep this table in sync with the frontmatter. `nav_order` values must be contiguous and must match what `docs/index.md` implies, or the sidebar and the table of contents disagree.
+| File | nav_order | Tier | Content |
+|------|-----------|------|---------|
+| `index.md` | 1 | — | Landing page; states the tier structure and where to start |
+| `using-ai.md` | 2 | anyone | Responsibility, reviewing generated code, data handling, disclosure, journal and funder policy |
+| `getting-started.md` | 3 | anyone | Recommended stack, installing and verifying Claude Code |
+| `claude-intro.md` | 4 | anyone | How Claude Code works: interfaces, working directory, extensibility, effective use |
+| `managing-security.md` | 5 | anyone | Permissions, sandboxing, containers |
+| `managing-context.md` | 6 | anyone | Context window, CLAUDE.md, rules, auto memory, skills, plugins |
+| `example-workflows.md` | 7 | anyone | Step-by-step walkthrough of a project |
+| `yale.md` | 8 | Yale | YCRC clusters and running Claude Code on shared hardware |
+| `lab-practices.md` | 9 | Dunn Lab | What the skills encode, the choices behind them, data management |
+
+Keep this table in sync with the frontmatter. `./scripts/check.sh` verifies that `nav_order` values are contiguous and unique and that every page is linked from `index.md`, but **it does not check this table** — that is on you.
+
+When adding a page, ask which tier it belongs to. Anything institution-specific belongs at 8 or later; anything lab-specific at 9 or later. A page that would need to be deleted before sharing the manual with another group is in the wrong tier.
 
 ## Adding a new page
 

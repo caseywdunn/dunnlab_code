@@ -5,6 +5,10 @@ nav_order: 5
 
 # Managing Security
 
+Claude Code can read your files, run commands, and reach the network. This chapter is about deciding what it may do without asking, what it must ask about, and what it may never do — and about the difference between a rule Claude follows and a boundary the operating system enforces.
+
+Worth reading before you let Claude work unsupervised, and again before you run it on a shared system.
+
 ## Why security matters
 
 Claude Code runs directly on your machine with access to your shell, filesystem, and network. This is what makes it powerful — it can read your code, run commands, edit files, and install packages. But that same access creates real risks:

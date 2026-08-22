@@ -5,43 +5,46 @@ nav_order: 3
 
 # Getting Started
 
-This manual is not a comprehensive guide to the tools we use in the lab. It is a formalization of the stack of tools we use so you know where to get started, with some lab-specific information.
+The stack we recommend, and how to get Claude Code running on your own machine. This chapter is not specific to our lab or institution — the tools are ordinary ones, and the reasoning behind them should transfer.
 
-There are many excellent resources for learning about all the technologies mentioned here. To learn more about them, ask your favorite LLM, consult the documentation, and find some tutorials.
+It is also not a comprehensive guide to any of them. Each section says what we use and why, and points at the real documentation. For learning any of these properly, there are excellent tutorials, and asking an assistant to teach you one is itself a reasonable use of the tools this manual is about.
 
-## Conventions
+## The stack
 
-When possible, we use industry-standard tools rather than domain-specific tools. This lets us tap into the massive investment industry makes in data analysis tools, and gives you skills that are the most portable. There are also many more resources available for learning widely used tools.
+**Prefer industry-standard tools over domain-specific ones.** This is the single principle behind most of the choices below. It lets you draw on the enormous investment industry makes in data tooling, it gives you skills that are portable outside academia, and it means that when something breaks, someone has already written about it.
 
-The plugin's `dunnlab-defaults` skill encodes these preferences (along with best practices for each language) so that Claude applies them automatically when writing code.
+The `dunnlab-defaults` skill encodes these preferences, along with best practices for each language, so Claude applies them without being asked.
 
 ### IDE
 
-We use [Visual Studio Code](https://code.visualstudio.com/) as our Interactive Development Environment (IDE). It has excellent extensions that integrate git, GitHub access, Claude, and language-specific tools. I spend most of my time at the computer in this program.
+[Visual Studio Code](https://code.visualstudio.com/) is our editor. Its extensions integrate git, GitHub, Claude, and language-specific tooling, and it is where most of the day goes. Claude Code also has a [VS Code extension](https://code.claude.com/docs/en/vs-code), so you can work in the same window rather than alternating with a terminal.
 
 ### Version control
 
-We rely on [git](https://git-scm.com/) and [GitHub](https://github.com/) extensively for code version control. This is how we share code, back it up, and keep track of progress.
+We rely on [git](https://git-scm.com/) and [GitHub](https://github.com/) heavily. This is how code gets shared, backed up, and tracked over time — and with an assistant writing code, a clean commit history becomes considerably more valuable, because it is how you see what changed and undo it if you need to.
 
 Do not store large data files or analysis results in git repositories. Git is designed for small, mostly text files. GitHub blocks any individual file over 100 MB and recommends keeping a repository under 1 GB; in practice a well-kept analysis repo should be far smaller than that — if yours is approaching 100 MB, something belongs elsewhere.
 
 ### Languages
 
-We default to **[Python](https://www.python.org/)** (3.10+) for data analysis and scripting. We fall back to **R** when analyses require specific R libraries (e.g., Seurat). Though R is common in biology, it is a niche language compared to Python. R is still an excellent choice when you need libraries and resources only available in the language, it is what you are comfortable with and it works for you, or when working with a team that has chosen to use R.
+**[Python](https://www.python.org/)** (3.10+) is the default for data analysis and scripting. Though R is common in biology, it is a niche language by comparison, and Python skills travel further.
 
-I highly recommend [Python Data Science Handbook: Essential Tools for Working with Data](https://www.oreilly.com/library/view/python-data-science/9781098121211/) as an introduction to data analysis with Python. It is also [available online](https://jakevdp.github.io/PythonDataScienceHandbook/).
+**R** is the right choice when an analysis needs libraries that only exist there — Seurat, much of Bioconductor — when it is what you already know and it works for you, or when you are joining a team that has chosen it. Falling back to R is a normal outcome, not a failure.
 
-Other conventions regarding Python:
+For learning data analysis in Python, [Python Data Science Handbook](https://www.oreilly.com/library/view/python-data-science/9781098121211/) is an excellent introduction and is [free online](https://jakevdp.github.io/PythonDataScienceHandbook/).
 
-- Use **[conda](https://docs.conda.io/)** or **[mamba](https://mamba.readthedocs.io/)** for environment management
-- Use **[Jupyter](https://jupyter.org/) notebooks** for exploratory work; refactor into scripts for production
-- Use **[Quarto](https://quarto.org/)** for executable manuscripts
+Around Python:
 
-We prefer **[Rust](https://www.rust-lang.org/)** when writing code where performance is a top concern.
+- **[conda](https://docs.conda.io/)** or **[mamba](https://mamba.readthedocs.io/)** for environment management
+- **[Jupyter](https://jupyter.org/) notebooks** for exploratory work, refactored into scripts once something is worth keeping
+- **[ruff](https://docs.astral.sh/ruff/)** for formatting and linting — it replaces the older black and flake8 combination
+- **[Quarto](https://quarto.org/)** for executable manuscripts
+
+**[Rust](https://www.rust-lang.org/)** when performance is the dominant concern and a vectorized Python solution is not enough.
 
 ## Setting up Claude Code
 
-This section walks you through setting up Claude Code on your own computer with the Dunn Lab plugin. The plugin helps Claude follow lab conventions and speeds up development.
+The rest of this chapter sets up Claude Code on your own computer, with the Dunn Lab plugin installed. The plugin is optional — Claude Code works without it — but it is what makes Claude follow the conventions described here rather than guessing at them.
 
 ### 1. Install Claude Code
 

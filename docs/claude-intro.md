@@ -5,7 +5,9 @@ nav_order: 4
 
 # Claude Code Concepts
 
-A brief orientation to Claude's interfaces and how Claude Code works.
+How Claude Code actually works: which interface does what, what it can reach on your machine, how it is extended, and the working habits that get good results from it.
+
+The next two chapters build directly on this one. [Managing Security](managing-security.md) is about constraining what Claude can do; [Managing Context](managing-context.md) is about giving it the right information. Both assume the vocabulary introduced here.
 
 ## Ways to use Claude
 
