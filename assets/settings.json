@@ -38,7 +38,7 @@
     "",
     "Home:     ~/                        /nfs/roberts/home/<netid> — 125 GiB, 500K files, backed up",
     "Project:  ~/project_pi_<netid>      /nfs/roberts/project/pi_<netid> — 4 TiB/group, 5M files, snapshotted",
-    "Scratch:  ~/scratch_pi_<netid>      /nfs/roberts/scratch/pi_<netid> — 10 TiB/group, PURGED after 60 days",
+    "Scratch:  ~/scratch_pi_<netid>      /nfs/roberts/scratch/pi_<netid> — 10 TiB/group, PURGED after 30 days",
     "PI alloc: /nfs/roberts/pi/<grp>     (purchased storage)",
     "",
     "No sensitive or regulated data on Bouchet — use the Hopper cluster.",
@@ -66,8 +66,9 @@
     "bigmem:       up to 24h on 4 TiB nodes — 128 CPUs/user",
     "mpi:          up to 2 days, tightly-coupled multi-node — 48 nodes/user",
     "gpu:          up to 2 days — rtx_5000_ada (32GB), a40 (48GB), l40s (48GB)",
+    "gpu_h100:     up to 2 days — h100 (80GB)",
     "gpu_h200:     up to 2 days — h200 (141GB)",
-    "gpu_b200:     up to 2 days — b200 (180GB)",
+    "gpu_b200:     up to 2 days — b200 (193GB)",
     "gpu_rtx6000:  up to 2 days — rtx_pro_6000_blackwell (96GB)",
     "gpu_devel:    up to 6h GPU testing — 2 GPUs, 1 job",
     "scavenge:     up to 24h, preemptible, uses idle private nodes",
@@ -119,7 +120,7 @@
     "  git operations, conda env management, file inspection, editing scripts",
     "- Request only the resources your job actually needs",
     "- Use 'module reset' + 'module load' for software, not manual PATH installs",
-    "- Scratch files older than 60 days are AUTOMATICALLY DELETED",
+    "- Scratch files older than 30 days are AUTOMATICALLY DELETED on Bouchet",
     "- Do NOT artificially extend scratch file expiration",
     "- Use job arrays or Dead Simple Queue for many similar jobs:",
     "    module load dSQ && dsq --job-file joblist.txt -t 2:00:00 --submit",
@@ -186,7 +187,7 @@
     "Pip fallback:      pip install <pkg>   (only if not in conda-forge)",
     "Remove env:        conda env remove -n myenv",
     "",
-    "Store envs in your project directory or home, NOT in scratch (purged).",
+    "Store envs in your project directory or home, NOT in scratch (purged at 30 days).",
     "Conda envs are NOT portable between clusters — rebuild on Bouchet, or",
     "migrate with conda-pack."
   ],
@@ -285,7 +286,6 @@
 
       "Bash(module load:*)",
       "Bash(module reset:*)",
-      "Bash(module purge:*)",
       "Bash(module swap:*)"
 
     ],
@@ -330,7 +330,9 @@
       "Bash(pip uninstall:*)",
 
       "Bash(apptainer:*)",
-      "Bash(singularity:*)"
+      "Bash(singularity:*)",
+
+      "Bash(module purge:*)"
     ],
 
     "deny": [

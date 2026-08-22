@@ -45,14 +45,15 @@ Everything else must be submitted as a SLURM job.
 
 Docs: <https://docs.ycrc.yale.edu/clusters/bouchet/> · Getting started: <https://docs.ycrc.yale.edu/clusters/bouchet_getting_started/>
 
-Bouchet is hosted at MGHPCC and is where all HPC growth and refreshes are deployed. Compute is a mix of Intel Emerald Rapids (Xeon 8562Y, 64 cores / 990 GiB) and AMD Turin (EPYC 9575F, 128 cores / 2,251 GiB; EPYC 9655, 192 cores / 1,487 GiB) nodes. GPUs span RTX 5000 Ada, A40, L40S, H200, B200, and RTX PRO 6000 Blackwell.
+Bouchet is hosted at MGHPCC and is where all HPC growth and refreshes are deployed. Compute is a mix of Intel Emerald Rapids (Xeon 8562Y, 64 cores / 990 GiB) and AMD Turin (EPYC 9575F, 128 cores / 2,251 GiB; EPYC 9655, 192 cores / 1,487 GiB) nodes. GPUs span RTX 5000 Ada, A40, L40S, H100, H200, B200, and RTX PRO 6000 Blackwell.
 
 ### Bouchet account and path conventions
 
 Bouchet differs from the older clusters in ways that break copied scripts:
 
 - Your **primary group is your NetID**; PI groups are `pi_<netid>` (not the PI's last name). Check with `groups` and `slurm_checkup.sh`.
-- Storage lives under `/nfs/roberts/` on the all-flash **Roberts** filesystem. **There is no GPFS and no `/vast/palmer`** — paths like `/gpfs/gibbs/project` and `~/palmer_scratch` do not exist here. Disable any GPFS-specific optimizations in tools.
+- Project and scratch live under `/nfs/roberts/` on the all-flash **Roberts** filesystem. **There is no GPFS and no `/vast/palmer`** — paths like `/gpfs/gibbs/project` and `~/palmer_scratch` do not exist here. Disable any GPFS-specific optimizations in tools.
+- **Scratch is purged at 30 days on Bouchet**, not the 60 days you may be used to from Grace and McCleary. Move anything you want to keep to project storage.
 - Home symlinks are `~/project_pi_<netid>` and `~/scratch_pi_<netid>` (not `~/project` / `~/palmer_scratch`).
 - Software is built against the 2022b and 2024a toolchains only.
 - Conda environments **cannot be copied** from Grace/McCleary — rebuild them, or migrate with `conda-pack`.
@@ -70,13 +71,14 @@ Public partitions (private `priority*`, `pi_*`, and `education*` partitions are 
 | **week** | 7 days | 14 | 128 | 2,251 GiB | 96 CPUs, 1.5 TiB mem |
 | **bigmem** | 1 day | 4 | 64 | 4,014 GiB | 128 CPUs, 8 TiB mem |
 | **mpi** | 2 days | 60 | 64 | 487 GiB | 48 nodes, 10 jobs |
-| **gpu** | 2 days | 29 | 48 | 479–977 GiB | 16 GPUs, 12 jobs |
-| **gpu_h200** | 2 days | 9 | 48 | 1,996 GiB | 16 GPUs, 6 jobs |
-| **gpu_b200** | 2 days | 7 | 128 | 2,251 GiB | 16 GPUs |
-| **gpu_rtx6000** | 2 days | 7 | 128 | 2,251 GiB | 16 GPUs |
-| **gpu_devel** | 6 hours | 6 | 48 / 128 | 479–2,251 GiB | 12 CPUs, 2 GPUs, 1 job |
-| **scavenge** | 1 day | ~230 | 32–192 | 488–4,014 GiB | Preemptable; idle private nodes |
-| **scavenge_gpu** | 1 day | ~48 | 32–128 | 488–2,251 GiB | Preemptable GPU nodes |
+| **gpu** | 2 days | 29 | 48 | 479–976 GiB | 16 GPUs, 12 jobs |
+| **gpu_h100** | 2 days | 15 | 48 | 976 GiB | 16 GPUs, 12 jobs |
+| **gpu_h200** | 2 days | 9 | 48 | 1,995 GiB | 16 GPUs, 6 jobs |
+| **gpu_b200** | 2 days | 7 | 128 | 2,251 GiB | 16 GPUs, 6 jobs |
+| **gpu_rtx6000** | 2 days | 7 | 128 | 2,251 GiB | 16 GPUs, 16 jobs |
+| **gpu_devel** | 6 hours | 6 | 48 / 128 | 479–2,251 GiB | 2 GPUs, 1 job |
+| **scavenge** | 1 day | 177 | 32–192 | 487–2,251 GiB | Preemptable; idle private nodes |
+| **scavenge_gpu** | 1 day | 70 | 32–128 | 488–2,251 GiB | Preemptable GPU nodes |
 
 ### Bouchet GPUs
 
@@ -87,9 +89,10 @@ Request GPUs by type, not just count, so you land on hardware that fits the job:
 | NVIDIA RTX 5000 Ada | `rtx_5000_ada` | 32 GB | 4 | `gpu`, `gpu_devel` |
 | NVIDIA A40 | `a40` | 48 GB | 4 | `gpu` |
 | NVIDIA L40S | `l40s` | 48 GB | 4 | `gpu` |
+| NVIDIA H100 | `h100` | 80 GB | 4 | `gpu_h100`, `gpu_devel` |
 | NVIDIA H200 | `h200` | 141 GB | 8 | `gpu_h200`, `gpu_devel` |
 | NVIDIA RTX PRO 6000 Blackwell | `rtx_pro_6000_blackwell` | 96 GB | 8 | `gpu_rtx6000`, `gpu_devel` |
-| NVIDIA B200 | `b200` | 180 GB | 8 | `gpu_b200`, `gpu_devel` |
+| NVIDIA B200 | `b200` | 193 GB | 8 | `gpu_b200`, `gpu_devel` |
 
 Example: `#SBATCH --gpus=h200:1`. List current inventory with `sinfo -e -o "%20P %6D %60G"`.
 
@@ -97,9 +100,9 @@ Example: `#SBATCH --gpus=h200:1`. List current inventory with `sinfo -e -o "%20P
 
 | Name | Path | Home symlink | Quota | File limit | Backed Up | Purge Policy |
 |------|------|--------------|-------|-----------|-----------|--------------|
-| Home | `/nfs/roberts/home/<netid>` | `~/` | 125 GiB/user | 500K | Yes (snapshots >= 2 days) | None |
+| Home | `/home/<netid>` | `~/` | 125 GiB/user | 500K | Yes (snapshots >= 2 days) | None |
 | Project | `/nfs/roberts/project/pi_<netid>` | `~/project_pi_<netid>` | 4 TiB/group | 5M | Yes (snapshots >= 2 days) | None |
-| Scratch | `/nfs/roberts/scratch/pi_<netid>` | `~/scratch_pi_<netid>` | 10 TiB/group | 15M | No | **60-day purge** |
+| Scratch | `/nfs/roberts/scratch/pi_<netid>` | `~/scratch_pi_<netid>` | 10 TiB/group | 15M | No | **30-day purge** |
 | PI | `/nfs/roberts/pi/<grp>` | — | Purchased | — | Snapshots >= 2 days | None |
 
 No sensitive or regulated data may be stored on Bouchet — use Hopper.
@@ -157,6 +160,8 @@ Unless overridden: 1 hour walltime, 1 node, 1 task, 1 CPU, 5120 MB memory per CP
 ## Misha
 
 Docs: <https://docs.ycrc.yale.edu/clusters/misha/>
+
+The lab rarely uses Misha; the tables below have not been re-verified as recently as the Bouchet ones. Confirm against `sinfo` and `getquota` before relying on them.
 
 Hardware: Intel Sapphire Rapids and Emerald Rapids (6458, 6542, 6442, 6326). Standard nodes: 64 CPUs, 479 GiB. GPUs: H100 (80 GB), H200 (141 GB), A100 (80 GB), A40 (48 GB), L40S (48 GB).
 
@@ -375,16 +380,16 @@ conda install -c conda-forge <pkg>
 pip install <pkg>
 ```
 
-Store environments in your project directory or home — **never in scratch** (they will be purged after 60 days). Environments are not portable between clusters: rebuild on Bouchet, or migrate with `conda-pack`.
+Store environments in your project directory or home — **never in scratch** (on Bouchet they will be purged after 30 days). Environments are not portable between clusters: rebuild on Bouchet, or migrate with `conda-pack`.
 
 ---
 
 ## Important policies
 
-- **Scratch purge**: Files older than 60 days on scratch are automatically deleted. You will receive email notification one week before deletion. Do not artificially extend file modification times to circumvent the policy.
+- **Scratch purge**: Scratch files are automatically deleted once they exceed the age limit — **30 days on Bouchet**, 60 days on McCleary. Do not artificially extend file modification times to circumvent the policy.
 - **Sensitive data**: No sensitive or regulated data on any cluster except Hopper. NIH Controlled Access Data must go to Hopper, not Bouchet.
 - **Max interactive apps**: 4 concurrent OOD interactive instances per user.
 - **Job rate limits**: YCRC enforces submission rate limits — use job arrays or `dsq` instead of submission loops.
 - **Module system**: Use `module reset` then `module load` for software. Run `module avail` to see available packages.
-- **AI coding agents**: YCRC does not formally support coding agents on the clusters and warns about data exposure, credential leakage, and destructive actions taken with your permissions. See <https://docs.ycrc.yale.edu/ai/aicodingtools/> and use restrictive Claude Code permissions (`assets/settings.json` in this repo).
+- **AI coding agents**: YCRC does not formally support coding agents on the clusters and warns about data exposure, credential leakage, and destructive actions taken with your permissions. See <https://docs.ycrc.yale.edu/ai/aicodingtools/> and use restrictive Claude Code permissions (`assets/settings.json` in this repo). YCRC also documents connecting Claude Science to a cluster by SSH tunnel to a **compute node, not a login node**.
 - **Paid storage**: YCRC cannot accept new or increased paid storage allocations on Bouchet, Grace, or McCleary; availability may return in late 2026.
