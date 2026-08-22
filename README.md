@@ -1,5 +1,8 @@
 # DunnLab Code
 
+[![checks](https://github.com/caseywdunn/dunnlab_code/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/caseywdunn/dunnlab_code/actions/workflows/checks.yml?query=branch%3Amain)
+[![plugin](https://img.shields.io/badge/dynamic/json?url=https%3A//raw.githubusercontent.com/caseywdunn/dunnlab_code/main/.claude-plugin/plugin.json&query=%24.version&label=plugin&color=blue)](CHANGELOG.md)
+
 This repo has two purposes:
 
 - Documenting our best practices, onboarding, and instruction on using AI in our research.

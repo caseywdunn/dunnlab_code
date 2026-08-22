@@ -1,5 +1,9 @@
 # Contributing
 
+[![checks (dev)](https://github.com/caseywdunn/dunnlab_code/actions/workflows/checks.yml/badge.svg?branch=dev)](https://github.com/caseywdunn/dunnlab_code/actions/workflows/checks.yml?query=branch%3Adev)
+
+That badge is `dev`, the integration branch — the state of what is queued for the next release. The badge in `README.md` tracks `main`, which is what the lab actually has installed.
+
 How to add or modify skills, commands, hooks, and documentation in this repo.
 
 ## Adding a new skill
@@ -162,6 +166,11 @@ claude plugin tag . --push         # creates dunnlab-code--v0.4.0 and pushes it
 git push origin main
 git checkout dev && git merge --ff-only main && git push origin dev
 ```
+
+The `main` badge in `README.md` should go green shortly after the merge. It
+reads the workflow's latest run on `main`, so it stays grey ("no status") until
+a release has actually run CI there — that is expected on a branch that has
+never seen the workflow, not a failure.
 
 ### Tell people
 
