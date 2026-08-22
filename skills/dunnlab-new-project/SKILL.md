@@ -196,7 +196,7 @@ Run through this checklist when wrapping up. For each item, actually run the rel
 - [ ] **Environment from scratch**: delete and recreate the environment from the config file (`environment.yml`, `renv.lock`, or `Cargo.toml`) to confirm it builds cleanly
 - [ ] **Starter script runs**: execute the main entry point or pipeline with sample/test input and verify it completes without errors
 - [ ] **Tests pass**: run the full test suite (`pytest`, `cargo test`, `testthat`, etc.)
-- [ ] **Linters and formatters clean**: run the project's linter and formatter (`black --check . && flake8 .`, `cargo clippy`, etc.) and fix any issues
+- [ ] **Linters and formatters clean**: run the project's linter and formatter (`ruff format --check . && ruff check .`, `cargo clippy`, etc.) and fix any issues
 - [ ] **Code review**: look over the project for performance issues, security concerns, or potential bugs — if a refactor is needed, break it into a new task and implement it before moving on
 - [ ] **README accurate**: follow the setup instructions in README.md as if you were a new user — do they actually work?
 - [ ] **CLAUDE.md and dev_docs/ current**: verify these files reflect the final state of the project, not the initial plan

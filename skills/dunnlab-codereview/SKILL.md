@@ -44,8 +44,8 @@ When reviewing code in Dunn Lab projects, follow this process and checklist.
 ### Style and conventions
 
 - [ ] Does the code follow lab conventions (see `dunnlab-defaults` skill)?
-- [ ] Is formatting consistent (ran through `black`/`styler`/`cargo fmt`)?
-- [ ] Are linters clean (`flake8`/`lintr`/`clippy`)?
+- [ ] Is formatting consistent (ran through `ruff format`/`styler`/`cargo fmt`)?
+- [ ] Are linters clean (`ruff check`/`lintr`/`clippy`)?
 - [ ] Are variable and function names descriptive and consistent with the codebase?
 
 ### Documentation
