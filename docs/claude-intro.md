@@ -22,7 +22,7 @@ Anthropic offers several ways to interact with Claude models:
 
 Chat is what you get when you use Claude on the web, like other chatbots. Code and Cowork are agents that work on real files across multiple steps.
 
-**In this lab we primarily use Claude Code.** It runs on several surfaces — the terminal, the VS Code and JetBrains extensions, the desktop app, and the web at [claude.ai/code](https://claude.ai/code) — all backed by the same engine. A repo's `CLAUDE.md`, settings, skills, and MCP servers work identically across them, so which one you use is a matter of preference. Most of us live in the terminal or the VS Code extension.
+**This manual is about Claude Code.** It runs on several surfaces — the terminal, the VS Code and JetBrains extensions, the desktop app, and the web at [claude.ai/code](https://claude.ai/code) — all backed by the same engine. A repo's `CLAUDE.md`, settings, skills, and MCP servers work identically across them, so which one you use is a matter of preference. Most people settle into the terminal or the VS Code extension.
 
 Cowork is the same underlying agent pointed at non-coding work, and it runs on the desktop app, web, and mobile. On the desktop it has access to local files much as Claude Code does. Skills are shared between the two: Cowork reads your personal skills in `~/.claude/skills/`, project skills in the repo, and skills from installed plugins, so a skill you write for one is available in the other on the same machine. In Cowork you manage them under **Customize → + → Skills**.
 

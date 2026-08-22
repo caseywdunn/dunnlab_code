@@ -41,6 +41,8 @@ A few of these are more consequential than a style preference, and they are the 
 
 **Never abbreviate an author list, and never guess a bibliographic field.** A missing DOI gets a `% TODO` comment, not a plausible-looking value. This sounds pedantic until an AI assistant fills one in for you.
 
+**CLAUDE.md stays under 100 lines.** The [official guidance](https://code.claude.com/docs/en/memory) targets 200; we hold to half that, because everything in a CLAUDE.md is paid for in every session. When project guidance outgrows it, the answer is a path-scoped rule in `.claude/rules/`, not a longer CLAUDE.md — see [Managing Context](managing-context.md#rules).
+
 **Checkpointing is by output existence, not sentinel files.** A pipeline stage is skipped if its output already exists. To re-run a stage you delete its output. There is no hidden state tracking what has completed.
 
 ## Data management

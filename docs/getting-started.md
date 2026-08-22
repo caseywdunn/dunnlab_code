@@ -117,7 +117,7 @@ claude plugin install <plugin-name>@claude-plugins-official
 
 | Plugin | What it does |
 |--------|-------------|
-| **skill-creator** | Structured workflow for building skills, running evals against them, and tuning descriptions. Worth having if you plan to write skills for the lab — see [Creating and evaluating skills](managing-context.md#creating-and-evaluating-skills). |
+| **skill-creator** | Structured workflow for building skills, running evals against them, and tuning descriptions. Worth having if you plan to write skills of your own — see [Creating and evaluating skills](managing-context.md#creating-and-evaluating-skills). |
 | **pyright-lsp** | Gives Claude a language server for Python: type errors reported immediately after each edit, plus jump-to-definition and find-references. Requires `pyright-langserver` on your PATH. There are equivalents for [most languages](https://code.claude.com/docs/en/discover-plugins#code-intelligence), including `rust-analyzer-lsp`. |
 | **security-guidance** | Reviews each change Claude makes for common vulnerabilities and fixes what it finds in the same session. |
 

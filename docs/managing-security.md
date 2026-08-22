@@ -91,8 +91,8 @@ What no mode changes:
 
 - **`deny` rules apply in every mode, `bypassPermissions` included.** It is `allow` rules that stop having any effect there. A deny rule is the one control that holds no matter how the session is launched.
 - **Explicit `ask` rules always prompt**, even in `auto`.
-- **Writes to protected paths are never auto-approved** except under `bypassPermissions`. See below.
-- **`rm` and `rmdir` against a critical path** are never approved by an allow rule or a hook. See below.
+- **Writes to protected paths are never auto-approved** except under `bypassPermissions`. See [Protected and critical paths](#protected-and-critical-paths).
+- **`rm` and `rmdir` against a critical path** are never approved by an allow rule or a hook, in any mode. Same section.
 
 ### Auto mode
 

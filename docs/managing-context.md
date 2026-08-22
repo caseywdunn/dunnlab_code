@@ -47,7 +47,7 @@ A CLAUDE.md can pull in other files with `@path/to/file` syntax. Imports are exp
 
 ### Keep it short
 
-CLAUDE.md content is loaded into the context window at session start. Longer files consume more of your context budget and reduce Claude's adherence to instructions. The [official guidance](https://code.claude.com/docs/en/memory) targets under 200 lines; **as a lab convention we keep each CLAUDE.md under 100 lines**, deliberately stricter. If you need more detail, put it in a [rule](#rules) or point Claude to where it can find the information rather than including it inline:
+CLAUDE.md content is loaded into the context window at session start. Longer files consume more of your context budget and reduce Claude's adherence to instructions. The [official guidance](https://code.claude.com/docs/en/memory) targets under 200 lines, and a stricter house limit is worth considering — this lab holds to 100. If you need more detail, put it in a [rule](#rules) or point Claude to where it can find the information rather than including it inline:
 
 ```markdown
 ## Architecture
