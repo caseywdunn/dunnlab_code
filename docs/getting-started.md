@@ -79,7 +79,7 @@ This guide walks you through setting up Claude Code on your own computer with th
 
 ## 1. Install Claude Code
 
-Follow the official installation instructions at [Claude Code Overview](https://docs.anthropic.com/en/docs/claude-code/overview). Claude Code runs in your terminal and works alongside your existing editor and tools.
+Follow the official installation instructions at [Claude Code Overview](https://code.claude.com/docs/en/overview). Claude Code runs in your terminal and works alongside your existing editor and tools.
 
 ## 2. Install the plugin
 

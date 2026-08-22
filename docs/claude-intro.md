@@ -48,7 +48,7 @@ Claude Code's capabilities can be extended in several ways. These differ in how 
 | **Hooks** | Automatic — fired by events (e.g., before a tool runs) | Shell scripts that run in response to Claude Code lifecycle events |
 | **MCP servers** | Automatic — Claude decides when to call them | External integrations that give Claude access to additional tools and data sources |
 
-For details on each, see the [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code).
+For details on each, see the [Claude Code documentation](https://code.claude.com/docs/en/overview).
 
 ## Best practices for effective use
 
