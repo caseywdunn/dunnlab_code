@@ -5,12 +5,12 @@ nav_order: 1
 
 # Dunn Lab Code
 
-[This repository](https://github.com/caseywdunn/dunnlab_code) is a resource for scientists using AI in their research. It is really three things. First, it is a manual about using AI assistance in computational research. You are reading the manual now. Second, it is a Claude Code plugin that implements some of the conventions described here as skills, so Claude can apply them directly and consistently. Third, it has assorted other resources such as example configuration files.
+[This repository](https://github.com/caseywdunn/dunnlab_code) is a resource for scientists using AI in their research. It is really three things. First, it is a manual about using AI assistance in computational research. You are reading the manual now. Second, it has a Claude Code plugin that implements some of the conventions described here as skills, so Claude can apply them directly and consistently. Third, it has assorted other resources such as example configuration files.
 
 
 ## Table of contents
 
-- [Using AI in Research](using-ai.md) — What changes and what does not: accountability, reviewing generated code, handling data, disclosure, and journal and funder policy. No terminal required.
+- [Using AI in Research](using-ai.md) — What changes and what does not: accountability, reviewing generated code, handling data, reporting AI use, and journal and funder policy. No terminal required.
 - [Getting Started](getting-started.md) — The computational stack we recommend, and how to install and verify Claude Code.
 - [Claude Code Concepts](claude-intro.md) — How it works: interfaces, the working directory, how it is extended, and the habits that make it effective.
 - [Managing Security](managing-security.md) — Permissions, sandboxing, and containers. What can go wrong and what actually stops it.

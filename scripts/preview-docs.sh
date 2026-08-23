@@ -19,6 +19,7 @@ REPO=$(pwd)
 
 IMAGE=ruby:3.3
 VOLUME=dunnlab-jekyll-bundle
+CONTAINER=dunnlab-docs-preview
 MODE=serve
 PORT=4000
 
@@ -41,6 +42,11 @@ common=(--rm
         -v "$REPO/docs:/site" -w /site
         -v "$VOLUME:/usr/local/bundle")
 
+# Only ask for a TTY when there is one, so this also works when launched from
+# a script, a CI step, or a background shell.
+tty_flags=(-i)
+[[ -t 0 ]] && tty_flags=(-it)
+
 if [[ "$MODE" == build ]]; then
   echo "Building docs/ with the github-pages gem…"
   docker run "${common[@]}" "$IMAGE" bash -c '
@@ -55,11 +61,15 @@ echo "Starting Jekyll. First run installs gems and takes a few minutes."
 echo
 echo "    http://localhost:${PORT}/dunnlab_code/"
 echo
-echo "Ctrl-C to stop. Edits to docs/ rebuild automatically."
+echo "Ctrl-C to stop, or from another terminal:  docker stop $CONTAINER"
+echo "Edits to docs/ rebuild automatically."
 echo
 
+# A previous run that was killed rather than stopped can leave the name taken.
+docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
+
 # --force_polling: file-change events do not cross the bind mount reliably.
-docker run -it "${common[@]}" -p "${PORT}:4000" "$IMAGE" bash -c '
+docker run "${tty_flags[@]}" --name "$CONTAINER" "${common[@]}" -p "${PORT}:4000" "$IMAGE" bash -c '
   bundle install --quiet && exec bundle exec jekyll serve \
     --host 0.0.0.0 --port 4000 --force_polling --incremental
 '
