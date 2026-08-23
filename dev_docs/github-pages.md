@@ -54,7 +54,16 @@ When adding a page, ask which tier it belongs to. Anything institution-specific 
 
 ## Local preview
 
-Requires Ruby. `docs/Gemfile` pins the `github-pages` gem set so a local build matches what GitHub deploys.
+```bash
+./scripts/preview-docs.sh          # serve at http://localhost:4000/dunnlab_code/
+./scripts/preview-docs.sh build    # build only, then exit
+```
+
+This runs Jekyll in Docker, so no Ruby is needed on the host. The first run installs gems and takes a few minutes; they are cached in a named volume, so later runs start quickly.
+
+GitHub Pages builds this site with its **legacy** builder, which uses the `github-pages` gem — the same gem `docs/Gemfile` pins. So a local build is close to what actually gets published, remote theme included.
+
+If you would rather use a local Ruby:
 
 ```bash
 cd docs
@@ -62,7 +71,11 @@ bundle install    # first time only
 bundle exec jekyll serve
 ```
 
-The site will be available at `http://localhost:4000/dunnlab_code/`.
+### Preview before a release
+
+The deployed site is built from `main`, so nothing on `dev` is visible until the release merge. To look at the real HTML first, either run the script above on `dev`, or download the `docs-site` artifact from the `site` CI job on any pull request and open `index.html` locally.
+
+That CI job also *builds* the site on every push and PR, which is the only thing that catches a broken `_config.yml` or a Liquid error in a page — `check.sh` validates frontmatter and links but never renders anything.
 
 Local preview is optional. The site is built and deployed by GitHub Pages' built-in Jekyll build on every push to `main` — there is no workflow file in `.github/`, and the build shows up in the repo's Actions tab as `pages-build-deployment`. If a page renders wrong after a push, check there first.
 
