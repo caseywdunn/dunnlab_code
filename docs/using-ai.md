@@ -28,7 +28,7 @@ For code in particular:
 
 And for prose in particular:
 
-1. **Citation standards.** LLMs fabricate references convincingly: plausible authors, plausible titles, DOIs that either resolve to something else or to nothing. Every citation needs to be checked against the actual source, and you should have read what you cite. This is the failure mode most likely to reach print, because a fabricated reference looks exactly like a real one until someone follows it.
+1. **Citation standards.** LLMs fabricate references convincingly: plausible authors, plausible titles, DOIs that either resolve to something else or to nothing. Every citation needs to be checked against the actual source, and you should review what you cite. This is the failure mode most likely to reach print, because a fabricated reference looks exactly like a real one until someone follows it.
 
 ## Working with data
 
@@ -42,9 +42,7 @@ Adopt these two practices when an assistant has access to your files.
 
 There is considerable variation in how AI use is disclosed in science. When coding with AI agents, disclosure is largely a solved problem: if you have the agent make your git commits, the record of what it did is detailed and quite informative.
 
-Approaches to prose vary much more widely — and are often missing entirely. A [systematic map of 230 ecology and evolutionary biology journals](https://doi.org/10.1186/s41073-026-00230-1) (Drobniak et al. 2026) found that nearly half offered no guidance on AI use at all. Where policies did exist they were largely generic and publisher-driven: text-mining of 124 guideline documents turned up highly standardised precautionary language about responsibility and prohibitions, but little operational guidance on acceptable uses or disclosure formats. Explicit AI disclosures appeared in fewer than 6% of papers, even in journals that had a formal policy.
-
-So the variation is not really in what journals demand of you. It is that half say nothing, and most of the rest say something too vague to act on. It is important to identify the relevant policies early, so you can plan your workflow and documentation around them — and to expect that you will often be deciding for yourself.
+Approaches to prose vary much more widely — and are often missing entirely. A [systematic map of 230 ecology and evolutionary biology journals](https://doi.org/10.1186/s41073-026-00230-1) (Drobniak et al. 2026) found that nearly half offered no guidance on AI use at all. Where policies did exist they were largely generic and publisher-driven: text-mining of 124 guideline documents turned up highly standardized precautionary language about responsibility and prohibitions, but little operational guidance on acceptable uses or disclosure formats. Explicit AI disclosures appeared in fewer than 6% of papers, even in journals that had a formal policy.
 
 You should obviously not use AI where it is explicitly forbidden and then fail to disclose it. If you would prefer to use AI on a project and your preferred journal does not allow it, find a journal that does — or do not use AI. Where policies permit AI use but say nothing about whether or how to disclose it, err on the side of over-disclosing.
 
@@ -116,6 +114,6 @@ It is also the only one of these to come from within a research community rather
 
 The framework is recent enough that worked examples in published papers are still scarce.
 
-#### Writing a disclosure now
+#### Roll your own
 
-Until one of these settles, borrow their common structure. A useful disclosure names three things: **which tool** and version, **which specific tasks** it was given, and **who checked the result**. That is considerably more informative than "AI was used in the preparation of this manuscript", it costs a sentence, and it is close enough to what any of these standards will eventually ask for that you will not have to rethink it.
+Another option is not to adhere to any one of these standards, but to borrow their common structure. A useful disclosure names at least two things: **which tool**, including its version, and **which specific tasks** it was given.
