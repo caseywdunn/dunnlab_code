@@ -100,7 +100,7 @@ Auto mode lets Claude work in long uninterrupted stretches. A separate classifie
 
 A few properties are worth understanding before you rely on it:
 
-- **The classifier does not see tool results.** It sees your messages, non-read-only tool calls, and your CLAUDE.md — but the contents of files and web pages are stripped out. That is what makes it resistant to the prompt injection it is meant to catch.
+- **The classifier does not see tool results.** It sees your messages, non-read-only tool calls, and your project's standing instructions — but the contents of files and web pages are stripped out. That is what makes it resistant to the prompt injection it is meant to catch.
 - **Broad allow rules are dropped on entering auto mode.** A blanket `Bash(*)`, a wildcarded interpreter like `Bash(python*)`, or a package-manager run command stops applying, because those amount to arbitrary code execution. Narrow rules like `Bash(pytest)` stay in effect and are restored when you leave the mode.
 - **Subagents are checked too**, at spawn, on each action, and again on the results they return.
 - **It costs something.** The classifier adds a round-trip before shell and network commands. Reads and working-directory edits skip it.

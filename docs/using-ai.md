@@ -23,7 +23,7 @@ For both code and prose, these responsibilities include:
 
 For code in particular:
 
-1. **Reproducibility.** A scientific analysis does not need to work once. It needs to work again, on another machine, months later.
+1. **Reproducibility.** A scientific analysis does not need to work once. It needs to work again, on another machine, years later.
 2. **Safety.** If you let an LLM execute commands on your computer — in a Claude Code session, for instance — it can damage, exfiltrate, or corrupt your data. [Managing Security](managing-security.md) covers how to bound what it can reach.
 
 And for prose in particular:
@@ -40,11 +40,11 @@ Adopt these two practices when an assistant has access to your files.
 
 ## Reporting AI use
 
-There is considerable variation in how AI use is reported in science. When coding with AI agents it is largely a solved problem: if you have the agent make your git commits, the record of what it did is detailed and quite informative.
+There is considerable variation in how AI use is reported in science. There is more transparency when coding with AI agents: if you have the agent make your git commits, the record of what it did is detailed and quite informative. If you write prose with coding tools — a text editor and git, with LaTeX or markdown documents — you get the same provenance and version tracking for free.
 
-Approaches to prose vary much more widely — and are often missing entirely. A [systematic map of 230 ecology and evolutionary biology journals](https://doi.org/10.1186/s41073-026-00230-1) (Drobniak et al. 2026) found that nearly half offered no guidance on AI use at all. Where policies did exist they were largely generic and publisher-driven: text-mining of 124 guideline documents turned up highly standardized precautionary language about responsibility and prohibitions, but little operational guidance on acceptable uses or disclosure formats. Explicit AI disclosures appeared in fewer than 6% of papers, even in journals that had a formal policy.
+Most people write prose in other tools, such as Google Docs or Microsoft Word, which do not record changes at the same granularity. Approaches to describing AI use when writing prose vary much more widely — and are often missing entirely. A [systematic map of 230 ecology and evolutionary biology journals](https://doi.org/10.1186/s41073-026-00230-1) (Drobniak et al. 2026) found that nearly half offered no guidance on AI use at all. Where policies did exist they were largely generic and publisher-driven: text-mining of 124 guideline documents turned up highly standardized precautionary language about responsibility and prohibitions, but little operational guidance on acceptable uses or disclosure formats. Explicit AI disclosures appeared in fewer than 6% of papers, even in journals that had a formal policy.
 
-A note on wording. This chapter says *reporting* rather than *disclosure*. Disclosure is borrowed from the conflict-of-interest frame, where the thing disclosed is a potential taint and silence would be concealment. Using a tool is not that, and the confessional framing is plausibly part of why the rates above are so low: GAIDeT's authors designed their taxonomy specifically so that researchers could say what they delegated "briefly and without stigma". Where this chapter does say disclosure, it is naming someone else's standard or a journal's requirement.
+A note on wording. This chapter says *reporting* rather than *disclosure*. Disclosure is borrowed from the conflict-of-interest frame, where the thing disclosed is a potential taint and silence would be concealment. Using a tool is not that, and the confessional framing is plausibly part of why the rates above are so low. GAIDeT's authors designed their taxonomy specifically so that researchers could say what they delegated "briefly and without stigma". AI is one method among many available to scientists, and should be reported the way other methods are.
 
 You should obviously not use AI where it is explicitly forbidden and then say nothing about it. If you would prefer to use AI on a project and your preferred journal does not allow it, find a journal that does — or do not use AI. Where policies permit AI use but say nothing about whether or how to report it, err on the side of saying more rather than less.
 
@@ -98,7 +98,7 @@ A statement in this shape names the activities rather than the tool:
 
 #### GAIDeT
 
-The Generative AI Delegation Taxonomy, [published in *Accountability in Research*](https://doi.org/10.1080/08989621.2025.2544331), with a [free declaration generator](https://panbibliotekar.github.io/gaidet-declaration/).
+The Generative AI Delegation Taxonomy, [published in *Accountability in Research*](https://doi.org/10.1080/08989621.2025.2544331), with a [declaration generator](https://panbibliotekar.github.io/gaidet-declaration/).
 
 *The principle:* frame AI use as *delegation*. A human decides to hand a specific task to a tool and remains accountable for the result, so a statement should name the tasks delegated and who supervised them — not simply assert that AI was used. Unlike the STM classification, it spans the whole research lifecycle rather than just writing, with eight categories: conceptualization, literature review, methodology, software development and automation, data management, writing and editing, ethics review, and supervision.
 
@@ -120,4 +120,4 @@ The framework is recent enough that worked examples in published papers are stil
 
 Another option is not to adhere to any one of these standards, but to borrow their common structure. A useful statement names at least two things: **which tool**, including its version, and **which specific tasks** it was given.
 
-This manual reports its own AI use on the [home page](index.md#how-this-manual-was-made), written that way.
+This manual reports its own AI use on the [home page](index.md#ai-use), written that way.

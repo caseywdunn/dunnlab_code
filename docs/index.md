@@ -27,7 +27,7 @@ The last two chapters contain information specific to our institution and lab.
 
 Corrections and additions are welcome, please file issues at <https://github.com/caseywdunn/dunnlab_code/issues>. `dev_docs/contributing.md` in the repository covers the branching model, the checks that run on every change, and the release process.
 
-## How this manual was made
+## AI use
 
 This manual, the plugin, and the scripts in this repository were written by Casey Dunn with Claude, Anthropic's AI assistant, from the first commit in March 2026 onward.
 

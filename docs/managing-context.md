@@ -17,7 +17,7 @@ Managing context well means giving Claude the right information at the right tim
 
 | Mechanism | Loads |
 |-----------|-------|
-| **CLAUDE.md** | Every session |
+| **AGENTS.md** | Every session |
 | **Rules** (`.claude/rules/`) | Every session, or only when Claude touches matching files |
 | **Auto memory** | Every session (the index only) |
 | **Skills** | Only when invoked |
@@ -28,9 +28,12 @@ Use `/context` at any point to see what actually loaded and what it cost.
 
 When a conversation gets long or you're switching tasks, use `/clear` to reset the context window. This drops the conversation history and re-loads your CLAUDE.md files fresh. It's the simplest way to reclaim context space.
 
-## CLAUDE.md
+## AGENTS.md
 
-CLAUDE.md files are markdown files that Claude reads at the start of every session. They provide standing instructions — build commands, coding conventions, architectural decisions, project-specific rules — so you don't have to repeat yourself.
+A file of standing instructions the assistant reads at the start of every session — build commands, coding conventions, architectural decisions, project rules — so you do not have to repeat yourself. `AGENTS.md` at the repository root is the emerging cross-tool convention, and most coding agents now look for it.
+
+{: .note }
+**Claude Code reads `CLAUDE.md`, not `AGENTS.md`.** The name is Claude-specific, and this is not merely a preference: an `AGENTS.md` on its own is never loaded. If your repository already has one, bridge to it rather than maintaining two copies — either `ln -s AGENTS.md CLAUDE.md`, or a `CLAUDE.md` whose first line is `@AGENTS.md`, which has the advantage of letting you add Claude-specific instructions below the import. On Windows a symlink needs Administrator rights or Developer Mode, so prefer the import there. The rest of this section says `CLAUDE.md`, because that is the filename Claude Code actually loads.
 
 ### Where to put them
 

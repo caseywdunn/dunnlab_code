@@ -10,7 +10,7 @@ This repo has two purposes:
 
 **[View the full documentation site](https://dunnlab.org/dunnlab_code/)**
 
-This repository was written by Casey Dunn with Claude, Anthropic's AI assistant, from the first commit onward. The [full statement](https://dunnlab.org/dunnlab_code/#how-this-manual-was-made) says what was delegated and to which models; the commit history is the detailed record.
+This repository was written by Casey Dunn with Claude, Anthropic's AI assistant, from the first commit onward. The [full statement](https://dunnlab.org/dunnlab_code/#ai-use) says what was delegated and to which models; the commit history is the detailed record.
 
 ## Installation
 
