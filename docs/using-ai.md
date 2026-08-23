@@ -42,7 +42,9 @@ Adopt these two practices when an assistant has access to your files.
 
 There is considerable variation in how AI use is disclosed in science. When coding with AI agents, disclosure is largely a solved problem: if you have the agent make your git commits, the record of what it did is detailed and quite informative.
 
-Approaches to prose vary much more widely. It is important to identify the relevant policies early, so you can plan your workflow and documentation around them.
+Approaches to prose vary much more widely — and are often missing entirely. A [systematic map of 230 ecology and evolutionary biology journals](https://doi.org/10.1186/s41073-026-00230-1) (Drobniak et al. 2026) found that nearly half offered no guidance on AI use at all. Where policies did exist they were largely generic and publisher-driven: text-mining of 124 guideline documents turned up highly standardised precautionary language about responsibility and prohibitions, but little operational guidance on acceptable uses or disclosure formats. Explicit AI disclosures appeared in fewer than 6% of papers, even in journals that had a formal policy.
+
+So the variation is not really in what journals demand of you. It is that half say nothing, and most of the rest say something too vague to act on. It is important to identify the relevant policies early, so you can plan your workflow and documentation around them — and to expect that you will often be deciding for yourself.
 
 You should obviously not use AI where it is explicitly forbidden and then fail to disclose it. If you would prefer to use AI on a project and your preferred journal does not allow it, find a journal that does — or do not use AI. Where policies permit AI use but say nothing about whether or how to disclose it, err on the side of over-disclosing.
 
@@ -74,8 +76,6 @@ Institutions are scrambling to develop policies on AI use. This is particularly 
 
 Most AI disclosures today are freeform text or publisher-supplied boilerplate. That makes them hard to compare across papers, hard to aggregate, and hard to check. Several efforts are underway to define richer, better-specified vocabularies for describing what was actually done.
 
-None of them has won yet, so this is not a matter of picking one. It is worth knowing their shape anyway, because each answers a different question, and borrowing their structure makes a freeform disclosure far more informative than it would otherwise be.
-
 #### The Vancouver Standard
 
 Under development by the [International Science Council](https://council.science/) together with COPE, STM, and the Global Young Academy, and named for the World Conference on Research Integrity held in Vancouver in May 2026.
@@ -105,6 +105,16 @@ The Generative AI Delegation Taxonomy, [published in *Accountability in Research
 The generator produces a statement you paste into the manuscript, conventionally as a short subsection before the references:
 
 > The authors declare the use of generative AI in the research and writing process. According to the GAIDeT taxonomy, the following tasks were delegated to the generative AI tool Claude under full human supervision: code generation; data visualization; proofreading and editing.
+
+#### AIdIT
+
+AI disclosure for Improved Transparency, proposed in the [systematic map](https://doi.org/10.1186/s41073-026-00230-1) cited above.
+
+*The principle:* a disclosure standard is only worth having if compliance with it can be checked. Having found that existing policies produced almost no actual disclosures, the authors designed for measurability. AIdIT is taxonomy-based, spans the whole research lifecycle rather than manuscript preparation alone, and pairs structured categories of AI use with explicit human-oversight statements. It emits machine-readable output, so uptake can be counted rather than assumed — which is what lets you tell a standard that is working from one that is merely published.
+
+It is also the only one of these to come from within a research community rather than from publishers or a standards body. Whether that is a strength or a limitation depends on whether it travels beyond ecology and evolutionary biology.
+
+The framework is recent enough that worked examples in published papers are still scarce.
 
 #### Writing a disclosure now
 
