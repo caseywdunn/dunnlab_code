@@ -38,8 +38,9 @@ The chapters are ordered by how widely they apply, narrowing as they go. Keep ne
 | `managing-context.md` | 6 | anyone | Context window, CLAUDE.md, rules, auto memory, skills, plugins |
 | `plugin.md` | 7 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
 | `example-workflows.md` | 8 | anyone | Step-by-step walkthrough of a project |
-| `yale.md` | 9 | Yale | YCRC clusters and running Claude Code on shared hardware |
-| `lab-practices.md` | 10 | Dunn Lab | The reasoning behind our conventions, and data management |
+| `other-agents.md` | 9 | anyone | The wider agent landscape, AGENTS.md, and serving several agents from one file |
+| `yale.md` | 10 | Yale | YCRC clusters and running Claude Code on shared hardware |
+| `lab-practices.md` | 11 | Dunn Lab | The reasoning behind our conventions, and data management |
 
 Keep this table in sync with the frontmatter. `./scripts/check.sh` verifies that `nav_order` values are contiguous and unique and that every page is linked from `index.md`, but **it does not check this table** — that is on you.
 

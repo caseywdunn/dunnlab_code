@@ -1,6 +1,6 @@
 ---
 title: Computing at Yale
-nav_order: 9
+nav_order: 10
 ---
 
 # Computing at Yale

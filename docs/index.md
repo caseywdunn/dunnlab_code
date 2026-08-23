@@ -17,6 +17,7 @@ nav_order: 1
 - [Managing Context](managing-context.md) — Giving Claude the right information: CLAUDE.md, rules, memory, skills, and plugins.
 - [DunnLab Plugin](plugin.md) — The skills, commands, and assets in this repository, and how to run them.
 - [Example Workflows](example-workflows.md) — A project from empty directory to working code, start to finish.
+- [Other Coding Agents](other-agents.md) — The wider landscape, and how to keep a project working with more than one agent.
 - [Computing at Yale](yale.md) — YCRC clusters, and running Claude Code on shared hardware.
 - [Dunn Lab Practices](lab-practices.md) — Lab-specific practices, and the reasoning behind the conventions the plugin encodes.
 
