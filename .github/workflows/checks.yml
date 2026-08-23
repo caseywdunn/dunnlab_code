@@ -13,7 +13,10 @@ jobs:
   structure:
     runs-on: ubuntu-latest
     steps:
+      # Full history: the disclosure check reads Co-Authored-By trailers,
+      # and skips silently on a shallow clone.
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
       - name: Structural checks
         run: ./scripts/check.sh
 
