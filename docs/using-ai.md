@@ -5,75 +5,107 @@ nav_order: 2
 
 # Using AI in Research
 
-This chapter is about judgment rather than tooling. It applies whether you use Claude, some other assistant, or none of the ones that exist as this is written — and you can read it without opening a terminal.
-
-Everything here is general. Nothing in it is specific to this lab or to Yale.
-
 ## What AI changes, and what it does not
 
-Generative AI changes how scientific work can be done. It does not change the responsibilities of scientists and authors. The same scholarly standards apply as before: evaluate your sources, be skeptical, and review your own work carefully. You are accountable for everything you submit, whether you wrote it by hand or with AI assistance.
+Generative AI changes how scientific work can be done. It does not change the responsibilities of scientists and authors. The same scholarly standards apply as before: evaluate your sources, be skeptical, and review your own work carefully. You are accountable for everything you produce, whether you wrote it entirely by hand or with AI assistance.
 
-AI poses a particular challenge for code. **If you do not understand generated code well enough to review it, you cannot vouch for its correctness.** This is why you still need to learn to program while using these tools. They are most effective in the hands of someone who can read, evaluate, and modify what they produce — and least safe in the hands of someone who cannot tell a working analysis from a plausible-looking one.
+AI poses a particular challenge for code. If you do not understand generated code well enough to review it, it is difficult to vouch for its correctness. This is why you still need to learn to program while using these tools. They are most effective in the hands of someone who can read, evaluate, and modify what they produce. And though AI can create new problems, there are many ways it can assist and improve your work: it can spot bugs, achieve better test coverage than you would practically write by hand, and teach you methods as you go.
 
-The opportunities are real too. AI can help you work faster, explore further, and gain insight you would not have reached alone. It can achieve better test coverage than you would write by hand, review code on every change rather than occasionally, and teach you methods as you work. It will introduce errors you have to find. It will also find errors you introduced yourself.
+## You are responsible for what you write
 
-## You are responsible for what you commit
+Whether it is code or prose, you are responsible for what you write, with or without AI.
 
-The governing principle: **you are responsible for code you commit, regardless of who or what wrote it.** "The AI wrote it" is not an explanation for a bug, a wrong result, or a security problem. It is your name on the commit and, eventually, on the paper.
+For both code and prose, these responsibilities include:
 
-In practice:
+1. **Originality.** LLMs can reproduce text taken directly from other sources without your knowledge. It is your responsibility to check. When drafting a manuscript with LLM assistance, run it through [Turnitin](https://www.turnitin.com/) or another plagiarism detector.
+2. **Correctness.** LLMs get things wrong all the time — code that quietly does the wrong thing, confident statements in text that are simply false. Finding and correcting these is your job.
+3. **Privacy.** LLMs can pull private information into material that then gets shared. This includes passwords or keys accidentally committed with code, files on your computer you did not expect to be read, and content carried over from earlier conversations. Be vigilant and defensive.
 
-- **Read every diff before you commit it.** Not skim — read. If a change is too large to read carefully, it was too large a task to hand over in one go. Break it up.
-- **If you cannot evaluate the code, you cannot vouch for it.** Where a generated approach uses something you do not understand, either learn it or ask for an approach you do.
-- **Apply the same standard you would to code from a collaborator.** A checklist helps; this plugin ships one as the `dunnlab-codereview` skill, but any consistent standard beats an inconsistent one.
-- **Scrutinize the science, not just the code.** An assistant will write syntactically perfect code that computes the wrong thing. A filter that silently drops rows, a join that duplicates records, a statistical test that does not apply to your design — these pass every linter. Sanity-check intermediate outputs and row counts, not just whether the script exits cleanly.
-- **Scale your care to how far the result travels.** An exploratory notebook you will throw away needs less scrutiny than a pipeline that will produce a figure in a manuscript.
+For code in particular:
 
-### Work that needs a human before it lands
+1. **Reproducibility.** A scientific analysis does not need to work once. It needs to work again, on another machine, months later.
+2. **Safety.** If you let an LLM execute commands on your computer — in a Claude Code session, for instance — it can damage, exfiltrate, or corrupt your data. [Managing Security](managing-security.md) covers how to bound what it can reach.
 
-Some things should never be committed on a fast review:
+And for prose in particular:
 
-- Anything that touches raw data, or that writes into a raw data directory
-- Statistical analysis, and the choice of test in particular
-- Anything that will produce a number or figure appearing in a manuscript
-- Changes to a shared pipeline that other people depend on
-- Permission settings, `.gitignore`, and anything affecting credentials
+1. **Citation standards.** LLMs fabricate references convincingly: plausible authors, plausible titles, DOIs that either resolve to something else or to nothing. Every citation needs to be checked against the actual source, and you should have read what you cite. This is the failure mode most likely to reach print, because a fabricated reference looks exactly like a real one until someone follows it.
 
 ## Working with data
 
-Two habits matter more than any other when an assistant has access to your files.
+Adopt these two practices when an assistant has access to your files.
 
 **Raw data is immutable.** Transformations produce new files in a separate processed directory. If a script would modify something in your raw data directory, that is a bug regardless of what it was asked to do. Raw data is often irreplaceable and frequently the most expensive thing you own.
 
 **Prefer a script over a direct transformation.** When you need data reshaped — a table reformatted, files restructured, columns renamed — have the assistant write a script you can read and re-run, rather than letting it edit the data in place. A script is reviewable, reproducible, and reversible. A direct edit is none of those, and you will not be able to reconstruct what happened six months later.
 
-## Keeping private things private
-
-- Put secure information — API keys, tokens, passwords, account credentials — in dedicated files that are listed in `.gitignore`, and never inline in a script.
-- Use placeholder or synthetic data while developing a pipeline, and switch to the real thing only once it works.
-- **Assume anything the assistant reads may be sent to the API.** On a shared system this includes anything your account can read, which on a cluster may include other people's work.
-- Configure the tool to refuse to read credential files at all, rather than relying on it to decline. [Managing Security](managing-security.md) covers how.
-
 ## Disclosure
 
-Claude Code adds a `Co-Authored-By` trailer to commits it writes, so the git history records where assistance was used. Leave it in place — it is useful provenance and it costs nothing.
+There is considerable variation in how AI use is disclosed in science. When coding with AI agents, disclosure is largely a solved problem: if you have the agent make your git commits, the record of what it did is detailed and quite informative.
 
-For manuscripts and proposals, follow the policy of the specific journal or funding agency, and check before you start writing rather than after.
+Approaches to prose vary much more widely. It is important to identify the relevant policies early, so you can plan your workflow and documentation around them.
 
-### Journal policies
+You should obviously not use AI where it is explicitly forbidden and then fail to disclose it. If you would prefer to use AI on a project and your preferred journal does not allow it, find a journal that does — or do not use AI. Where policies permit AI use but say nothing about whether or how to disclose it, err on the side of over-disclosing.
+
+Third-party tools for identifying AI-generated text are notoriously unreliable. Model providers, however, are starting to mark content generated by their tools. This includes clearly identifiable marks, such as metadata in generated files, as well as [statistical patterns in text](https://support.claude.com/en/articles/16266773-how-claude-marks-ai-generated-content) that are imperceptible to humans but readily identified if you know the pattern.
+
+There are two parts to such a system: the model embeds a pattern, and a tool detects it. Who will have access to the detectors is not yet clear, and depends on why the marking exists in the first place. One motivation is regulatory — the EU AI Act's Article 50(2) requires that AI-generated content be marked in a machine-readable format, with the accompanying Code of Practice on Transparency of AI-Generated Content and the obligation taking effect in August 2026. Regulation of that kind may require detection methods to be broadly available. Another motivation is to keep AI-generated content out of training runs: model trainers do not want to train on the output of their own earlier models, and a large fraction of text on the internet now is exactly that. If marking exists mainly to filter training data, the detectors may never be shared.
+
+The practical conclusion is the same either way. Assume that AI-generated text will be reliably identifiable in the near future, if it is not already, and that your use of AI will be known to others whether or not you disclose it.
+
+### Policies
+
+#### Journal policies
 
 Check your target journal's AI guidelines at the start of a project, not at submission. Policies vary, but common patterns include:
 
 - Most journals allow AI for coding assistance but require disclosure of how it was used
-- Many prohibit AI-generated text in manuscripts, or require specific disclosure of it
+- Many also allow AI-generated text in manuscripts, again requiring specific disclosure
 - AI is not accepted as an author — see [COPE's position statement on authorship and AI tools](https://publicationethics.org/guidance/cope-position/authorship-and-ai-tools). AI tools cannot be authors because they cannot take responsibility for the work, but their use should be declared
 
-Consulting the guidelines early lets you plan your workflow and documentation around them.
-
-### Funding agency policies
+#### Funding agency policies
 
 The same considerations apply to grants as to manuscripts, and the policies are not the same ones. Make sure you understand a particular agency's position *before* you start writing a proposal for it.
 
----
+#### Institution policies
 
-Next: [Getting Started](getting-started.md) covers the tools and how to set them up.
+Institutions are scrambling to develop policies on AI use. This is particularly true in academia, and especially for student work. Make sure your use of AI in documents that fulfill academic requirements is fully compliant — papers for classes, or manuscripts that will become chapters of a PhD thesis.
+
+### Disclosure ontologies
+
+Most AI disclosures today are freeform text or publisher-supplied boilerplate. That makes them hard to compare across papers, hard to aggregate, and hard to check. Several efforts are underway to define richer, better-specified vocabularies for describing what was actually done.
+
+None of them has won yet, so this is not a matter of picking one. It is worth knowing their shape anyway, because each answers a different question, and borrowing their structure makes a freeform disclosure far more informative than it would otherwise be.
+
+#### The Vancouver Standard
+
+Under development by the [International Science Council](https://council.science/) together with COPE, STM, and the Global Young Academy, and named for the World Conference on Research Integrity held in Vancouver in May 2026.
+
+*The principle:* one shared standard, across disciplines, publishers, and countries. The problem it targets is not that disclosure is hard to write but that every venue wants it differently, so authors face a new format each time and nobody can compare disclosures across the literature. It is being developed by open consultation rather than decree — three rounds running into 2027.
+
+There is no example to give yet. Nothing has been published to adopt, and the taxonomy of what should be disclosed is still being settled. Worth tracking rather than using.
+
+#### STM Classification of AI Use
+
+Published by the [STM Association](https://stm-assoc.org/document/recommendations-for-a-classification-of-ai-use-in-academic-manuscript-preparation/) in September 2025.
+
+*The principle:* classify the activity, and leave permission to the publisher. It enumerates nine things an author might do with AI while preparing a manuscript and deliberately takes no position on which are acceptable. Each publisher then decides, for each activity, whether it is permitted, whether it must be declared at submission, and whether that declaration appears in the published paper. The scope is manuscript preparation, not the research behind it.
+
+The nine cover language refinement; drafting content; translation; refining reported data; generating illustrative images or diagrams; generating visualizations of research data; formatting code; gathering references; and — the one nobody considers acceptable — presenting AI-generated content as though it were original research data.
+
+A disclosure in this shape names the activities rather than the tool:
+
+> AI was used in preparing this manuscript for language refinement and for translation. AI was not used to draft manuscript content, gather references, or generate figures or data visualizations.
+
+#### GAIDeT
+
+The Generative AI Delegation Taxonomy, [published in *Accountability in Research*](https://doi.org/10.1080/08989621.2025.2544331), with a [free declaration generator](https://panbibliotekar.github.io/gaidet-declaration/).
+
+*The principle:* frame AI use as *delegation*. A human decides to hand a specific task to a tool and remains accountable for the result, so a disclosure should name the tasks delegated and who supervised them — not simply assert that AI was used. Unlike the STM classification, it spans the whole research lifecycle rather than just writing, with eight categories: conceptualization, literature review, methodology, software development and automation, data management, writing and editing, ethics review, and supervision.
+
+The generator produces a statement you paste into the manuscript, conventionally as a short subsection before the references:
+
+> The authors declare the use of generative AI in the research and writing process. According to the GAIDeT taxonomy, the following tasks were delegated to the generative AI tool Claude under full human supervision: code generation; data visualization; proofreading and editing.
+
+#### Writing a disclosure now
+
+Until one of these settles, borrow their common structure. A useful disclosure names three things: **which tool** and version, **which specific tasks** it was given, and **who checked the result**. That is considerably more informative than "AI was used in the preparation of this manuscript", it costs a sentence, and it is close enough to what any of these standards will eventually ask for that you will not have to rethink it.
