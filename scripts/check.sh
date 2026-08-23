@@ -213,6 +213,33 @@ PYEOF
 if [[ -z "$res" ]]; then ok "no bracketed text without a link target"
 else while IFS= read -r l; do bad "$l"; done <<< "$res"; fi
 
+# --------------------------------------------------- disclosure freshness
+head_ "AI use disclosure"
+
+# docs/index.md names the models used. The likely failure is using a new one
+# and forgetting to add it, so check the claim against the commit trailers.
+# Needs full history; a shallow clone skips rather than fails.
+if ! git rev-parse --git-dir >/dev/null 2>&1; then
+  skip_ "disclosure model list — not a git repository"
+elif [[ "$(git rev-parse --is-shallow-repository 2>/dev/null)" == "true" ]]; then
+  skip_ "disclosure model list — shallow clone, no history to check"
+else
+  missing=""
+  while read -r m; do
+    [[ -z "$m" ]] && continue
+    # "Claude Opus 4.6" -> require "4.6" to appear in the disclosure section
+    ver=$(sed -E 's/^Claude Opus //; s/ *\(.*//' <<< "$m")
+    grep -q "$ver" docs/index.md && continue
+    [[ " $missing " == *" $ver "* ]] || missing="$missing $ver"
+  done < <(git log --format='%b' | grep -oiE 'Co-Authored-By: Claude[^<]*' \
+           | sed -E 's/Co-Authored-By: //I; s/ *$//' | sort -u)
+  if [[ -z "$missing" ]]; then
+    ok "disclosure names every model in the commit history"
+  else
+    bad "docs/index.md disclosure is missing model(s):$missing"
+  fi
+fi
+
 # ------------------------------------------------------------------- links
 if [[ $CHECK_LINKS -eq 1 ]]; then
   head_ "External links"

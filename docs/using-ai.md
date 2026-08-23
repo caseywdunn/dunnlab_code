@@ -117,3 +117,5 @@ The framework is recent enough that worked examples in published papers are stil
 #### Roll your own
 
 Another option is not to adhere to any one of these standards, but to borrow their common structure. A useful disclosure names at least two things: **which tool**, including its version, and **which specific tasks** it was given.
+
+This manual discloses its own AI use on the [home page](index.md#how-this-manual-was-made), written that way.

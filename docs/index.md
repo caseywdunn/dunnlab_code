@@ -26,3 +26,15 @@ The last two chapters contain information specific to our institution and lab.
 ## For contributors
 
 Corrections and additions are welcome, please file issues at <https://github.com/caseywdunn/dunnlab_code/issues>. `dev_docs/contributing.md` in the repository covers the branching model, the checks that run on every change, and the release process.
+
+## How this manual was made
+
+This manual, the plugin, and the scripts in this repository were written by Casey Dunn with Claude, Anthropic's AI assistant, from the first commit in March 2026 onward.
+
+Claude drafted or rewrote most of the prose in these chapters, wrote the plugin skills and the check scripts, and checked factual claims against vendor and YCRC documentation. I set the structure, decided every convention, edited throughout, and am responsible for all of it, including any errors.
+
+Following this manual's own advice on [rolling your own](using-ai.md#roll-your-own) and borrowing GAIDeT's vocabulary, the tasks delegated under human supervision were: literature search and systematization, text generation, proofreading and editing, code generation, and process automation.
+
+Models: Claude Opus 4.6, 4.7, 4.8, and Opus 5.
+
+The git history is the detailed record — almost every commit carries a `Co-Authored-By` trailer naming the model that contributed to it.
