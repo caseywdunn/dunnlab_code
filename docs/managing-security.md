@@ -21,11 +21,17 @@ Information security conventionally sorts those harms into three, known as the *
 
 The permission system described below is your primary defense. It lets you decide exactly which actions Claude can take automatically, which require your approval, and which are blocked entirely. But note in advance that permission rules constrain what Claude *decides* to do; only the [sandbox](#the-bash-sandbox) constrains what a running command *can reach*.
 
-## Configuring permissions with settings.json
+## Claude-level control
+
+Everything in this section shapes what Claude *decides* to do. Rules and modes are read by Claude Code and applied before a tool call runs, which makes them precise, easy to change, and the right place to start.
+
+They share one limit worth holding onto: they govern the agent. A command that does run is not constrained by them, and neither is a process that command spawns. That is what [System-level control](#system-level-control) is for.
+
+### Configuring permissions with settings.json
 
 Claude Code uses `settings.json` files to control what actions Claude can take. This is how you restrict dangerous commands, protect sensitive files, and tailor permissions per project or environment.
 
-## Settings file locations
+### Settings file locations
 
 There are three places you can put a `settings.json`:
 
@@ -37,7 +43,7 @@ There are three places you can put a `settings.json`:
 
 An organization can also deploy **managed settings** (e.g. `/etc/claude-code/managed-settings.json` on Linux), which outrank everything below.
 
-## Priority order
+### Priority order
 
 When the same setting appears at multiple levels, higher-priority scopes win:
 
@@ -51,7 +57,7 @@ Permission arrays (`allow`, `ask`, `deny`) merge across scopes rather than repla
 {: .warning }
 One exception worth knowing: `"defaultMode": "auto"` in a project's `.claude/settings.json` or `.claude/settings.local.json` has no effect. Auto mode can only be set from user settings, managed settings, or the `--permission-mode` flag.
 
-## The permissions object
+### The permissions object
 
 Permissions are defined in three arrays inside `settings.json`:
 
@@ -72,7 +78,7 @@ Permissions are defined in three arrays inside `settings.json`:
 
 Rules are evaluated in order: **deny > ask > allow**. A deny rule always wins over an allow rule at the same scope.
 
-## Permission modes
+### Permission modes
 
 A permission mode sets Claude's baseline behavior — how often it pauses to ask before editing a file, running a command, or making a network request. You can cycle modes mid-session with `Shift+Tab` in the CLI (or the mode selector in VS Code, JetBrains, Desktop, and claude.ai), start in a mode with `claude --permission-mode <mode>`, or set a persistent `defaultMode` in `settings.json`. For the full reference, see the official [permission modes documentation](https://code.claude.com/docs/en/permission-modes).
 
@@ -96,7 +102,7 @@ What no mode changes:
 - **Writes to protected paths are never auto-approved** except under `bypassPermissions`. See [Protected and critical paths](#protected-and-critical-paths).
 - **`rm` and `rmdir` against a critical path** are never approved by an allow rule or a hook, in any mode. Same section.
 
-### Auto mode
+#### Auto mode
 
 Auto mode lets Claude work in long uninterrupted stretches. A separate classifier model reviews each action before it runs and blocks anything that escalates beyond your request, targets unrecognized infrastructure, or appears driven by hostile content Claude read in a file or web page. You get far fewer prompts than Manual mode without surrendering the safety net that `bypassPermissions` removes entirely.
 
@@ -109,7 +115,30 @@ A few properties are worth understanding before you rely on it:
 
 It is not a substitute for review on sensitive operations. Use it where you trust the general direction of the work.
 
-### Protected and critical paths
+#### `bypassPermissions` mode
+
+`bypassPermissions` mode disables permission prompts and safety checks so tool calls execute immediately. Start in it from the CLI:
+
+```bash
+claude --permission-mode bypassPermissions
+```
+
+(The older `--dangerously-skip-permissions` flag is equivalent and still works.)
+
+{: .warning }
+`bypassPermissions` offers **no protection against prompt injection or unintended actions** — Claude will execute any command, edit any file, and access any resource without asking. Malicious content hidden in a cloned repo, a fetched web page, or a tool output can hijack the session with nothing to stop it. Only use it behind a [system-level boundary](#system-level-control) — a container, a virtual machine, or a dedicated machine — where there is nothing sensitive to protect and nothing important to break. Never use it on your host machine or a shared system.
+
+For long, mostly-unattended runs where you still want a safety net, reach for [`auto` mode](#auto-mode) instead: it eliminates most prompts but keeps a classifier that blocks escalations and injection-driven actions. Use `bypassPermissions` only when isolation — not the classifier — is what protects you.
+
+Note that the classifier is a per-action check rather than a boundary, so even in `auto` mode an isolation layer is worth having for unattended work. Under `bypassPermissions` it is not optional.
+
+Even here, two things still hold: `deny` rules apply, and `rm` against a [critical path](#protected-and-critical-paths) still prompts.
+
+On Linux and macOS, Claude Code refuses to start `bypassPermissions` as `root` or under `sudo` outside a recognized sandbox. The [dev container](https://code.claude.com/docs/en/devcontainer) configuration runs as a non-root user, so it works there.
+
+To prevent this mode being used at all — on a shared system, say — set `permissions.disableBypassPermissionsMode` to `"disable"` in any settings file. It is most useful in managed settings, but you can also set it in your own to lock yourself out.
+
+#### Protected and critical paths
 
 Two safety checks sit outside the permission rules entirely, so it is worth knowing they exist before you write a rule that appears not to work.
 
@@ -117,11 +146,11 @@ Two safety checks sit outside the permission rules entirely, so it is worth know
 
 **Critical paths** are `rm`/`rmdir` targets that no `allow` rule and no `PreToolUse` hook can approve: the filesystem root and its top-level directories, your home directory, and your working directory and its parents. A glob under a shell variable (`rm -rf "$DIR"/*`) counts, because an empty variable turns it into a removal from `/`. Hiding it in `$(...)` does not evade the check. A matching `deny` rule still blocks the command outright.
 
-## Permission rule syntax
+### Permission rule syntax
 
 Rules follow the pattern `Tool` or `Tool(specifier)`.
 
-### Bash commands
+#### Bash commands
 
 ```json
 "allow": [
@@ -146,7 +175,7 @@ The `:*` suffix is an equivalent way to write that trailing wildcard, so `Bash(l
 
 Claude Code understands shell operators, so `Bash(safe-cmd *)` does not approve `safe-cmd && other-cmd`; every subcommand must match a rule independently.
 
-### File access
+#### File access
 
 Only two tool names take a path: **`Read`** and **`Edit`**. `Edit(...)` covers every built-in tool that writes files, and a `Read` deny rule also blocks writing to the same path. Path rules written for `Write`, `NotebookEdit`, `Glob`, or `MultiEdit` are accepted but never consulted, and Claude Code warns about them at startup — write `Edit(docs/**)` rather than `Write(docs/**)`.
 
@@ -180,7 +209,7 @@ A rule like `Read(**/.ssh/**)` in `~/.claude/settings.json` does **not** protect
 {: .warning }
 Read and Edit rules apply to Claude's own file tools and to file commands it recognizes in Bash, such as `cat` and `sed`. They do **not** apply to a script that opens the file itself — a Python program Claude runs can read anything your account can read. For enforcement that covers every process, use the [Bash sandbox](#the-bash-sandbox).
 
-### Other tools
+#### Other tools
 
 ```json
 "ask": [
@@ -191,11 +220,21 @@ Read and Edit rules apply to Claude's own file tools and to file commands it rec
 ]
 ```
 
-## Sandboxed environments
+## System-level control
 
-Permission rules govern what Claude will *choose* to do. Sandboxing governs what a command *can* do once it runs — an enforcement boundary rather than a judgment call. The two are complementary, and for unattended work you want both.
+Everything above depends on Claude behaving as designed. This section does not: the operating system enforces these boundaries, so they hold whether Claude is following your rules, misreading your intent, or acting on instructions injected into a file it read.
 
-Three options, from lightest to heaviest:
+That is the distinction to keep. Permission rules decide what Claude *chooses* to do. Isolation decides what a running command *can reach*. For unattended work you want both, and the more autonomy you grant at the Claude level, the more the system level has to carry.
+
+The options below run from lightest to heaviest. Anthropic's [sandbox environments guide](https://code.claude.com/docs/en/sandbox-environments) compares them in more detail.
+
+| Approach | What it isolates | Effort |
+|----------|------------------|--------|
+| Bash sandbox | Bash commands and their children | Minimal on macOS, low on Linux |
+| Dev container | The whole environment, with an egress firewall | Medium; needs Docker |
+| Separate user account | Your own files from the agent's | Low |
+| Virtual machine | A full operating system | Medium to high |
+| Dedicated machine | Everything, physically | Low once you have the hardware |
 
 ### The Bash sandbox
 
@@ -226,9 +265,12 @@ If you work on an HPC cluster, see [Computing at Yale](yale.md#claude-code-on-th
 
 A good pairing for local work: Manual mode plus sandbox auto-allow. You get few prompts, and what you get in exchange is a real kernel-enforced boundary rather than a model's judgment.
 
+{: .warning }
+**The Bash sandbox constrains Bash and nothing else.** Claude Code's own file tools, any MCP servers you have configured, and any hooks all run as separate processes on your host, outside the boundary. This is enough to make everyday work safer; it is *not* enough for an unattended session. To put every tool, hook, and MCP server behind one boundary without Docker, run the whole Claude Code process through the [sandbox runtime](https://github.com/anthropic-experimental/sandbox-runtime) — currently a research preview whose configuration format may still change.
+
 ### Dev containers
 
-Running Claude Code inside a [development container](https://code.claude.com/docs/en/devcontainer) isolates the whole environment, not just Bash. Claude has full access inside the container but cannot touch your host filesystem, credentials, or network unless you explicitly mount or forward them. This is the right choice for automated or unattended use.
+Running Claude Code inside a [development container](https://code.claude.com/docs/en/devcontainer) isolates the whole environment, not just Bash — file tools, hooks, and MCP servers included. Claude has full access inside the container but cannot touch your host filesystem, credentials, or network unless you explicitly mount or forward them. For most unattended work on code you trust, this is the right level.
 
 Docker Desktop (macOS/Windows) or Docker Engine (Linux) must be installed on the host.
 
@@ -243,23 +285,26 @@ The simplest configuration adds the official [Claude Code Dev Container Feature]
 {: .warning }
 Only use devcontainers with trusted repositories. While the firewall restricts network access, it does not prevent a malicious project from exfiltrating anything accessible inside the container, including Claude Code credentials.
 
-### `bypassPermissions` mode
+### Separate user accounts
 
-`bypassPermissions` mode disables permission prompts and safety checks so tool calls execute immediately. Start in it from the CLI:
+The cheapest meaningful boundary, and the one most people skip. Create a second account on your machine, install Claude Code there, and do agent work signed in as that user. Ordinary filesystem permissions then do the isolating: the agent cannot read your real `~/.ssh`, your cloud credentials, your browser profile, or the rest of your home directory, because it is not your home directory.
 
-```bash
-claude --permission-mode bypassPermissions
-```
+This costs nothing but the setup and it needs no virtualization. What it does not give you is network isolation, protection for anything you deliberately share with that account, or any defence against a command that escalates privileges. Treat it as raising the floor rather than as a container substitute.
 
-(The older `--dangerously-skip-permissions` flag is equivalent and still works.)
+It pairs well with a project directory that both accounts can reach, so you can review the work without switching users.
 
-{: .warning }
-`bypassPermissions` offers **no protection against prompt injection or unintended actions** — Claude will execute any command, edit any file, and access any resource without asking. Malicious content hidden in a cloned repo, a fetched web page, or a tool output can hijack the session with nothing to stop it. Only use this inside a disposable container or VM where there is nothing sensitive to protect and nothing important to break. Never use it on your host machine or a shared system.
+### Virtual machines
 
-For long, mostly-unattended runs where you still want a safety net, reach for [`auto` mode](#auto-mode) instead: it eliminates most prompts but keeps a classifier that blocks escalations and injection-driven actions. Use `bypassPermissions` only when isolation — not the classifier — is what protects you.
+A VM gives you a full operating system with its own kernel, which is the strongest separation short of separate hardware. Snapshots make it disposable in a way a container is not: take one before a long run, roll back afterwards if anything looks wrong.
 
-Even here, two things still hold: `deny` rules apply, and `rm` against a [critical path](#protected-and-critical-paths) still prompts.
+Options run from a local hypervisor, through cloud instances you create and destroy per project, to microVMs. [Docker Sandboxes](https://docs.docker.com/ai/sandboxes/) packages a microVM with its own Docker daemon and workspace sync. [Claude Code on the web](https://code.claude.com/docs/en/claude-code-on-the-web) is a managed version of the same idea — each session runs in an Anthropic-managed VM behind a network allowlist, with no infrastructure for you to provision.
 
-On Linux and macOS, Claude Code refuses to start `bypassPermissions` as `root` or under `sudo` outside a recognized sandbox. The [dev container](https://code.claude.com/docs/en/devcontainer) configuration runs as a non-root user, so it works there.
+This is the right level for genuinely untrusted code, and for any policy that requires kernel-level separation between the agent and your work.
 
-To prevent this mode being used at all — on a shared system, say — set `permissions.disableBypassPermissionsMode` to `"disable"` in any settings file. It is most useful in managed settings, but you can also set it in your own to lock yourself out.
+### Dedicated machines
+
+The simplest boundary to reason about, because there is nothing to reason about: a separate computer with nothing valuable on it.
+
+For long unsupervised coding sessions I use either a dedicated virtual machine in the cloud or an old computer set up with Ubuntu. Both are cheap — a spare laptop that is too slow for daily use is fine, and a small cloud instance costs little if you stop it when idle — and both mean I do not have to think carefully about what a bypassed session could reach. If it destroys itself, I reinstall.
+
+The practical requirements are the same either way. Keep nothing on it you cannot lose, give it credentials scoped to the one project rather than your usual keys, and push work to git rather than trusting the machine to hold it.
