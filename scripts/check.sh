@@ -213,6 +213,45 @@ PYEOF
 if [[ -z "$res" ]]; then ok "no bracketed text without a link target"
 else while IFS= read -r l; do bad "$l"; done <<< "$res"; fi
 
+# ------------------------------------------------- install commands
+head_ "Install commands"
+
+# The install commands are the one thing Quick Reference duplicates that
+# actually appears in several chapters. Validate them against the manifests
+# and the git remote rather than against each other, so the source of truth
+# is the thing being copied, not another copy.
+res=$(python3 - <<'PYEOF'
+import json, pathlib, re, subprocess
+
+plugin = json.load(open('.claude-plugin/plugin.json'))['name']
+market = json.load(open('.claude-plugin/marketplace.json'))['name']
+try:
+    url = subprocess.run(['git', 'remote', 'get-url', 'origin'],
+                         capture_output=True, text=True, check=True).stdout.strip()
+    m = re.search(r'[:/]([^/:]+/[^/]+?)(?:\.git)?$', url)
+    slug = m.group(1) if m else None
+except Exception:
+    slug = None
+
+bad = []
+for f in list(pathlib.Path('docs').glob('*.md')) + [pathlib.Path('README.md')]:
+    for i, line in enumerate(f.read_text().split('\n'), 1):
+        # Only our own commands. Other marketplaces and placeholder examples
+        # ("plugin-name@marketplace-name") are legitimate and must not fire.
+        for m in re.finditer(r'claude plugin install (\S+)', line):
+            got, want = m.group(1), f"{plugin}@{market}"
+            if 'dunnlab' in got and got != want:
+                bad.append(f"{f}:{i}: 'claude plugin install {got}' should be '{want}'")
+        for m in re.finditer(r'claude plugin marketplace add (\S+)', line):
+            got = m.group(1)
+            if slug and ('dunnlab' in got or 'caseywdunn' in got) and got != slug:
+                bad.append(f"{f}:{i}: marketplace add '{got}' does not match the remote '{slug}'")
+for b in bad: print(b)
+PYEOF
+)
+if [[ -z "$res" ]]; then ok "install commands match the manifests and remote"
+else while IFS= read -r l; do bad "$l"; done <<< "$res"; fi
+
 # --------------------------------------------------- disclosure freshness
 head_ "AI use disclosure"
 
