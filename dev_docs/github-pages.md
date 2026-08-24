@@ -32,15 +32,18 @@ The chapters are ordered by how widely they apply, narrowing as they go. Keep ne
 |------|-----------|------|---------|
 | `index.md` | 1 | — | Landing page; states the tier structure and where to start |
 | `using-ai.md` | 2 | anyone | Responsibility, reviewing generated code, data handling, disclosure, journal and funder policy |
-| `getting-started.md` | 3 | anyone | Recommended stack, installing and verifying Claude Code |
-| `claude-intro.md` | 4 | anyone | How Claude Code works: interfaces, working directory, extensibility, effective use |
-| `managing-security.md` | 5 | anyone | Permissions, sandboxing, containers |
-| `managing-context.md` | 6 | anyone | Context window, CLAUDE.md, rules, auto memory, skills, plugins |
-| `plugin.md` | 7 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
-| `example-workflows.md` | 8 | anyone | Step-by-step walkthrough of a project |
-| `other-agents.md` | 9 | anyone | The wider agent landscape, AGENTS.md, and serving several agents from one file |
-| `yale.md` | 10 | Yale | YCRC clusters and running Claude Code on shared hardware |
-| `lab-practices.md` | 11 | Dunn Lab | The reasoning behind our conventions, and data management |
+| `quick-reference.md` | 3 | anyone | One-page cheatsheet: setup, working rhythm, permission modes, sessions, tmux |
+| `getting-started.md` | 4 | anyone | Recommended stack, installing and verifying Claude Code |
+| `claude-intro.md` | 5 | anyone | How Claude Code works: interfaces, working directory, extensibility, effective use |
+| `managing-security.md` | 6 | anyone | Permissions, sandboxing, isolation |
+| `managing-context.md` | 7 | anyone | Context window, CLAUDE.md, rules, auto memory, skills, plugins |
+| `plugin.md` | 8 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
+| `example-workflows.md` | 9 | anyone | Step-by-step walkthrough of a project |
+| `other-agents.md` | 10 | anyone | The wider agent landscape, AGENTS.md, and serving several agents from one file |
+| `yale.md` | 11 | Yale | YCRC clusters and running Claude Code on shared hardware |
+| `lab-practices.md` | 12 | Dunn Lab | The reasoning behind our conventions, and data management |
+
+Quick Reference deliberately duplicates commands that appear in later chapters. Keep it to commands and one-line descriptions — the explanation belongs in the chapter it links to, so the two cannot drift far.
 
 Keep this table in sync with the frontmatter. `./scripts/check.sh` verifies that `nav_order` values are contiguous and unique and that every page is linked from `index.md`, but **it does not check this table** — that is on you.
 

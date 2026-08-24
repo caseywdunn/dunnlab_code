@@ -1,6 +1,6 @@
 ---
 title: Managing Security
-nav_order: 5
+nav_order: 6
 ---
 
 # Managing Security
@@ -303,7 +303,7 @@ This is the right level for genuinely untrusted code, and for any policy that re
 
 ### Dedicated machines
 
-The simplest boundary to reason about, because there is nothing to reason about: a separate computer with nothing valuable on it.
+The most secure, simplest, and most straightforward boundary is a separate computer with nothing valuable on it. Some risk remains through the network — a machine sitting inside a trusted network can still reach internal services even when it holds nothing itself — but the strategy is clean and effective, and it is my preferred approach when practical.
 
 For long unsupervised coding sessions I use either a dedicated virtual machine in the cloud or an old computer set up with Ubuntu. Both are cheap — a spare laptop that is too slow for daily use is fine, and a small cloud instance costs little if you stop it when idle — and both mean I do not have to think carefully about what a bypassed session could reach. If it destroys itself, I reinstall.
 

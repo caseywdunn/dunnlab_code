@@ -1,6 +1,6 @@
 ---
 title: Claude Code Concepts
-nav_order: 4
+nav_order: 5
 ---
 
 # Claude Code Concepts
