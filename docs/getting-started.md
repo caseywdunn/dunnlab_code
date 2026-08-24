@@ -48,8 +48,6 @@ The Python ecosystem we use includes:
 
 The rest of this chapter sets up Claude Code and the optional DunnLab plugin on your own computer.
 
-### 1. Install Claude Code
-
 There are a few ways to run Claude Code:
 
 - **The Claude desktop application**, a dedicated graphical interface.
@@ -57,6 +55,8 @@ There are a few ways to run Claude Code:
 - **A command line program**, running in your terminal alongside your existing editor and tools.
 
 I use the command line most often. It works in a wider variety of situations and gives clearer, more direct control, and it is where most developers use Claude Code — so it tends to be the most up to date and best supported interface. This manual assumes the command line throughout; if you are using another interface, the equivalent is usually easy to find.
+
+### 1. Install Claude Code
 
 Follow the official installation instructions at [Claude Code Overview](https://code.claude.com/docs/en/overview).
 

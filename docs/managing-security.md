@@ -5,19 +5,21 @@ nav_order: 5
 
 # Managing Security
 
-Claude Code can read your files, run commands, and reach the network. This chapter is about deciding what it may do without asking, what it must ask about, and what it may never do — and about the difference between a rule Claude follows and a boundary the operating system enforces.
-
-Worth reading before you let Claude work unsupervised, and again before you run it on a shared system.
+Claude Code can read your files, run commands, and reach the network. This chapter is about understanding the risks and benefits of allowing it to read and write files on your computer, deciding what to allow it to do without asking, what it must ask about, and what it may never do. We also cover the difference between a rule Claude follows and a boundary the operating system enforces, a critical distinction.
 
 ## Why security matters
 
-Claude Code runs directly on your machine with access to your shell, filesystem, and network. This is what makes it powerful — it can read your code, run commands, edit files, and install packages. But that same access creates real risks:
+Claude Code runs directly on your machine with access to your shell, filesystem, and network. This is what makes it powerful — it can read your code, run commands, edit files, and install packages. But that same access creates real risks, and they overlap substantially with ordinary cybersecurity risks. Think about granting Claude access to your computer much as you would think about granting a person access to it. Either way, through malice or through mistakes, harm is possible.
 
-- **Accidental damage.** Claude may delete or overwrite the wrong files, run a destructive command, or make edits based on a misunderstanding of your intent. On shared systems like an HPC cluster, a mistake can affect other users' files or waste compute resources.
-- **Exposure of private information.** Claude can read anything your user account can read — API keys, credentials, SSH configs, environment variables, private data. If this information ends up in a prompt sent to the API, it leaves your machine.
-- **Prompt injection.** Malicious content hidden in files, web pages, or tool outputs can manipulate Claude's behavior. For example, a cloned repository could contain instructions in a file that trick Claude into running harmful commands or exfiltrating data. This is especially concerning when working with untrusted code or fetching content from the web.
+Information security conventionally sorts those harms into three, known as the **CIA triad** — no relation to the intelligence agency, just an unfortunate coincidence of initials. [NIST SP 800-12](https://csrc.nist.gov/pubs/sp/800/12/r1/final) is the standard reference. All three apply here:
 
-The permission system described below is your primary defense. It lets you decide exactly which actions Claude can take automatically, which require your approval, and which are blocked entirely.
+- **Confidentiality** — information reaching someone who should not have it. Claude can read anything your user account can read: API keys, credentials, SSH configs, environment variables, unpublished results, and on a shared system, other people's work. Anything it reads may be sent to the API, at which point it has left your machine.
+- **Integrity** — information being changed when it should not be. Claude may overwrite the wrong file, modify data in place, introduce a subtle error into an analysis, or commit something that breaks a pipeline other people depend on. The dangerous case is not the change you notice; it is the one you do not.
+- **Availability** — losing access to something you need. Deleted work, an exhausted storage quota, a cluster account suspended for a policy violation, a week of compute burned by a runaway job. On shared infrastructure this lands on your colleagues as much as on you.
+
+**Prompt injection** cuts across all three and is worth understanding separately, because it is a *mechanism* rather than an outcome. Instructions hidden in a file, a web page, a dependency, or a tool's output can redirect what Claude does — a cloned repository whose README tells the agent to send credentials somewhere, for instance. The underlying point is that anything Claude reads is potentially an instruction and not merely data, which is why untrusted code and fetched web content deserve particular care.
+
+The permission system described below is your primary defense. It lets you decide exactly which actions Claude can take automatically, which require your approval, and which are blocked entirely. But note in advance that permission rules constrain what Claude *decides* to do; only the [sandbox](#the-bash-sandbox) constrains what a running command *can reach*.
 
 ## Configuring permissions with settings.json
 
