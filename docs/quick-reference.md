@@ -11,6 +11,8 @@ If you are reading straight through, skim this for the shape and keep moving —
 
 ## Set up
 
+**Before you install, decide where this will run.** Your everyday machine, a separate user account on it, a container, a virtual machine, or a dedicated machine. This is much easier to choose now than to retrofit later, and the more autonomy you plan to give Claude, the more that choice has to carry. → [System-level control](managing-security.md#system-level-control)
+
 ```bash
 # 1. Install Claude Code (macOS, Linux, WSL)
 curl -fsSL https://claude.ai/install.sh | bash
@@ -33,6 +35,8 @@ Then, inside a session:
 | `/context` | What is currently loaded and what it costs you |
 | `/doctor` | Setup checkup, including what your skills and plugins cost |
 | `/help` | Everything available |
+
+**Once it runs, set your own defaults.** `~/.claude/settings.json` holds your permission rules and the mode sessions start in; `~/.claude/CLAUDE.md` holds preferences that apply to every project. Deciding these once beats re-deciding them every session. → [Claude-level control](managing-security.md#claude-level-control), [Managing Context](managing-context.md)
 
 → [Getting Started](getting-started.md)
 
