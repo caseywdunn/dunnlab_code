@@ -55,7 +55,6 @@
 
     "ask": [
       "Edit(**)",
-      "Write(**)",
 
       "Bash(git push:*)",
       "Bash(git commit:*)",
