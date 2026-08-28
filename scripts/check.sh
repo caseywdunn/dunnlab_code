@@ -148,28 +148,136 @@ else
 fi
 
 # internal relative links and same-file anchors
-res=$(python3 - <<'PY'
+res=$(python3 - <<'PYEOF'
 import pathlib,re
-bad=[]
+
+def anchors(path):
+    """Heading anchors a file offers as link targets.
+
+    Strip fenced and inline code FIRST: a '# comment' inside a bash block is
+    not a heading, and counting it would let a bad anchor resolve."""
+    t = path.read_text()
+    clean = re.sub(r'```.*?```','',t,flags=re.S); clean = re.sub(r'`[^`]*`','',clean)
+    a = [re.sub(r'[^a-z0-9 -]','',h.lower()).replace(' ','-') for h in re.findall(r'^#+ +(.+)$',clean,re.M)]
+    return set(a) | set(re.findall(r'id="([^"]+)"', t))
+
+cache = {}
+def anchors_cached(p):
+    if p not in cache: cache[p] = anchors(p)
+    return cache[p]
+
+bad = []
 for p in pathlib.Path('.').rglob('*.md'):
     if '.git' in p.parts or 'workshops' in p.parts: continue
-    t=p.read_text()
-    # Strip fenced and inline code FIRST: a '# comment' inside a bash block is
-    # not a heading, and treating it as one would let a bad anchor resolve.
-    clean=re.sub(r'```.*?```','',t,flags=re.S); clean=re.sub(r'`[^`]*`','',clean)
-    heads=[re.sub(r'[^a-z0-9 -]','',h.lower()).replace(' ','-') for h in re.findall(r'^#+ +(.+)$',clean,re.M)]
-    heads+=re.findall(r'id="([^"]+)"',t)
-    for m in re.finditer(r'\]\(([^)]+)\)',clean):
-        tgt=m.group(1)
+    t = p.read_text()
+    clean = re.sub(r'```.*?```','',t,flags=re.S); clean = re.sub(r'`[^`]*`','',clean)
+    for m in re.finditer(r'\]\(([^)]+)\)', clean):
+        tgt = m.group(1)
         if tgt.startswith(('http','mailto:')): continue
-        path,_,anc=tgt.partition('#')
-        if path and not (p.parent/path).exists(): bad.append(f"{p}: broken link -> {path}")
-        if anc and not path and anc not in heads: bad.append(f"{p}: broken anchor -> #{anc}")
+        path, _, anc = tgt.partition('#')
+        target = (p.parent/path) if path else p
+        if path and not target.exists():
+            bad.append(f"{p}: broken link -> {path}"); continue
+        # Cross-file anchors matter most during a restructure, when a section
+        # moves between pages and every link into it silently rots.
+        if anc and anc not in anchors_cached(target):
+            bad.append(f"{p}: broken anchor -> {tgt}")
 for b in bad: print(b)
-PY
+PYEOF
 )
 if [[ -z "$res" ]]; then ok "internal links and anchors resolve"
 else while IFS= read -r l; do bad "$l"; done <<< "$res"; fi
+
+# Bracketed text with no target is not a link -- it renders as literal
+# brackets. This is how an unfinished table-of-contents entry escapes the
+# link checker entirely, since there is no target for it to resolve.
+res=$(python3 - <<'PYEOF'
+import pathlib, re
+bad = []
+for p in pathlib.Path('docs').rglob('*.md'):
+    t = p.read_text()
+    clean = re.sub(r'```.*?```', '', t, flags=re.S); clean = re.sub(r'`[^`]*`', '', clean)
+    for i, line in enumerate(clean.split('\n'), 1):
+        # a [label] not followed by (target), [ref], or a :  definition
+        for m in re.finditer(r'(?<!\!)\[([^\]\[]*)\](?![\(\[:])', line):
+            label = m.group(1)
+            # Legitimate bracket uses that are not links: task-list checkboxes,
+            # numeric footnote markers, and GitHub alert syntax.
+            if label.strip() in ('', 'x', 'X'): continue
+            if label.isdigit(): continue
+            if label.startswith('!'): continue
+            bad.append(f"{p}:{i}: '[{label}]' has no link target")
+for b in bad: print(b)
+PYEOF
+)
+if [[ -z "$res" ]]; then ok "no bracketed text without a link target"
+else while IFS= read -r l; do bad "$l"; done <<< "$res"; fi
+
+# ------------------------------------------------- install commands
+head_ "Install commands"
+
+# The install commands are the one thing Quick Reference duplicates that
+# actually appears in several chapters. Validate them against the manifests
+# and the git remote rather than against each other, so the source of truth
+# is the thing being copied, not another copy.
+res=$(python3 - <<'PYEOF'
+import json, pathlib, re, subprocess
+
+plugin = json.load(open('.claude-plugin/plugin.json'))['name']
+market = json.load(open('.claude-plugin/marketplace.json'))['name']
+try:
+    url = subprocess.run(['git', 'remote', 'get-url', 'origin'],
+                         capture_output=True, text=True, check=True).stdout.strip()
+    m = re.search(r'[:/]([^/:]+/[^/]+?)(?:\.git)?$', url)
+    slug = m.group(1) if m else None
+except Exception:
+    slug = None
+
+bad = []
+for f in list(pathlib.Path('docs').glob('*.md')) + [pathlib.Path('README.md')]:
+    for i, line in enumerate(f.read_text().split('\n'), 1):
+        # Only our own commands. Other marketplaces and placeholder examples
+        # ("plugin-name@marketplace-name") are legitimate and must not fire.
+        for m in re.finditer(r'claude plugin install (\S+)', line):
+            got, want = m.group(1), f"{plugin}@{market}"
+            if 'dunnlab' in got and got != want:
+                bad.append(f"{f}:{i}: 'claude plugin install {got}' should be '{want}'")
+        for m in re.finditer(r'claude plugin marketplace add (\S+)', line):
+            got = m.group(1)
+            if slug and ('dunnlab' in got or 'caseywdunn' in got) and got != slug:
+                bad.append(f"{f}:{i}: marketplace add '{got}' does not match the remote '{slug}'")
+for b in bad: print(b)
+PYEOF
+)
+if [[ -z "$res" ]]; then ok "install commands match the manifests and remote"
+else while IFS= read -r l; do bad "$l"; done <<< "$res"; fi
+
+# --------------------------------------------------- disclosure freshness
+head_ "AI use disclosure"
+
+# docs/index.md names the models used. The likely failure is using a new one
+# and forgetting to add it, so check the claim against the commit trailers.
+# Needs full history; a shallow clone skips rather than fails.
+if ! git rev-parse --git-dir >/dev/null 2>&1; then
+  skip_ "disclosure model list — not a git repository"
+elif [[ "$(git rev-parse --is-shallow-repository 2>/dev/null)" == "true" ]]; then
+  skip_ "disclosure model list — shallow clone, no history to check"
+else
+  missing=""
+  while read -r m; do
+    [[ -z "$m" ]] && continue
+    # "Claude Opus 4.6" -> require "4.6" to appear in the disclosure section
+    ver=$(sed -E 's/^Claude Opus //; s/ *\(.*//' <<< "$m")
+    grep -q "$ver" docs/index.md && continue
+    [[ " $missing " == *" $ver "* ]] || missing="$missing $ver"
+  done < <(git log --format='%b' | grep -oiE 'Co-Authored-By: Claude[^<]*' \
+           | sed -E 's/Co-Authored-By: //I; s/ *$//' | sort -u)
+  if [[ -z "$missing" ]]; then
+    ok "disclosure names every model in the commit history"
+  else
+    bad "docs/index.md disclosure is missing model(s):$missing"
+  fi
+fi
 
 # ------------------------------------------------------------------- links
 if [[ $CHECK_LINKS -eq 1 ]]; then

@@ -1,52 +1,41 @@
 ---
-title: Lab Practices
-nav_order: 3
+title: Dunn Lab Practices
+nav_order: 12
 ---
 
-# Lab Practices
+# Dunn Lab Practices
 
-This is a partial description of the Dunn Lab's conventions for code development. Where the [Getting Started](getting-started.md) page covers the tools, this page covers what we expect of each other when using them.
+This chapter is the most opinionated in the manual, and deliberately so. Everything before it is guidance we would stand behind for anyone; this is how *we* have settled the questions that have more than one defensible answer.
 
-## Code review expectations for AI-generated code
+If you are outside the lab, treat it as a worked example rather than a recommendation. The value is less in our specific choices than in the fact that they are written down and encoded somewhere a tool can apply them — the alternative is a convention that exists only in the head of whoever set it up.
 
-The governing principle is simple: **you are responsible for code you commit, regardless of who or what wrote it.** "Claude wrote it" is not an explanation for a bug, a wrong result, or a security problem. It is your name on the commit and, eventually, on the paper.
+## The choices worth knowing about
 
-In practice:
+These conventions are encoded as skills in [the plugin](plugin.md), so Claude applies them as you work — that chapter maps what is in there. What follows is the reasoning, which the skills themselves do not carry.
 
-- **Read every diff before you commit it.** Not skim — read. If a change is too large to read carefully, it was too large a task to hand over in one go. Break it up.
-- **If you cannot evaluate the code, you cannot vouch for it.** This is the main reason you still need to learn to program while using these tools. Where a generated approach uses something you do not understand, either learn it or ask for an approach you do.
-- **Apply the same standard as to human-written code.** The `dunnlab-codereview` skill has the checklist we use; ask Claude to run through it, and then check its work.
-- **Scrutinize the science, not just the code.** Claude will write syntactically perfect code that computes the wrong thing. Filtering that silently drops rows, a join that duplicates records, a statistical test that does not apply — these pass every linter. Sanity-check intermediate outputs and row counts, not just whether the script exits cleanly.
-- **Be more careful in proportion to how far the result travels.** An exploratory notebook you will throw away needs less scrutiny than a pipeline that will produce a figure in a manuscript.
+A few are more consequential than a style preference, and they are the ones most likely to surprise someone joining:
 
-### Work that needs a human before it lands
+**Python by default, R when a library requires it.** We prefer industry-standard tools over domain-specific ones, as [Getting Started](getting-started.md#languages) argues. R remains the right answer when the analysis needs a package that only exists there, when it is what you know and it works, or when a collaboration has already chosen it.
 
-Some things should not be committed on a fast review:
+**Raw data is immutable, enforced structurally.** `data/raw/` is never written to. Every transformation produces a new file under `data/processed/` from a script that can be re-run. This is a general principle — [Using AI in Research](using-ai.md#working-with-data) makes the case — but the bioinformatics skill turns it into specific checks.
 
-- Anything that touches raw data, or that writes into `data/raw/`
-- Statistical analysis and the choice of test
-- Anything that will produce a number or figure appearing in a manuscript
-- Changes to a shared pipeline others depend on
-- Permission settings, `.gitignore`, and anything affecting credentials
+**Cross-species gene IDs are namespaced as `Genus_species@gene_id`.** The `@` separator is chosen because it does not appear in standard gene IDs and is not a shell metacharacter. Every renaming keeps a mapping file, so the transformation is always reversible. Merging datasets without this is a class of silent error that surfaces months later in a tree.
 
-### Disclosure
+**Never abbreviate an author list, and never guess a bibliographic field.** A missing DOI gets a `% TODO` comment, not a plausible-looking value. This sounds pedantic until an AI assistant fills one in for you.
 
-Claude's commits carry a `Co-Authored-By` trailer, so the git history records where AI assistance was used. Leave it in place — it is useful provenance, and it costs nothing.
+**CLAUDE.md stays under 100 lines.** The [official guidance](https://code.claude.com/docs/en/memory) targets 200; we hold to half that, because everything in a CLAUDE.md is paid for in every session. When project guidance outgrows it, the answer is a path-scoped rule in `.claude/rules/`, not a longer CLAUDE.md — see [Managing Context](managing-context.md#rules).
 
-For manuscripts and proposals, follow the policy of the specific journal or funding agency; see [Journal policies](getting-started.md#journal-policies). Check before you start writing, not after. AI is not listed as an author.
-
-## Data privacy considerations
-
-- Put all secure information (API keys, tokens, passwords, account usernames) in dedicated files that are in the `.gitignore`
-- Use placeholder or synthetic data when developing analysis pipelines
-- Deny rules in your `settings.json` should block Claude from reading credential files at all — see [Managing Security](managing-security.md). Note that these rules are anchored relative to your working directory unless you write them with `~/` or `//`.
-- Assume anything Claude reads may be sent to the API. On shared systems this includes anything your account can read, which on a cluster may include other people's work.
+**Checkpointing is by output existence, not sentinel files.** A pipeline stage is skipped if its output already exists. To re-run a stage you delete its output. There is no hidden state tracking what has completed.
 
 ## Data management
 
-Consult our separate data management plan for requirements and conventions on where to store data, how to share files, archival, etc.
+Consult our separate data management plan for requirements and conventions on where to store data, how to share files, archival, and retention.
 
-Two conventions worth restating here, because AI tools make it easy to violate them by accident:
+Two conventions from it are worth restating here, because AI tools make them easy to violate by accident:
 
-- **Raw data is immutable.** Transformations produce new files in `data/processed/`. If a script would modify something in `data/raw/`, that is a bug regardless of what it was asked to do.
-- **Prefer a script over a direct transformation.** When you need data reshaped, have Claude write a script you can read and re-run, rather than having it edit the file in place. The script is reviewable, reproducible, and reversible; a direct edit is none of those.
+- **Raw data is immutable.** If a script would modify something in `data/raw/`, that is a bug regardless of what it was asked to do.
+- **Prefer a script over a direct transformation.** Have Claude write something you can read and re-run rather than editing data in place. The script is reviewable, reproducible, and reversible.
+
+## Contributing back
+
+If a convention here is wrong, or you have settled a question this chapter does not cover, change it rather than working around it. `dev_docs/contributing.md` in the repository covers the branching model, the checks, and the release process.

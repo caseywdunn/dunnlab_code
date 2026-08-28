@@ -1,9 +1,13 @@
 ---
 title: Managing Context
-nav_order: 6
+nav_order: 7
 ---
 
 # Managing Context
+
+Claude only knows what is in front of it. This chapter is about putting the right things there — standing instructions, task-specific guidance, and the project's own documentation — without filling the window with noise.
+
+Most complaints that Claude "forgot" something or "ignored" an instruction are context problems, and most of them are fixable from here.
 
 ## What is the context window?
 
@@ -28,6 +32,8 @@ When a conversation gets long or you're switching tasks, use `/clear` to reset t
 
 CLAUDE.md files are markdown files that Claude reads at the start of every session. They provide standing instructions — build commands, coding conventions, architectural decisions, project-specific rules — so you don't have to repeat yourself.
 
+The filename is Claude-specific. Other coding agents look for `AGENTS.md`, an open format that does the same job; if you use more than one agent, [Other Coding Agents](other-agents.md) covers how to serve both from a single file.
+
 ### Where to put them
 
 | Location | Scope |
@@ -43,7 +49,7 @@ A CLAUDE.md can pull in other files with `@path/to/file` syntax. Imports are exp
 
 ### Keep it short
 
-CLAUDE.md content is loaded into the context window at session start. Longer files consume more of your context budget and reduce Claude's adherence to instructions. The [official guidance](https://code.claude.com/docs/en/memory) targets under 200 lines; **as a lab convention we keep each CLAUDE.md under 100 lines**, deliberately stricter. If you need more detail, put it in a [rule](#rules) or point Claude to where it can find the information rather than including it inline:
+CLAUDE.md content is loaded into the context window at session start. Longer files consume more of your context budget and reduce Claude's adherence to instructions. The [official guidance](https://code.claude.com/docs/en/memory) targets under 200 lines, and a stricter house limit is worth considering — this lab holds to 100. If you need more detail, put it in a [rule](#rules) or point Claude to where it can find the information rather than including it inline:
 
 ```markdown
 ## Architecture

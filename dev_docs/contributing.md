@@ -81,12 +81,15 @@ git checkout -b feature/my-change
 
 ./scripts/check.sh                  # must pass
 ./scripts/test-devcontainer.sh      # only if you touched dunnlab-devcontainer
+./scripts/preview-docs.sh           # only if you touched docs/ — renders the site
 
 git push -u origin feature/my-change
 ```
 
-Open the PR against **`dev`**, not `main`. CI runs the structural checks on
-the PR; they must be green before merge.
+Open the PR against **`dev`**, not `main`. CI runs the structural checks and
+builds the docs site on the PR; both must be green before merge. The built
+site is attached to the run as a `docs-site` artifact if you want to look at
+the rendered HTML without building it yourself.
 
 ### Keeping a branch current
 

@@ -1,28 +1,13 @@
 ---
 title: Claude Code Concepts
-nav_order: 4
+nav_order: 5
 ---
 
 # Claude Code Concepts
 
-A brief orientation to Claude's interfaces and how Claude Code works.
+How Claude Code actually works: which interface does what, what it can reach on your machine, how it is extended, and the working habits that get good results from it.
 
-## Ways to use Claude
-
-Anthropic offers several ways to interact with Claude models:
-
-| Interface | What it is |
-|-----------|-----------|
-| **Chat** ([claude.ai](https://claude.ai)) | Web-based conversation interface |
-| **Code** | Agentic coding — Claude reads, writes, and runs code, with direct access to your filesystem and terminal |
-| **Cowork** | Agentic non-coding tasks — document processing, image work, research, and other workflows for less technical users |
-| **API / SDK** | Programmatic access for building Claude into your own applications |
-
-Chat is what you get when you use Claude on the web, like other chatbots. Code and Cowork are agents that work on real files across multiple steps.
-
-**In this lab we primarily use Claude Code.** It runs on several surfaces — the terminal, the VS Code and JetBrains extensions, the desktop app, and the web at [claude.ai/code](https://claude.ai/code) — all backed by the same engine. A repo's `CLAUDE.md`, settings, skills, and MCP servers work identically across them, so which one you use is a matter of preference. Most of us live in the terminal or the VS Code extension.
-
-Cowork is the same underlying agent pointed at non-coding work, and it runs on the desktop app, web, and mobile. On the desktop it has access to local files much as Claude Code does. Skills are shared between the two: Cowork reads your personal skills in `~/.claude/skills/`, project skills in the repo, and skills from installed plugins, so a skill you write for one is available in the other on the same machine. In Cowork you manage them under **Customize → + → Skills**.
+The next two chapters build directly on this one. [Managing Security](managing-security.md) is about constraining what Claude can do; [Managing Context](managing-context.md) is about giving it the right information. Both assume the vocabulary introduced here.
 
 ## How Claude Code interacts with your computer
 
@@ -32,7 +17,7 @@ Claude Code is not limited to this directory. It can read and write files elsewh
 
 At startup, Claude Code loads **context** from several sources:
 
-- **`CLAUDE.md` files** — Instructions checked into the repo (project-level) or in your home directory (user-level)
+- **Standing instructions** — A file of project conventions checked into the repo, plus your own personal preferences. [Managing Context](managing-context.md#claudemd) covers the format
 - **Rules** (`.claude/rules/`) — Topic-specific instructions, optionally scoped to file paths so they load only when relevant
 - **Auto memory** — Notes Claude has kept for itself from previous sessions in this repository
 - **Plugins** — Bundles of skills, commands, and hooks (like this Dunn Lab plugin)
@@ -69,3 +54,21 @@ Getting good results from Claude Code is less about prompt engineering and more 
 **Know how to undo.** `/rewind` restores the conversation and the files to an earlier point in the session. Committing after each verified step, as above, is the more durable version of the same idea.
 
 **Let Claude handle errors.** When code produces errors, don't copy and paste error messages into the chat. Instead, ask Claude to run the code itself — it will see the full error output, have the surrounding context, and can diagnose and fix the problem directly. This is faster and less error-prone than manually relaying fragments of stack traces.
+
+
+## Other ways to use Claude
+
+Claude Code is one of several ways Anthropic offers to work with Claude models:
+
+| Interface | What it is |
+|-----------|-----------|
+| **Chat** ([claude.ai](https://claude.ai)) | Web-based conversation interface |
+| **Code** | Agentic coding — Claude reads, writes, and runs code, with direct access to your filesystem and terminal |
+| **Cowork** | Agentic non-coding tasks — document processing, image work, research, and other workflows for less technical users |
+| **API / SDK** | Programmatic access for building Claude into your own applications |
+
+Chat is what you get when you use Claude on the web, like other chatbots. Code and Cowork are agents that work on real files across multiple steps.
+
+Cowork is the same underlying agent pointed at non-coding work, and it runs on the desktop app, web, and mobile. On the desktop it has access to local files much as Claude Code does. Skills are shared between the two: Cowork reads your personal skills in `~/.claude/skills/`, project skills in the repo, and skills from installed plugins, so a skill you write for one is available in the other on the same machine. In Cowork you manage them under **Customize → + → Skills**.
+
+The API and SDK are useful for automating many tasks at once, and for large batch runs.
