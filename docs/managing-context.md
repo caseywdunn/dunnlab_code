@@ -17,7 +17,7 @@ Managing context well means giving Claude the right information at the right tim
 
 | Mechanism | Loads |
 |-----------|-------|
-| **CLAUDE.md** | Every session |
+| **Agent instructions** | Every session |
 | **Rules** (`.claude/rules/`) | Every session, or only when Claude touches matching files |
 | **Auto memory** | Every session (the index only) |
 | **Skills** | Only when invoked |
@@ -28,11 +28,24 @@ Use `/context` at any point to see what actually loaded and what it cost.
 
 When a conversation gets long or you're switching tasks, use `/clear` to reset the context window. This drops the conversation history and re-loads your CLAUDE.md files fresh. It's the simplest way to reclaim context space.
 
-## CLAUDE.md
+## Agent instructions
 
-CLAUDE.md files are markdown files that Claude reads at the start of every session. They provide standing instructions — build commands, coding conventions, architectural decisions, project-specific rules — so you don't have to repeat yourself.
+Coding agents read a file of standing instructions at the start of every session — build commands, coding conventions, architectural decisions, project-specific rules — so you don't have to repeat yourself.
 
-The filename is Claude-specific. Other coding agents look for `AGENTS.md`, an open format that does the same job; if you use more than one agent, [Other Coding Agents](other-agents.md) covers how to serve both from a single file.
+There are two filenames for the same idea. `AGENTS.md` is the open, cross-tool format that most agents read. `CLAUDE.md` is what Claude Code reads, and it reads only that.
+
+**Create both, from the start.** Put the actual content in `AGENTS.md`, and make `CLAUDE.md` a single line:
+
+```markdown
+@AGENTS.md
+```
+
+That is the whole file. Claude Code expands the import at session start, so it loads exactly what every other agent loads, and you maintain one file rather than two that drift apart.
+
+{: .note }
+If you only ever use Claude Code, a plain `CLAUDE.md` with the content in it works fine and nothing here changes. The two-file version costs one line and means you are not redoing this later. [Other Coding Agents](other-agents.md#serving-both-from-one-file) explains why it matters.
+
+The rest of this section says `CLAUDE.md`, because that is the filename Claude Code loads and where the size limits and precedence rules apply. Everything it says is equally true of the `AGENTS.md` at the other end of that import.
 
 ### Where to put them
 

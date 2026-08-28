@@ -17,7 +17,7 @@ Claude Code is not limited to this directory. It can read and write files elsewh
 
 At startup, Claude Code loads **context** from several sources:
 
-- **Standing instructions** — A file of project conventions checked into the repo, plus your own personal preferences. [Managing Context](managing-context.md#claudemd) covers the format
+- **Standing instructions** — A file of project conventions checked into the repo, plus your own personal preferences. [Managing Context](managing-context.md#agent-instructions) covers the format
 - **Rules** (`.claude/rules/`) — Topic-specific instructions, optionally scoped to file paths so they load only when relevant
 - **Auto memory** — Notes Claude has kept for itself from previous sessions in this repository
 - **Plugins** — Bundles of skills, commands, and hooks (like this Dunn Lab plugin)

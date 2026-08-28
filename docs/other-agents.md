@@ -45,18 +45,3 @@ Maintaining two files that say the same thing is worse: they drift, and you will
 ```
 
 That is the whole file. Claude Code expands the `@` import at session start, so it loads exactly what every other agent loads.
-
-If you have guidance that only makes sense for Claude Code — a skill to invoke, a permission mode to prefer — add it below the import rather than in `AGENTS.md`:
-
-```markdown
-@AGENTS.md
-
-## Claude Code
-
-Use plan mode for anything under `analysis/`.
-Invoke the `dunnlab-bioinformatics` skill before touching sequence data.
-```
-
-This way there is one source of truth, every agent reads it, and the Claude-specific additions live somewhere they will not confuse another tool.
-
-Everything [Managing Context](managing-context.md) says about keeping instructions short, and about moving detailed guidance into path-scoped rules, applies to the `AGENTS.md` at the other end of that import.
