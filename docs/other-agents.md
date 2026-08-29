@@ -45,3 +45,33 @@ Maintaining two files that say the same thing is worse: they drift, and you will
 ```
 
 That is the whole file. Claude Code expands the `@` import at session start, so it loads exactly what every other agent loads.
+
+## Skills and MCP servers
+
+Instructions are not the only thing you might want to carry between agents. Two other mechanisms matter, and they travel very differently.
+
+### MCP servers travel well
+
+The [Model Context Protocol](https://modelcontextprotocol.io/) is how an agent reaches external tools and data — a GitHub server, a database, an internal API. It began at Anthropic, is now maintained as an open standard under the Linux Foundation, and is implemented by essentially every major agent: Claude Code, Codex, Cursor, Copilot, Windsurf, Zed, and the main agent frameworks besides.
+
+In practice a server you have configured for one agent works with another. What differs is where the configuration lives, not the server. This is the most portable part of your setup.
+
+### Skills travel in their core, less so at the edges
+
+[Agent Skills](https://agentskills.io/) is also an open format: a folder holding a `SKILL.md` with a name, a description, and instructions, optionally alongside scripts and reference files. It originated at Anthropic and has been adopted broadly — Codex, Cursor, Copilot, VS Code, Gemini CLI, goose, OpenCode, Amp, Factory, and JetBrains' Junie all read it.
+
+The mechanism is the same everywhere, and it is what makes skills cheap: an agent loads only the name and description at startup, then pulls in the full instructions when a task matches. Many skills cost almost nothing until one is used.
+
+What does not travel is the extensions. The spec defines six frontmatter fields — `name`, `description`, `license`, `compatibility`, `metadata`, and `allowed-tools`. Claude Code accepts all six and adds its own, including `disable-model-invocation`, `when_to_use`, and `disallowed-tools`, along with body features like shell-command injection and `${CLAUDE_*}` variables. Another agent ignores what it does not recognise, so a skill leaning on those degrades rather than breaking — but it degrades quietly, which is worse.
+
+For a skill you want to work everywhere, keep the frontmatter to the six spec fields and the body to plain markdown.
+
+### Plugins do not travel
+
+The packaging around skills — marketplaces, `plugin.json`, namespaced invocation — is Claude Code's own. [The DunnLab plugin](plugin.md) will not install into Codex or Cursor.
+
+The skills inside it are ordinary `SKILL.md` files, though, so copying one into another agent's skills directory generally works. As it happens all seven of ours use only the six spec fields, so they should load anywhere that reads the format.
+
+### Changing the model underneath
+
+None of this depends on which model you run. Claude Code against Amazon Bedrock, Google Cloud, or Microsoft Foundry is the same client with the same skills, MCP servers, and settings — only the inference endpoint changes. Model choice does affect some features, auto mode among them, but not the portability of your configuration.
