@@ -71,6 +71,9 @@ Three things make a gate worth having:
 
 Then apply gates at two scales. **Between steps**, a gate is what lets the next task start from something verified rather than something assumed — it is what makes small, testable steps more than an aspiration. **At the end**, an agreed definition of done is what stops the work drifting into indefinite polishing, or stopping three-quarters of the way with the last quarter uninspected.
 
+{: .note }
+**Other tools are building this in.** OpenAI's Codex has a [`/goal` command](https://learn.chatgpt.com/use-cases/follow-goals) whose premise is exactly the argument above — *"use `/goal` when a task needs Codex to keep working across turns toward a verifiable stopping condition"*. Given one, it will work unattended for hours, and it is recommended for migrations, large refactors, and experiments: the cases with clear validation loops. Claude Code has no single command for this, so you state the gate in the prompt and let [auto mode](managing-security.md#auto-mode) run. Either way the requirement is the same, which is the point of this section — the gate is what makes unattended work possible at all.
+
 When you cannot state a gate for a piece of work, that is worth noticing rather than working around. Sometimes it means the task is genuinely exploratory and you should be in [plan mode](#separate-planning-from-building) asking questions rather than building. Sometimes it means you have not actually decided what you want yet.
 
 ## Then work in small, verified steps
