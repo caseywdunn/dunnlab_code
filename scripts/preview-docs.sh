@@ -68,8 +68,18 @@ echo
 # A previous run that was killed rather than stopped can leave the name taken.
 docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
 
+# -d /tmp/_site keeps the build output inside the container. The container runs
+# as root, so writing _site into the bind-mounted repo leaves root-owned files
+# the user cannot delete.
+#
 # --force_polling: file-change events do not cross the bind mount reliably.
+#
+# Deliberately NOT --incremental. Jekyll only rebuilds a page whose own source
+# changed, but the sidebar on every page depends on the frontmatter of all of
+# them. Renumber one nav_order and every other page keeps a stale nav until you
+# rebuild from scratch. A full build of this site takes about four seconds; a
+# preview that quietly shows you the wrong thing is worth far less than that.
 docker run "${tty_flags[@]}" --name "$CONTAINER" "${common[@]}" -p "${PORT}:4000" "$IMAGE" bash -c '
-  bundle install --quiet && exec bundle exec jekyll serve \
-    --host 0.0.0.0 --port 4000 --force_polling --incremental
+  bundle install --quiet && exec bundle exec jekyll serve -d /tmp/_site \
+    --host 0.0.0.0 --port 4000 --force_polling
 '
