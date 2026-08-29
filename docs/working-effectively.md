@@ -51,11 +51,29 @@ Revise it as you learn — a plan is a working document, not a contract. What ma
 
 This is a different thing from the standing instructions in [Managing Context](managing-context.md). `AGENTS.md` says how work is done here, always. A plan document says what we are doing now, and gets archived when it is done. The `dunnlab-new-project` skill builds the pattern in: it writes `dev_docs/overview.md` before any code exists, and reviewing that document is a step in the workflow rather than an afterthought.
 
+## Set gates you can check
+
+An agent keeps going until something tells it to stop. If your stopping condition is *looks right*, it will stop at looks right — which is the failure mode this manual keeps returning to, because plausible-looking wrong output is exactly what these tools are good at producing.
+
+So decide, before the work starts, how you will know each step succeeded and how you will know the whole thing is finished. **The clearer the verification loop, the better the results**, and the effect is larger than almost anything else you can change.
+
+Three things make a gate worth having:
+
+**State it before the work, not after.** A criterion you invent after seeing the output is a criterion you will bend to fit it. Written down in advance it is also something the agent can aim at and check itself against, which turns it from a review step into a target.
+
+**Prefer something it can run.** A passing test, a script that completes, an expected row count, a figure that regenerates identically, a known-answer case that reproduces. Anything the agent can execute, it can iterate against without you in the loop — and it will, until the gate is green. A gate you have to eyeball only fires when you happen to look.
+
+**Include a scientific check, not just a technical one.** A passing test suite means the code runs, not that the analysis is right. Add the checks you would apply to a colleague's result: does the row count survive the join, is the effect still there in a subsample, does the control behave as it should, does the number carry the units you expect.
+
+Then apply gates at two scales. **Between steps**, a gate is what lets the next task start from something verified rather than something assumed — it is what makes small, testable steps more than an aspiration. **At the end**, an agreed definition of done is what stops the work drifting into indefinite polishing, or stopping three-quarters of the way with the last quarter uninspected.
+
+When you cannot state a gate for a piece of work, that is worth noticing rather than working around. Sometimes it means the task is genuinely exploratory and you should be in [plan mode](#separate-planning-from-building) asking questions rather than building. Sometimes it means you have not actually decided what you want yet.
+
 ## Then work in small, verified steps
 
 Once you are building:
 
-**Keep tasks small and testable.** A change too large to read carefully was too large to ask for in one go.
+**Keep tasks small, and gated.** A change too large to read carefully was too large to ask for in one go — and each one should end at a check you named in advance.
 
 **Let Claude run the code.** Do not copy error messages into the chat. Ask it to run the thing — it sees the full output, has the surrounding context, and can diagnose directly. Relaying fragments of a stack trace by hand is slower and loses information.
 
