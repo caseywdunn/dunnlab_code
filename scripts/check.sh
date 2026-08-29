@@ -282,9 +282,25 @@ fi
 # ------------------------------------------------------------------- links
 if [[ $CHECK_LINKS -eq 1 ]]; then
   head_ "External links"
-  urls=$(grep -rhoE 'https?://[^ )>"`,]+' --include='*.md' --include='*.json' \
-         --exclude-dir=.git --exclude-dir=workshops . 2>/dev/null \
-         | sed 's/[.]$//' | grep -v '\${' | grep -v localhost | sort -u)
+  # Strip fenced code blocks first. A URL inside one is an argument to a
+  # command or a line of config -- an API endpoint, a firewall allowlist entry --
+  # not a link a reader clicks, and checking them produces false failures that
+  # train people to ignore this check.
+  urls=$(python3 - <<'PYEOF'
+import pathlib, re
+out = set()
+for p in list(pathlib.Path('.').rglob('*.md')) + list(pathlib.Path('.').rglob('*.json')):
+    if '.git' in p.parts or 'workshops' in p.parts or '_site' in p.parts: continue
+    try: t = p.read_text()
+    except Exception: continue
+    t = re.sub(r'```.*?```', '', t, flags=re.S)
+    for u in re.findall(r'https?://[^ )>"`,\]]+', t):
+        u = u.rstrip('.')
+        if '${' in u or 'localhost' in u: continue
+        out.add(u)
+for u in sorted(out): print(u)
+PYEOF
+)
   n=0; broke=0
   while read -r u; do
     [[ -z "$u" ]] && continue
