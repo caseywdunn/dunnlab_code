@@ -26,23 +26,49 @@ nav_order: 3
 
 ### Current pages
 
-| File | nav_order | Content |
-|------|-----------|---------|
-| `index.md` | 1 | Home page with table of contents |
-| `getting-started.md` | 2 | Installation and setup walkthrough |
-| `lab-practices.md` | 3 | Conventions for AI-assisted work |
-| `data-analysis.md` | 4 | Using Claude Code for data analysis (placeholder) |
-| `managing-security.md` | 5 | Permission system and settings.json guide |
-| `managing-context.md` | 6 | Context window, CLAUDE.md, and skills |
+The chapters are ordered by how widely they apply, narrowing as they go. Keep new pages in the tier they belong to rather than appending them at the end.
+
+| File | nav_order | Tier | Content |
+|------|-----------|------|---------|
+| `index.md` | 1 | — | Landing page; states the tier structure and where to start |
+| `using-ai.md` | 2 | anyone | Responsibility, reviewing generated code, data handling, disclosure, journal and funder policy |
+| `quick-reference.md` | 3 | anyone | One-page cheatsheet: setup, working rhythm, permission modes, sessions, tmux |
+| `getting-started.md` | 4 | anyone | Recommended stack, installing and verifying Claude Code |
+| `claude-intro.md` | 5 | anyone | How Claude Code works: interfaces, working directory, extensibility, effective use |
+| `managing-security.md` | 6 | anyone | Permissions, sandboxing, isolation |
+| `managing-context.md` | 7 | anyone | Context window, agent instructions, rules, auto memory, skills, plugins |
+| `working-effectively.md` | 8 | anyone | How to frame the work: broad requests, planning vs building, committing the plan |
+| `plugin.md` | 9 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
+| `example-workflows.md` | 10 | anyone | Step-by-step walkthrough of a project |
+| `other-agents.md` | 11 | anyone | The wider agent landscape, AGENTS.md, and serving several agents from one file |
+| `yale.md` | 12 | Yale | YCRC clusters and running Claude Code on shared hardware |
+| `lab-practices.md` | 13 | Dunn Lab | The reasoning behind our conventions, and data management |
+
+Quick Reference deliberately duplicates commands that appear in later chapters. Keep it to commands and one-line descriptions — the explanation belongs in the chapter it links to, so the two cannot drift far.
+
+Keep this table in sync with the frontmatter. `./scripts/check.sh` verifies that `nav_order` values are contiguous and unique and that every page is linked from `index.md`, but **it does not check this table** — that is on you.
+
+When adding a page, ask which tier it belongs to. Anything institution-specific belongs at 8 or later; anything lab-specific at 9 or later. A page that would need to be deleted before sharing the manual with another group is in the wrong tier.
 
 ## Adding a new page
 
 1. Create a markdown file in `docs/` with frontmatter (`title`, `nav_order`)
-2. Choose a `nav_order` that places it logically in the sidebar
-3. Link to it from `docs/index.md` in the table of contents
-4. Push to `main` — GitHub Actions builds and deploys automatically
+2. Choose a `nav_order` that places it logically in the sidebar, and renumber the pages after it so the sequence stays contiguous
+3. Link to it from `docs/index.md` in the table of contents, and add a row to the table above
+4. Push to `main` — GitHub Pages builds and deploys automatically
 
 ## Local preview
+
+```bash
+./scripts/preview-docs.sh          # serve at http://localhost:4000/dunnlab_code/
+./scripts/preview-docs.sh build    # build only, then exit
+```
+
+This runs Jekyll in Docker, so no Ruby is needed on the host. The first run installs gems and takes a few minutes; they are cached in a named volume, so later runs start quickly.
+
+GitHub Pages builds this site with its **legacy** builder, which uses the `github-pages` gem — the same gem `docs/Gemfile` pins. So a local build is close to what actually gets published, remote theme included.
+
+If you would rather use a local Ruby:
 
 ```bash
 cd docs
@@ -50,7 +76,13 @@ bundle install    # first time only
 bundle exec jekyll serve
 ```
 
-The site will be available at `http://localhost:4000/dunnlab_code/`.
+### Preview before a release
+
+The deployed site is built from `main`, so nothing on `dev` is visible until the release merge. To look at the real HTML first, either run the script above on `dev`, or download the `docs-site` artifact from the `site` CI job on any pull request and open `index.html` locally.
+
+That CI job also *builds* the site on every push and PR, which is the only thing that catches a broken `_config.yml` or a Liquid error in a page — `check.sh` validates frontmatter and links but never renders anything.
+
+Local preview is optional. The site is built and deployed by GitHub Pages' built-in Jekyll build on every push to `main` — there is no workflow file in `.github/`, and the build shows up in the repo's Actions tab as `pages-build-deployment`. If a page renders wrong after a push, check there first.
 
 ## Linking conventions
 

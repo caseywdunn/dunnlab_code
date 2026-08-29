@@ -1,114 +1,100 @@
 # DunnLab Code
 
+[![checks](https://github.com/caseywdunn/dunnlab_code/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/caseywdunn/dunnlab_code/actions/workflows/checks.yml?query=branch%3Amain)
+[![plugin](https://img.shields.io/badge/dynamic/json?url=https%3A//raw.githubusercontent.com/caseywdunn/dunnlab_code/main/.claude-plugin/plugin.json&query=%24.version&label=plugin&color=blue)](CHANGELOG.md)
+
 This repo has two purposes:
 
 - Documenting our best practices, onboarding, and instruction on using AI in our research.
-- Shared skills, hooks, and commands for the Dunn Lab. The focus is in Claude Code.
+- Shared skills, hooks, and commands for the Dunn Lab. The focus is on Claude Code.
 
+**[View the full documentation site](https://dunnlab.org/dunnlab_code/)**
 
-**[View the full documentation site](https://dunnlab.org/dunnlab_code)**
+This repository was written by Casey Dunn with Claude, Anthropic's AI assistant, from the first commit onward. The [full statement](https://dunnlab.org/dunnlab_code/#ai-use) says what was delegated and to which models; the commit history is the detailed record.
 
 ## Installation
-
-### Option A: Install from the marketplace (recommended)
 
 Register the repo as a marketplace, then install the plugin:
 
 ```bash
 claude plugin marketplace add caseywdunn/dunnlab_code
-claude plugin install dunnlab-code
+claude plugin install dunnlab-code@dunnlab
 ```
 
-This pulls the plugin from GitHub and caches it locally. Works anywhere — including inside dev containers. To update after changes are pushed, run `claude plugin update dunnlab-code`.
+This pulls the plugin from GitHub and caches it locally. It works anywhere Claude Code runs, including inside dev containers.
 
-### Option B: Per-session loading with `--plugin-dir`
+The [Getting Started](https://dunnlab.org/dunnlab_code/getting-started.html) guide walks through the full setup, including the other plugins we recommend.
 
-If you want to load the plugin for a single session without installing it permanently (useful during development or testing):
+### Loading a local copy instead
+
+To load the plugin from a working copy without installing it — useful while developing it:
 
 ```bash
-git clone https://github.com/caseywdunn/dunnlab_code.git ~/repos/dunnlab_code
+git clone https://github.com/caseywdunn/dunnlab_code ~/repos/dunnlab_code
 claude --plugin-dir ~/repos/dunnlab_code
 ```
 
-This loads the plugin for that session alongside any other installed plugins — it does not replace them. The flag is repeatable, so you can load multiple plugin directories at once (e.g., `--plugin-dir ~/pluginA --plugin-dir ~/pluginB`). If a `--plugin-dir` plugin shares a name with an installed marketplace plugin, the local copy takes precedence for that session.
+This loads the plugin for that session alongside anything already installed; it does not replace them. The flag is repeatable (`--plugin-dir ~/pluginA --plugin-dir ~/pluginB`). If a `--plugin-dir` plugin shares a name with an installed one, the local copy wins for that session. Because it reads from the directory, edits take effect in the next session with no update step.
 
-There is no way to specify `--plugin-dir` for the Claude VS Code extension. But you can run `claude --plugin-dir` within the VS Code terminal to use the plugin there.
-
-Because `--plugin-dir` reads directly from the directory, changes take effect immediately on the next session — no update command needed.
+There is no `--plugin-dir` option for the Claude VS Code extension, but you can run `claude --plugin-dir` in the VS Code terminal.
 
 ## Using skills and commands
 
-Once the plugin is installed, everything is available automatically — no extra activation steps.
+Once the plugin is installed, everything is available automatically — there are no extra activation steps.
 
-- **Skills** load based on context. For example, the `dunnlab-defaults` skill activates when you start a new analysis script or set up a project. You can also invoke skills explicitly as `/dunnlab-code:dunnlab-defaults`.
-- **Slash commands** are available immediately. Try `/dunnlab-check` to verify the plugin is working.
-- **Hooks** run automatically in response to events (once configured).
+- **Skills** load based on context. The `dunnlab-defaults` skill, for example, activates when you start a new analysis script or set up a project. You can also invoke any skill explicitly.
+- **Hooks** run automatically in response to events (none are defined yet).
 
-To see what's available, run:
+Plugin skills are namespaced by the plugin, so the full name is `/dunnlab-code:<skill>`. The bare `/<skill>` form also works as long as nothing else has claimed that name.
 
-```
-/dunnlab-check
-```
-
-You can disable the plugin without uninstalling it:
+To confirm the plugin is loaded and see what it provides:
 
 ```
-/plugin disable dunnlab-code
-/plugin enable dunnlab-code
+/dunnlab-code:dunnlab-check
+```
+
+To disable the plugin without uninstalling it:
+
+```
+/plugin disable dunnlab-code@dunnlab
+/plugin enable dunnlab-code@dunnlab
 ```
 
 ## Updating the plugin
 
-How you update depends on how you installed it.
-
-### Marketplace installs
-
-If you installed via a marketplace, update from within Claude Code:
+If you installed from the marketplace:
 
 ```
 /plugin update dunnlab-code@dunnlab
 ```
 
-Marketplaces auto-update by default, so in most cases you don't need to do anything — new versions are picked up automatically.
+Claude Code can also update marketplaces and their plugins in the background after startup, but **auto-update is off by default for third-party marketplaces like this one**. Turn it on per marketplace under `/plugin` → **Marketplaces**, or run the update command above when you want the latest.
 
-### Persistent local installs (`plugin add`)
-
-Pull the latest changes, then re-register the plugin to update the cache:
-
-```bash
-cd ~/repos/dunnlab_code
-git pull
-claude plugin add ~/repos/dunnlab_code
-```
-
-### Per-session installs (`--plugin-dir`)
-
-Pull the latest changes and restart Claude Code:
-
-```bash
-cd ~/repos/dunnlab_code
-git pull
-```
-
-Changes are picked up on the next session automatically — no separate update command needed.
+If you are loading a local copy with `--plugin-dir`, just `git pull`. Changes are picked up on the next session.
 
 ## What's included
 
 | Directory    | Contents |
 |-------------|----------|
 | `skills/`   | Reusable Claude Code skills for lab workflows |
-| `commands/` | Slash commands for common tasks |
-| `hooks/`    | Event-driven automation hooks |
+| `commands/` | Slash commands |
+| `hooks/`    | Event-driven automation hooks (none yet) |
+| `assets/`   | Shared resources: example HPC `settings.json`, tmux config |
 | `docs/`     | GitHub Pages site with setup guides and lab practices |
+| `dev_docs/` | Developer reference for working on this repo |
 
 ### Skills
 
-- **dunnlab-defaults** — Lab-wide coding conventions: preferred languages, file naming, project structure
-- **dunnlab-devcontainer** — Add a `.devcontainer/` configuration for secure, reproducible Claude Code development environments
-- **example-skill** — A template to copy when creating new skills
+- **dunnlab-defaults** — Lab-wide coding conventions: preferred languages, formatting, testing, project structure, and version control practices. The foundational skill the others build on.
+- **dunnlab-new-project** — Step-by-step workflow for scaffolding a new project from scratch, with progress that survives `/clear`.
+- **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
+- **dunnlab-bioinformatics** — Sequence analysis conventions: data hygiene, input validation, gene ID handling, and default tools.
+- **dunnlab-devcontainer** — Add a `.devcontainer/` configuration for reproducible, isolated Claude Code environments.
+- **dunnlab-codereview** — Code review checklist and process.
+- **dunnlab-biblio** — BibTeX conventions for manuscripts: entry keys, author lists, title capitalization.
 
 ### Commands
 
-- **/dunnlab-check** — Verifies the plugin is loaded and lists available skills
+- **/dunnlab-check** — Verifies the plugin is loaded and lists available skills.
 
-Full documentation, including onboarding instructions and lab conventions, is available on the [Pages site](https://dunnlab.org/dunnlab_code).
+Full documentation, including onboarding instructions and lab conventions, is on the [Pages site](https://dunnlab.org/dunnlab_code/).

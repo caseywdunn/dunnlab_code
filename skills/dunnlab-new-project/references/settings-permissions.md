@@ -4,7 +4,7 @@ Use these permission rules when generating `.claude/settings.json`. The goal is 
 
 ## JSON format
 
-The settings file uses three arrays — `allow`, `ask`, and `deny` — each containing permission strings. Tool permissions use `ToolName(glob)` syntax; Bash command permissions use the command prefix as a string.
+The settings file uses three arrays — `allow`, `ask`, and `deny`. Tool permissions use `ToolName(specifier)` syntax.
 
 ```json
 {
@@ -14,115 +14,132 @@ The settings file uses three arrays — `allow`, `ask`, and `deny` — each cont
       "Read(**)",
       "Glob",
       "Grep",
-      "Task",
-      "Bash(git status*)",
-      "Bash(git log*)",
-      "Bash(git diff*)",
-      "Bash(git branch*)",
-      "Bash(git remote*)",
-      "Bash(git show*)",
-      "Bash(ls*)",
-      "Bash(cat*)",
-      "Bash(head*)",
-      "Bash(tail*)",
-      "Bash(wc*)",
-      "Bash(find*)",
-      "Bash(du*)",
-      "Bash(df*)",
-      "Bash(file*)",
-      "Bash(which*)",
-      "Bash(echo*)",
-      "Bash(pwd*)",
-      "Bash(tree*)",
-      "Bash(diff*)",
-      "Bash(curl*)",
-      "Bash(wget*)",
-      "Bash(python*)",
-      "Bash(python3*)",
-      "Bash(conda activate*)",
-      "Bash(conda deactivate*)",
-      "Bash(conda env list*)",
-      "Bash(conda list*)",
-      "Bash(conda info*)",
-      "Bash(mamba activate*)",
-      "Bash(mamba deactivate*)",
-      "Bash(mamba env list*)",
-      "Bash(mamba list*)",
-      "Bash(mamba info*)",
-      "Bash(pip list*)",
-      "Bash(pip show*)"
+
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote:*)",
+      "Bash(git show:*)",
+
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "Bash(du:*)",
+      "Bash(df:*)",
+      "Bash(file:*)",
+      "Bash(which:*)",
+      "Bash(echo:*)",
+      "Bash(pwd:*)",
+      "Bash(tree:*)",
+      "Bash(diff:*)",
+
+      "Bash(conda activate:*)",
+      "Bash(conda deactivate:*)",
+      "Bash(conda env list:*)",
+      "Bash(conda list:*)",
+      "Bash(conda info:*)",
+      "Bash(mamba activate:*)",
+      "Bash(mamba deactivate:*)",
+      "Bash(mamba env list:*)",
+      "Bash(mamba list:*)",
+      "Bash(mamba info:*)",
+      "Bash(pip list:*)",
+      "Bash(pip show:*)",
+
+      "Bash(pytest:*)",
+      "Bash(ruff check:*)",
+      "Bash(ruff format:*)",
+      "Bash(mypy:*)"
     ],
     "deny": [
-      "Read(.env)",
-      "Read(.env.*)",
-      "Read(.ssh/**)",
-      "Read(.netrc)",
-      "Read(*credentials*)",
-      "Read(*secret*)",
-      "Read(*token*)",
-      "Read(*.pem)",
-      "Read(*.key)",
-      "Read(.aws/**)",
-      "Edit(.env)",
-      "Edit(.env.*)",
-      "Edit(.ssh/**)",
-      "Edit(.netrc)",
-      "Edit(*credentials*)",
-      "Edit(*secret*)",
-      "Edit(*token*)",
-      "Edit(*.pem)",
-      "Edit(*.key)",
-      "Edit(.aws/**)",
-      "Bash(rm -rf /)*",
-      "Bash(sudo*)",
-      "Bash(su *)",
-      "Bash(shutdown*)",
-      "Bash(reboot*)",
-      "Bash(dd if=*)",
-      "Bash(ssh *)",
-      "Bash(nc *)",
-      "Bash(netcat*)",
-      "Bash(nmap*)",
-      "Bash(kill -9*)",
-      "Bash(killall*)",
-      "Bash(pkill*)"
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.netrc)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/.ssh/**)",
+      "Read(**/.netrc)",
+      "Read(**/*credentials*)",
+      "Read(**/*secret*)",
+      "Read(**/*token*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/.aws/**)",
+
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Edit(**/.ssh/**)",
+      "Edit(**/.netrc)",
+      "Edit(**/*credentials*)",
+      "Edit(**/*secret*)",
+      "Edit(**/*token*)",
+      "Edit(**/*.pem)",
+      "Edit(**/*.key)",
+
+      "Bash(rm -rf /:*)",
+      "Bash(rm -rf ~:*)",
+      "Bash(sudo:*)",
+      "Bash(su :*)",
+      "Bash(shutdown:*)",
+      "Bash(reboot:*)",
+      "Bash(dd if=:*)",
+      "Bash(ssh :*)",
+      "Bash(nc :*)",
+      "Bash(netcat:*)",
+      "Bash(nmap:*)",
+      "Bash(kill -9:*)",
+      "Bash(killall:*)",
+      "Bash(pkill:*)"
     ]
   }
 }
 ```
 
-Everything not in `allow` or `deny` falls through to `ask` (the user gets prompted). This covers mutating git commands, package installs, file operations, `Edit`, `Write`, etc. — no need to list them explicitly.
+## Rule syntax gotchas
 
-## Permission rules reference
+These are easy to get wrong, and both failure modes are silent.
 
-### Allow without prompting
+**Always put a boundary before the wildcard.** `Bash(ls:*)` and the equivalent `Bash(ls *)` match `ls -la` but not `lsof`. Writing `Bash(ls*)` with no space and no colon matches both, so a rule meant to allow `find` also allows anything else starting with those letters. The `:*` form only works at the *end* of a pattern.
 
-Read-only tools and commands that don't modify the project:
+**File rules are anchored by their leading characters:**
 
-- `Read(**)`, `Glob`, `Grep`, `Task`
-- Read-only git: `git status`, `git log`, `git diff`, `git branch`, `git remote`, `git show`
-- Read-only shell: `ls`, `cat`, `head`, `tail`, `wc`, `find`, `du`, `df`, `file`, `which`, `echo`, `pwd`, `tree`, `diff`
-- Network reads: `curl`, `wget`
-- Python: `python`, `python3`
-- Conda/Mamba info: `conda activate/deactivate/env list/list/info`, `mamba activate/deactivate/env list/list/info`
-- Package info: `pip list`, `pip show`
+| Pattern | Anchored at |
+|---------|-------------|
+| `**/.env`, `./secrets/**` | Current working directory |
+| `/src/**` | The directory of the settings file |
+| `~/.ssh/**` | Home directory |
+| `//etc/**` | Filesystem root |
 
-### Ask for confirmation (default for unlisted commands)
+Since this file goes in a project's `.claude/settings.json`, the `**/` patterns cover the project, which is what you want. The `~/` entries are there because a project-scoped rule would not otherwise protect your actual SSH keys if Claude wandered outside the tree.
 
-Commands that modify files, packages, or git state — these don't need explicit `ask` entries because anything not in `allow` or `deny` is automatically prompted:
+**Only `Read` and `Edit` take paths.** `Edit(...)` covers every built-in tool that writes files, and a `Read` deny also blocks writes to the same path. Rules written for `Write`, `NotebookEdit`, `Glob`, or `MultiEdit` are accepted, never consulted, and warned about at startup. Use `Edit(docs/**)`, not `Write(docs/**)`.
 
-- `Edit(**)`, `Write(**)`
-- Mutating git: `git push`, `git commit`, `git checkout`, `git merge`, `git rebase`, `git reset`, `git stash`, `git add`
-- Package management: `conda install/create/remove/env create/env remove/update`, `mamba install/create/remove/env create/env remove/update`, `pip install`, `pip uninstall`
-- File operations: `cp`, `mv`, `rm`, `mkdir`, `rsync`
-- `chmod`
-- `WebFetch`
+**Deny rules bound Claude's file tools and the file commands it recognizes in Bash** (`cat`, `head`, `sed`). They do not stop a Python script Claude runs from opening the same file. Only the [Bash sandbox](https://code.claude.com/docs/en/sandboxing) enforces that at the OS level.
 
-### Deny
+## What each list is for
 
-Sensitive file access and destructive commands:
+### Allow — no prompt
 
-- Reading/editing sensitive files: `.env`, `.env.*`, `.ssh/**`, `.netrc`, `*credentials*`, `*secret*`, `*token*`, `*.pem`, `*.key`, `.aws/**`
-- Destructive commands: `rm -rf /`, `sudo`, `su`, `shutdown`, `reboot`, `dd if=`
-- Network probing: `ssh`, `nc`, `netcat`, `nmap`
-- Process killing: `kill -9`, `killall`, `pkill`
+Read-only tools and commands that cannot modify the project, plus the project's own test, lint, and type-check commands so the edit-test loop runs uninterrupted.
+
+**Do not put interpreters or network fetchers in `allow`.** `Bash(python:*)`, `Bash(curl:*)`, and `Bash(wget:*)` amount to arbitrary code execution: they let Claude run anything without a prompt, which defeats every other rule in the file. Claude Code drops rules like these automatically when entering auto mode, for exactly this reason. Allow the specific commands you want (`Bash(pytest:*)`, `Bash(python scripts/build.py)`) instead of the interpreter.
+
+### Unlisted — prompted, or governed by the mode
+
+Anything not in `allow` or `deny` falls through to the permission mode. This covers mutating git commands, package installs, `cp`/`mv`/`rm`/`mkdir`, and `WebFetch`.
+
+**Edits are deliberately not listed.** Permission rules are evaluated before the mode is consulted, so an `ask` rule on `Edit(**)` would force a prompt in *every* mode and defeat `acceptEdits` — which is the mode this file sets. Leaving edits unlisted makes them mode-driven instead: blocked in plan mode, prompted in Manual mode, auto-accepted in `acceptEdits` and `auto`. The `deny` block is the hard floor, enforced first and in every mode, so secrets stay protected regardless.
+
+If a project needs edits to prompt, change `defaultMode` rather than adding an `ask` rule for `Edit`.
+
+### Deny — blocked outright
+
+Sensitive file access, destructive commands, network probing, and process killing.
+
+Deny rules apply in **every** mode, `bypassPermissions` included, and no other settings scope can re-allow something denied at any level. This is the only control that holds unconditionally, which is why the interesting rules live here rather than in `ask`.
+
+Claude Code separately refuses to let any allow rule or hook approve an `rm` against a critical path (`/`, its top-level directories, your home directory, the working directory and its parents), so those rules are belt-and-braces — but a deny still blocks where the built-in check only prompts.

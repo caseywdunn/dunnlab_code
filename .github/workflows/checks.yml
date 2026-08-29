@@ -1,0 +1,72 @@
+name: checks
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+  schedule:
+    # Weekly, so external link rot and moved vendor docs surface on their own
+    # rather than when someone happens to click.
+    - cron: '17 6 * * 1'
+
+jobs:
+  structure:
+    runs-on: ubuntu-latest
+    steps:
+      # Full history: the disclosure check reads Co-Authored-By trailers,
+      # and skips silently on a shallow clone.
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Structural checks
+        run: ./scripts/check.sh
+
+  site:
+    # Actually build the Jekyll site. check.sh validates frontmatter and links
+    # but never renders anything, so a bad _config.yml or a Liquid error in a
+    # page would otherwise only surface after it reached main.
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the docs site
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./docs
+          destination: ./_site
+      - name: Upload rendered HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-site
+          path: ./_site
+          retention-days: 14
+
+  links:
+    # Network-dependent, so it does not gate a PR — it reports.
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: External link check
+        run: ./scripts/check.sh --links
+
+  devcontainer:
+    # Only when the skill that defines the container changes.
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Did the devcontainer skill change?
+        id: changed
+        run: |
+          base='${{ github.event.pull_request.base.sha }}'
+          [ -n "$base" ] || base=$(git rev-parse HEAD~1 2>/dev/null) || base=''
+          if [ -z "$base" ] || git diff --name-only "$base" HEAD | grep -q 'dunnlab-devcontainer'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Build and validate the hardened devcontainer
+        if: steps.changed.outputs.run == 'true'
+        run: ./scripts/test-devcontainer.sh

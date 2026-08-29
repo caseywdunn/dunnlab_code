@@ -76,11 +76,11 @@ Use these tools unless there is a specific reason to choose an alternative:
 | Task | Tool | Notes |
 |------|------|-------|
 | Multiple sequence alignment | **MAFFT** | Use `--auto` for general use; `--linsi` for high-accuracy on smaller sets |
-| Phylogenetic inference | **IQ-TREE 3** | Use ModelFinder (`-m MFP`) for automatic model selection for deep searches or use `Q.PFAM+F+R6` for faster protein searches (for example monophyly masking of gene trees); use ultrafast bootstrap (`-B 1000`) for support values;  |
+| Phylogenetic inference | **IQ-TREE 3** | Use ModelFinder (`-m MFP`) for automatic model selection on deep searches, or a fixed model such as `Q.PFAM+F+R6` for faster protein searches (e.g. monophyly masking of gene trees). Use ultrafast bootstrap (`-B 1000`) for support values |
 | Alignment trimming | **trimAl** | Trim poorly-aligned regions before tree inference; use `-automated1` for general use |
 | Sequence similarity search | **DIAMOND** | Use `blastp` or `blastx` mode as appropriate; significantly faster than BLAST for large-scale searches |
 | ORF prediction | **TransDecoder** | Predict ORFs from transcriptomes; use `-S` for strand-specific data; retain primary isoforms (`.p1`) only |
-| Completeness assessment | **BUSCO** | Assess transcriptome/proteome/genome completeness; use appropriate lineage database (e.g., `metazoa_odb12`) |
+| Completeness assessment | **BUSCO** | Assess transcriptome/proteome/genome completeness; use the appropriate lineage database (e.g. `metazoa_odb12`). Confirm the lineage name against `busco --list-datasets` — the `odb` version advances with BUSCO releases |
 
 Install all tools via **bioconda** when possible (consistent with `dunnlab-defaults`).
 
@@ -144,9 +144,13 @@ dependencies:
   - biopython
   - pandas
   - mafft
-  - iqtree
+  - iqtree>=3
+  - trimal
   - diamond
   - eggnog-mapper
+  - busco
 ```
+
+Pin `iqtree>=3` explicitly — bioconda still carries 2.x under the same package name, and the conventions above assume IQ-TREE 3.
 
 Add PROST and any other tools as needed per project.

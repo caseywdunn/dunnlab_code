@@ -1,8 +1,12 @@
 {
   "name": "dunnlab-code",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Shared Claude Code skills, hooks, and commands for the Dunn Lab",
   "author": {
     "name": "Dunn Lab"
-  }
+  },
+  "homepage": "https://dunnlab.org/dunnlab_code/",
+  "repository": "https://github.com/caseywdunn/dunnlab_code",
+  "license": "MIT",
+  "keywords": ["bioinformatics", "hpc", "slurm", "research", "science"]
 }
