@@ -86,3 +86,22 @@ Once you are building:
 **Then `/clear` before the next task.** A conversation carrying three tasks' worth of dead ends makes everything after it worse.
 
 **Know how to undo.** `/rewind` restores the conversation and the files to an earlier point in the session. Committing often is the more durable version of the same idea.
+
+## Keep asking as you go
+
+Gates tell you whether the thing you built works. They cannot tell you whether it was the right thing to build. That question has to be asked out loud, and it is worth asking often.
+
+Stop periodically — before a large step, after finishing one, whenever something is taking longer than it should — and ask something open:
+
+- *Are we on the right track?*
+- *Is there a better way to do this?*
+- *What have we learned so far?*
+- *Do you see any other interesting patterns?*
+
+These cost a few seconds and occasionally redirect a project. The agent has been reading your data and your code closely, often more closely than you have in the last hour, and it is holding context you are not. Asking is how you get at it.
+
+*What have we learned so far?* earns its place particularly before `/clear`. It produces a summary you can fold into the plan document, which is how a session's findings outlive the session.
+
+*Do you see any other interesting patterns?* is the one most likely to pay for the whole habit. It is the question that finds the thing you were not looking for — and, as [asking scientific questions](#ask-scientific-questions-not-just-technical-ones) argues, the thing you were not looking for is sometimes the result.
+
+One caution. An agent asked *are we on the right track?* has a pull toward answering yes. If you want a real answer, make disagreement the easy reply: *what is the strongest argument that this approach is wrong?*, or *if you were reviewing this, what would you object to first?* You will get better information, and you will get it earlier.
