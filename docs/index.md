@@ -7,6 +7,7 @@ nav_order: 1
 
 [This repository](https://github.com/caseywdunn/dunnlab_code) is a resource for scientists using AI in their research. It is really three things. First, it is a manual about using AI assistance in computational research. You are reading the manual now. Second, it has a Claude Code plugin that implements some of the conventions described here as skills, so Claude can apply them directly and consistently. Third, it has assorted other resources such as example configuration files.
 
+The manual focuses on Claude Code, but most of it applies just as well to other coding agents. The [Other Coding Agents](other-agents.md) chapter covers those, and what carries between them.
 
 ## Table of contents
 
@@ -23,7 +24,6 @@ nav_order: 1
 - [Dunn Lab Practices](lab-practices.md) — Lab-specific practices, and the reasoning behind the conventions the plugin encodes.
 
 The last two chapters contain information specific to our institution and lab.
-
 
 ## For contributors
 

@@ -9,7 +9,7 @@ This chapter is the most opinionated in the manual, and deliberately so. Everyth
 
 If you are outside the lab, treat it as a worked example rather than a recommendation. The value is less in our specific choices than in the fact that they are written down and encoded somewhere a tool can apply them — the alternative is a convention that exists only in the head of whoever set it up.
 
-## The choices worth knowing about
+## Conventions
 
 These conventions are encoded as skills in [the plugin](plugin.md), so Claude applies them as you work — that chapter maps what is in there. What follows is the reasoning, which the skills themselves do not carry.
 
@@ -30,12 +30,3 @@ A few are more consequential than a style preference, and they are the ones most
 ## Data management
 
 Consult our separate data management plan for requirements and conventions on where to store data, how to share files, archival, and retention.
-
-Two conventions from it are worth restating here, because AI tools make them easy to violate by accident:
-
-- **Raw data is immutable.** If a script would modify something in `data/raw/`, that is a bug regardless of what it was asked to do.
-- **Prefer a script over a direct transformation.** Have Claude write something you can read and re-run rather than editing data in place. The script is reviewable, reproducible, and reversible.
-
-## Contributing back
-
-If a convention here is wrong, or you have settled a question this chapter does not cover, change it rather than working around it. `dev_docs/contributing.md` in the repository covers the branching model, the checks, and the release process.

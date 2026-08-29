@@ -15,12 +15,6 @@ We make extensive use of Yale's High Performance Computing (HPC) resources at th
 
 Most interaction with the clusters happens through [Open OnDemand](https://docs.ycrc.yale.edu/clusters-at-yale/access/ood/#remote-desktop), YCRC's web portal.
 
-This manual does not restate YCRC's documentation — which cluster to use, storage layout, quotas, partitions, and the account conventions that differ between clusters are all covered there, and covered more accurately than a copy would stay.
-
-What belongs here is the part specific to working with an assistant. The `dunnlab-hpc` skill carries the partition tables, storage quotas and file limits, SLURM batch templates, GPU inventory, job-array conventions, and Snakemake integration. Rather than looking these up, ask Claude — it will load the skill when the question calls for it.
-
-Cluster configurations drift, and a skill is a copy like any other. Where the skill and the live cluster disagree, the cluster is right: `sinfo`, `getquota`, and `mydirectories` are the authority.
-
 ## Claude Code on the clusters
 
 A cluster is a shared, powerful, and largely irreversible environment. The stakes are different from your laptop: you can create work for cluster maintainers and deny other people access, you can delete or leak a colleague's data, and you can silently modify your own in ways you will not notice until much later.

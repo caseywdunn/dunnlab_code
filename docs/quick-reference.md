@@ -7,8 +7,6 @@ nav_order: 3
 
 Everything you need to get going, on one page. Each section links to the chapter that explains why.
 
-If you are reading straight through, skim this for the shape and keep moving — the chapters that follow cover all of it properly. If you have done this before and just want the command, this is the page to bookmark.
-
 ## Set up
 
 **Before you install, decide where this will run.** Your everyday machine, a separate user account on it, a container, a virtual machine, or a dedicated machine. This is much easier to choose now than to retrofit later, and the more autonomy you plan to give Claude, the more that choice has to carry. → [System-level control](managing-security.md#system-level-control)
