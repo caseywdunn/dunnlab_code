@@ -15,31 +15,11 @@ We make extensive use of Yale's High Performance Computing (HPC) resources at th
 
 Most interaction with the clusters happens through [Open OnDemand](https://docs.ycrc.yale.edu/clusters-at-yale/access/ood/#remote-desktop), YCRC's web portal.
 
-### Which cluster
+This manual does not restate YCRC's documentation — which cluster to use, storage layout, quotas, partitions, and the account conventions that differ between clusters are all covered there, and covered more accurately than a copy would stay.
 
-[Bouchet](https://docs.ycrc.yale.edu/clusters/bouchet/) is the primary cluster — use it for all analyses. [McCleary](https://docs.ycrc.yale.edu/clusters/mccleary/) is retained only for work on raw YCGA sequence data.
+What belongs here is the part specific to working with an assistant. The `dunnlab-hpc` skill carries the partition tables, storage quotas and file limits, SLURM batch templates, GPU inventory, job-array conventions, and Snakemake integration. Rather than looking these up, ask Claude — it will load the skill when the question calls for it.
 
-YCRC [decommissioned Grace and downsized McCleary in 2026](https://docs.ycrc.yale.edu/clusters/grace-mccleary-decommission/). McCleary will persist as a YCGA-only cluster, so anything that is not YCGA data belongs on Bouchet. Sensitive and regulated data, including NIH Controlled Access data, goes on Hopper instead and cannot be moved to Bouchet.
-
-### What breaks when you move to Bouchet
-
-Bouchet's account and path conventions differ from the older clusters, and scripts copied over will fail in ways that are not always obvious:
-
-- Your **primary group is your NetID**; PI groups are `pi_<netid>`, not the PI's surname
-- Storage is under `/nfs/roberts/`. There is **no GPFS and no `/vast/palmer`** — `/gpfs/gibbs/project` and `~/palmer_scratch` do not exist
-- Home symlinks are `~/project_pi_<netid>` and `~/scratch_pi_<netid>`
-- **Conda environments cannot be copied** from Grace or McCleary. Rebuild them, or migrate with `conda-pack`
-
-Run `mydirectories` to print your actual paths and `getquota` to check usage. See the [Bouchet getting started guide](https://docs.ycrc.yale.edu/clusters/bouchet_getting_started/).
-
-{: .warning }
-**Scratch on Bouchet is purged at 30 days**, not the 60 you may be used to from Grace and McCleary. Scratch is not backed up. Anything you want to keep belongs in project storage — and that includes conda environments, so never build one in scratch.
-
-### Asking Claude about the cluster
-
-The `dunnlab-hpc` skill carries the partition tables, storage quotas and file limits, SLURM batch templates, GPU inventory, job-array conventions, and Snakemake integration. Rather than looking these up, ask Claude — it will load the skill when the question calls for it.
-
-Cluster configurations drift. Where the skill and the live cluster disagree, the cluster is right; `sinfo`, `getquota`, and `mydirectories` are the authority.
+Cluster configurations drift, and a skill is a copy like any other. Where the skill and the live cluster disagree, the cluster is right: `sinfo`, `getquota`, and `mydirectories` are the authority.
 
 ## Claude Code on the clusters
 
