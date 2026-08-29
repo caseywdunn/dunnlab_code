@@ -39,11 +39,15 @@ Most work settles into a rhythm of plan, execute, then back to plan for the next
 
 ## Commit the plan for anything large
 
-For a project of any size, do not leave the plan in the conversation. **Write it as a markdown document, commit it, and iterate on it before building anything.**
+For a project of any size, do not leave the plan in the conversation. **Have Claude write it as a markdown document, commit it, and iterate on it before building anything.**
 
-That does more than it sounds like:
+Ask for the plan rather than writing it yourself. Then refine it the same way — *this section assumes we already have aligned reads, which we do not*, or *say more about how the two pipelines share input* — and make small edits by hand where that is quicker than explaining. The document is the thing you are working on for a while; the code comes later.
 
-- **It flushes out design decisions early**, while changing them is still free. A plan you have to write down is a plan whose gaps you notice.
+What this buys you is that everything becomes explicit. An assumption held in the conversation is one you have to notice going past; the same assumption written into a document is one you can read, disagree with, and correct before anything is built on it. You are reviewing the model's understanding of the problem while it is still cheap to be wrong.
+
+And it does more besides:
+
+- **It flushes out design decisions early**, while changing them is still free. A plan someone has to write down is a plan whose gaps become visible.
 - **It creates memory across sessions.** Conversations end, and `/clear` is something you should be doing often. A committed plan is what you point the next session at, and the one after that.
 - **It keeps the ship pointed in the right direction.** Over days of work it is easy to drift a long way from what you set out to do. A document you revise deliberately makes drift visible.
 
