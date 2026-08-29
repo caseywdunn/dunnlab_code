@@ -1,37 +1,106 @@
 # Changelog
 
-Notable changes to the dunnlab-code plugin. Versions follow the release
-process in [`dev_docs/contributing.md`](dev_docs/contributing.md#releasing).
+Notable changes to the dunnlab-code plugin and the manual. Versions follow the
+release process in [`dev_docs/contributing.md`](dev_docs/contributing.md#releasing).
 
 Lab members pick up a new version with `/plugin update dunnlab-code@dunnlab`;
 auto-update is off by default for third-party marketplaces.
 
 ## 0.3.0
 
-Accuracy pass against current Claude Code and YCRC documentation.
+An accuracy pass against current Claude Code and YCRC documentation, a
+reorganization of the manual around who each chapter is for, and the first test
+infrastructure this repository has had.
 
 ### Fixed
-- **Bouchet scratch is purged at 30 days, not 60.** Corrected in the HPC skill
-  and the example cluster settings.
-- Bouchet partition and GPU tables: added the missing `gpu_h100` partition and
-  H100, corrected B200 vRAM and several per-user job limits.
-- Removed three commands that do not exist: `claude plugin add`,
-  `claude login`, and unnamespaced `/dunnlab-check`.
-- `deny` rules apply in *every* permission mode, including
-  `bypassPermissions` — the security page said the opposite.
-- Deny rules in the example HPC settings were anchored to the working
-  directory, so they did not protect `~/.ssh`, `~/.aws`, or `~/.netrc`.
-- Permission patterns in the new-project template had no word boundary
-  (`Bash(ls*)` also matched `lsof`) and allowed arbitrary code execution
-  through `curl`, `wget`, and `python`.
-- Skill listing budget is 1% of the context window, not 2%.
+
+These were wrong, not merely out of date.
+
+- **Bouchet scratch is purged at 30 days, not 60.** Stated as 60 in five places.
+  Anyone trusting the old figure would lose data a month before they expected to.
+  60 days remains correct for McCleary and Misha, which is presumably where it
+  came from.
+- **Three documented commands did not exist**: `claude plugin add`,
+  `claude login` (it is `claude auth login`), and the unnamespaced
+  `/dunnlab-check` (plugin skills are `/dunnlab-code:dunnlab-check`).
+- **`deny` rules apply in every permission mode**, `bypassPermissions` included.
+  The security chapter said the opposite. It is `allow` rules that stop having
+  effect there.
+- **Deny rules in the example cluster settings did not protect credentials.**
+  Patterns without a `~/` or `//` prefix anchor to the working directory, so
+  `~/.ssh`, `~/.aws`, and `~/.netrc` were never covered.
+- **Permission patterns in the new-project template matched too much.**
+  `Bash(ls*)` has no word boundary and also matches `lsof`; `Bash(rm -rf /)*`
+  was malformed and matched nothing; `curl`, `wget`, and `python` were allowed
+  without a prompt, which is arbitrary code execution.
+- **Six `{: .warning }` callouts were rendering as ordinary paragraphs**,
+  including the scratch purge warning. just-the-docs requires callouts to be
+  declared in `_config.yml`.
+- Bouchet partition and GPU tables: added the missing `gpu_h100` partition,
+  corrected B200 vRAM and several per-user limits.
+- The skill listing budget is 1% of the context window, not 2%, and overflow
+  shortens descriptions rather than dropping skills.
+- Auto mode is no longer a research preview; it is the default starting mode on
+  Pro, Max, and Team plans.
+- Every `docs.anthropic.com` link, which now redirects to `code.claude.com`.
 
 ### Added
-- Bash sandbox, `.claude/rules/`, and auto memory documentation.
-- Dev Container Feature as the default devcontainer path, with the hardened
-  firewall configuration retained as a variant.
-- `scripts/check.sh` and `scripts/test-devcontainer.sh`, run in CI.
-- Lab code review expectations in `docs/lab-practices.md`.
+
+**Six new chapters.** The manual is now ordered by audience, narrowing as it
+goes: chapters 2–11 apply to anyone and can be shared with another institution
+unchanged, chapter 12 is Yale, chapter 13 is this lab.
+
+- **Using AI in Research** — accountability, reviewing generated code, data
+  handling, and reporting AI use. No terminal required.
+- **Quick Reference** — the whole thing on one page: setup, working rhythm,
+  permission modes, sessions, tmux.
+- **Working Effectively** — how to frame the work. Asking broadly rather than
+  narrowly, separating planning from building, committing the plan as a
+  document, and setting gates you can check.
+- **DunnLab Plugin** — what the plugin contains and how to run it.
+- **Other Coding Agents** — the wider landscape, `AGENTS.md`, and what carries
+  between tools.
+- **Computing at Yale** — YCRC clusters and running Claude Code on shared
+  hardware.
+
+**New coverage in existing chapters**: the Bash sandbox, `.claude/rules/`, auto
+memory, the CIA triad framing for security risks, and a two-tier split between
+what Claude decides and what the operating system enforces.
+
+**An AI use statement** for this project, on the home page. The manual argues
+for reporting AI use and now does so itself.
+
+**Test infrastructure**, where there was none:
+
+- `scripts/check.sh` — 21 checks covering manifests, skill frontmatter, nav
+  order, internal and cross-file links, and specific errors fixed here so they
+  cannot return by copy-paste. Mutation-tested rather than assumed.
+- `scripts/preview-docs.sh` — renders and serves the site in Docker, no Ruby
+  needed.
+- `scripts/test-devcontainer.sh` — builds the hardened container from the skill
+  itself.
+- `scripts/verify-hpc-facts.sh` — read-only dump of cluster facts for checking
+  the HPC skill against a live system.
+- CI running the structural checks and a Jekyll build on every push and PR.
 
 ### Changed
-- Python formatting and linting moved from `black` + `flake8` to `ruff`.
+
+- Python formatting and linting move from `black` + `flake8` to `ruff`.
+- The devcontainer skill offers the official Dev Container Feature as its
+  default path, keeping the hardened firewall configuration as a variant.
+- The manual says *reporting* AI use rather than *disclosure*, except where
+  naming someone else's standard. Disclosure borrows the conflict-of-interest
+  frame, which presumes the thing disclosed is a taint.
+- `dev_docs/contributing.md` documents a branching model and release ritual.
+
+### Known limitations
+
+- The Bouchet figures come from YCRC's published documentation and have not been
+  checked against the live cluster. `scripts/verify-hpc-facts.sh` exists for
+  that; where the two disagree, the cluster is right.
+- `check.sh` does not verify the page table in `dev_docs/github-pages.md`, which
+  has to be updated by hand.
+
+## 0.2.0 and earlier
+
+No changelog was kept. See the commit history.
