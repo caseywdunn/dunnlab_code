@@ -16,7 +16,8 @@ The manual focuses on Claude Code, but most of it applies just as well to other 
 - [Getting Started](getting-started.md) — The computational stack we recommend, and how to install and verify Claude Code.
 - [Claude Code Concepts](claude-intro.md) — How it works: interfaces, the working directory, how it is extended, and the habits that make it effective.
 - [Managing Security](managing-security.md) — Permissions, sandboxing, and containers. What can go wrong and what actually stops it.
-- [Managing Context](managing-context.md) — Giving Claude the right information: CLAUDE.md, rules, memory, skills, and plugins.
+- [Managing Context](managing-context.md) — Giving Claude the right information: agent instructions, rules, memory, skills, and plugins.
+- [Working Effectively](working-effectively.md) — How to frame the work: asking broadly, separating planning from building, and committing the plan.
 - [DunnLab Plugin](plugin.md) — The skills, commands, and assets in this repository, and how to run them.
 - [Example Workflows](example-workflows.md) — A project from empty directory to working code, start to finish.
 - [Other Coding Agents](other-agents.md) — The wider landscape, and how to keep a project working with more than one agent.

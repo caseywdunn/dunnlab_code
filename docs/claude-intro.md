@@ -5,9 +5,9 @@ nav_order: 5
 
 # Claude Code Concepts
 
-How Claude Code actually works: which interface does what, what it can reach on your machine, how it is extended, and the working habits that get good results from it.
+How Claude Code actually works: which interface does what, what it can reach on your machine, and how it is extended.
 
-The next two chapters build directly on this one. [Managing Security](managing-security.md) is about constraining what Claude can do; [Managing Context](managing-context.md) is about giving it the right information. Both assume the vocabulary introduced here.
+The three chapters after this one build directly on it. [Managing Security](managing-security.md) is about constraining what Claude can do, [Managing Context](managing-context.md) about giving it the right information, and [Working Effectively](working-effectively.md) about how to frame the work. All three assume the vocabulary introduced here.
 
 ## How Claude Code interacts with your computer
 
@@ -40,21 +40,6 @@ Claude Code's capabilities can be extended in several ways. These differ in how 
 Custom slash commands used to be a separate mechanism. They have been merged into skills: a file at `.claude/commands/foo.md` and a skill at `.claude/skills/foo/SKILL.md` both give you `/foo` and behave the same way. Existing command files keep working, but write new ones as skills.
 
 For details on each, see the [Claude Code documentation](https://code.claude.com/docs/en/overview).
-
-## Best practices for effective use
-
-Getting good results from Claude Code is less about prompt engineering and more about workflow discipline.
-
-**Plan before coding.** Ask Claude to develop a detailed plan before writing any code. Review and refine the plan together until you're confident in the approach. This avoids wasted effort and helps Claude make better decisions throughout implementation.
-
-**Work in small, testable steps.** Break work into incremental tasks with clear, testable outcomes. After each task is completed and verified, ask Claude to commit (don't commit manually — Claude generates detailed commit messages that document the reasoning behind changes). Then clear the context with `/clear` before starting the next task. This keeps the conversation focused and prevents context from getting stale or cluttered.
-
-**Use plan mode for anything you are not sure about.** `Shift+Tab` cycles to plan mode, where Claude explores and proposes but does not edit. You review the plan before any code is written. This is the cheapest place to catch a wrong approach.
-
-**Know how to undo.** `/rewind` restores the conversation and the files to an earlier point in the session. Committing after each verified step, as above, is the more durable version of the same idea.
-
-**Let Claude handle errors.** When code produces errors, don't copy and paste error messages into the chat. Instead, ask Claude to run the code itself — it will see the full error output, have the surrounding context, and can diagnose and fix the problem directly. This is faster and less error-prone than manually relaying fragments of stack traces.
-
 
 ## Other ways to use Claude
 

@@ -36,12 +36,13 @@ The chapters are ordered by how widely they apply, narrowing as they go. Keep ne
 | `getting-started.md` | 4 | anyone | Recommended stack, installing and verifying Claude Code |
 | `claude-intro.md` | 5 | anyone | How Claude Code works: interfaces, working directory, extensibility, effective use |
 | `managing-security.md` | 6 | anyone | Permissions, sandboxing, isolation |
-| `managing-context.md` | 7 | anyone | Context window, CLAUDE.md, rules, auto memory, skills, plugins |
-| `plugin.md` | 8 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
-| `example-workflows.md` | 9 | anyone | Step-by-step walkthrough of a project |
-| `other-agents.md` | 10 | anyone | The wider agent landscape, AGENTS.md, and serving several agents from one file |
-| `yale.md` | 11 | Yale | YCRC clusters and running Claude Code on shared hardware |
-| `lab-practices.md` | 12 | Dunn Lab | The reasoning behind our conventions, and data management |
+| `managing-context.md` | 7 | anyone | Context window, agent instructions, rules, auto memory, skills, plugins |
+| `working-effectively.md` | 8 | anyone | How to frame the work: broad requests, planning vs building, committing the plan |
+| `plugin.md` | 9 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
+| `example-workflows.md` | 10 | anyone | Step-by-step walkthrough of a project |
+| `other-agents.md` | 11 | anyone | The wider agent landscape, AGENTS.md, and serving several agents from one file |
+| `yale.md` | 12 | Yale | YCRC clusters and running Claude Code on shared hardware |
+| `lab-practices.md` | 13 | Dunn Lab | The reasoning behind our conventions, and data management |
 
 Quick Reference deliberately duplicates commands that appear in later chapters. Keep it to commands and one-line descriptions — the explanation belongs in the chapter it links to, so the two cannot drift far.
 

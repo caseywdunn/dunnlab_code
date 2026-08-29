@@ -49,7 +49,7 @@ The rhythm matters more than the prompting. In rough order:
 5. **Commit after each verified step**, and let Claude write the message.
 6. **`/clear` before the next task.** A stale conversation makes everything worse.
 
-→ [Claude Code Concepts](claude-intro.md#best-practices-for-effective-use)
+→ [Working Effectively](working-effectively.md)
 
 ## Permission modes
 
