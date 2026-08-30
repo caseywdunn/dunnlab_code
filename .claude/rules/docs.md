@@ -17,7 +17,7 @@ Keep Quick Reference to commands and one-line descriptions. Explanation belongs 
 
 ## The chapters are ordered by audience
 
-Chapters 2 through 10 must contain nothing specific to this lab or to Yale — they are meant to be handed to someone at another institution unchanged. Institution-specific material goes in `yale.md`, lab-specific material in `lab-practices.md`. A statement that would have to be deleted before sharing the manual is in the wrong chapter.
+Every chapter before `yale.md` must contain nothing specific to this lab or to Yale — those chapters are meant to be handed to someone at another institution unchanged. Institution-specific material goes in `yale.md`, lab-specific material in `lab-practices.md`. A statement that would have to be deleted before sharing the manual is in the wrong chapter.
 
 ## After any structural change
 

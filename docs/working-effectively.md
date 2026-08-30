@@ -1,6 +1,6 @@
 ---
 title: Working Effectively
-nav_order: 8
+nav_order: 10
 ---
 
 # Working Effectively
@@ -43,13 +43,13 @@ Split the work into a planning phase and an implementation phase, deliberately, 
 
 The reason is not tidiness. **A plan is where mistakes are cheap.** Once the agent starts building, it builds on whatever you told it, including the parts you got wrong — and by the time a bad assumption is visible in code it has already propagated through everything downstream. Reviewing a plan is your chance to check the details you supplied before anything is constructed on top of them.
 
-In practice: start in plan mode, where Claude explores and proposes but does not edit. `Shift+Tab` cycles the permission modes, and the status bar shows where you are. Read the plan properly, argue with it, and only then let it work.
+In practice, begin with editing disabled: use Claude Code's Plan mode or Codex's `read-only` sandbox, or explicitly ask either agent to produce a plan before implementation. Read the plan properly, argue with it, and only then let the agent work.
 
-Most work settles into a rhythm of plan, execute, then back to plan for the next piece. The cycle is not symmetric — it runs Manual → Accept edits → Plan → Auto → Manual, so plan to auto is one press forward but auto back to plan is three. If you are starting a session anyway, `claude --permission-mode plan` puts you where you want to be.
+Most work settles into a rhythm of plan, execute, then back to plan for the next piece. The commands differ, but the workflow does not: change the harness boundary deliberately when moving from review to implementation.
 
 ## Commit the plan for anything large
 
-For a project of any size, do not leave the plan in the conversation. **Have Claude write it as a markdown document, commit it, and iterate on it before building anything.**
+For a project of any size, do not leave the plan in the conversation. **By “the plan,” this manual means a real file such as `PLAN.md` or `dev_docs/overview.md` inside the Git repository, not a passage that exists only in chat.** Have the agent write it, commit it, and iterate on it before building anything.
 
 Ask for the plan rather than writing it yourself. Then refine it the same way — *this section assumes we already have aligned reads, which we do not*, or *say more about how the two pipelines share input* — and make small edits by hand where that is quicker than explaining. The document is the thing you are working on for a while; the code comes later.
 
@@ -82,7 +82,7 @@ Three things make a gate worth having:
 Then apply gates at two scales. **Between steps**, a gate is what lets the next task start from something verified rather than something assumed — it is what makes small, testable steps more than an aspiration. **At the end**, an agreed definition of done is what stops the work drifting into indefinite polishing, or stopping three-quarters of the way with the last quarter uninspected.
 
 {: .note }
-**Other tools are building this in.** OpenAI's Codex has a [`/goal` command](https://learn.chatgpt.com/use-cases/follow-goals) whose premise is exactly the argument above — *"use `/goal` when a task needs Codex to keep working across turns toward a verifiable stopping condition"*. Given one, it will work unattended for hours, and it is recommended for migrations, large refactors, and experiments: the cases with clear validation loops. Claude Code has no single command for this, so you state the gate in the prompt and let [auto mode](managing-security.md#auto-mode) run. Either way the requirement is the same, which is the point of this section — the gate is what makes unattended work possible at all.
+Codex can make a durable objective explicit with its [`/goal` command](https://learn.chatgpt.com/use-cases/follow-goals). In Claude Code, state the same objective and gates in the prompt or plan and use [Auto mode](managing-security.md#auto-mode) for the run. Neither mechanism replaces a verifiable stopping condition; that is what makes unattended work reliable in either harness.
 
 When you cannot state a gate for a piece of work, that is worth noticing rather than working around. Sometimes it means the task is genuinely exploratory and you should be in [plan mode](#separate-planning-from-building) asking questions rather than building. Sometimes it means you have not actually decided what you want yet.
 
@@ -92,13 +92,13 @@ Once you are building:
 
 **Keep tasks small, and gated.** A change too large to read carefully was too large to ask for in one go — and each one should end at a check you named in advance.
 
-**Let Claude run the code.** Do not copy error messages into the chat. Ask it to run the thing — it sees the full output, has the surrounding context, and can diagnose directly. Relaying fragments of a stack trace by hand is slower and loses information.
+**Let the agent run the code.** Do not copy error messages into the chat. Ask it to run the thing—it sees the full output, has the surrounding context, and can diagnose directly. Relaying fragments of a stack trace by hand is slower and loses information.
 
-**Commit after each verified step**, and let Claude write the message. It will document the reasoning behind the change, which you would probably not have bothered to do.
+**Commit after each verified step**, and let the agent write the message. It will document the reasoning behind the change, which you would probably not have bothered to do.
 
-**Then `/clear` before the next task.** A conversation carrying three tasks' worth of dead ends makes everything after it worse.
+**Then start fresh before the next task.** In Claude Code, `/clear` resets the conversation; in either harness, a new session avoids carrying three tasks' worth of dead ends into the next one.
 
-**Know how to undo.** `/rewind` restores the conversation and the files to an earlier point in the session. Committing often is the more durable version of the same idea.
+**Know how to undo.** Git commits are the durable, cross-agent recovery mechanism. Claude Code also offers `/rewind`; other harness-local recovery features differ.
 
 ## Keep asking as you go
 

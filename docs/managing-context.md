@@ -1,38 +1,38 @@
 ---
 title: Managing Context
-nav_order: 7
+nav_order: 9
 ---
 
 # Managing Context
 
-Claude only knows what is in front of it. This chapter is about putting the right things there — standing instructions, task-specific guidance, and the project's own documentation — without filling the window with noise.
+An agent only knows what its harness puts in front of it. This chapter is about supplying the right standing instructions, task-specific guidance, and project documentation without filling the context window with noise.
 
-Most complaints that Claude "forgot" something or "ignored" an instruction are context problems, and most of them are fixable from here.
+Most complaints that an agent "forgot" something or "ignored" an instruction are context problems, and most of them are fixable.
 
 ## What is the context window?
 
-Every conversation with Claude has a finite context window — the total amount of text (your messages, Claude's responses, file contents, tool outputs) that fits in working memory. When a conversation grows long, older content is compressed or dropped to make room. This means Claude can forget earlier instructions, lose track of decisions, or re-read files it already saw.
+Every agent session has a finite context window: the messages, responses, file contents, instructions, and tool outputs that fit in working memory. When a conversation grows long, older content may be compressed or dropped to make room. The agent can then lose track of earlier instructions or decisions, or re-read files it already saw.
 
-Managing context well means giving Claude the right information at the right time without filling the window with noise. Four mechanisms help, in rough order of how eagerly they load:
+Managing context well means giving the agent the right information at the right time without filling the window with noise. The products expose similar concepts under different names:
 
-| Mechanism | Loads |
-|-----------|-------|
-| **Agent instructions** | Every session |
-| **Rules** (`.claude/rules/`) | Every session, or only when Claude touches matching files |
-| **Auto memory** | Every session (the index only) |
-| **Skills** | Only when invoked |
+| Mechanism | Claude Code | Codex |
+|---|---|---|
+| **Project instructions** | `CLAUDE.md` and `.claude/rules/` | Layered `AGENTS.md` files |
+| **Personal instructions** | `~/.claude/CLAUDE.md` | `~/.codex/AGENTS.md` |
+| **Remembered session context** | Auto memory and session history | Session history and memories |
+| **Task-specific guidance** | Skills and plugins | Skills and plugins |
 
-Use `/context` at any point to see what actually loaded and what it cost.
+Claude Code's `/context` shows what loaded and what it cost. Codex's `/status` summarizes the active session, while its layered `AGENTS.md` files remain the durable, inspectable source of project guidance.
 
-### The `/clear` command
+### Starting with fresh context
 
-When a conversation gets long or you're switching tasks, use `/clear` to reset the context window. This drops the conversation history and re-loads your CLAUDE.md files fresh. It's the simplest way to reclaim context space.
+When a conversation gets long or you switch tasks, start a new session or use the harness's context-reset command. In Claude Code, `/clear` drops the conversation and reloads the standing instructions. The important habit is product-independent: do not carry an old task's dead ends into a new one.
 
 ## Agent instructions
 
 Coding agents read a file of standing instructions at the start of every session — build commands, coding conventions, architectural decisions, project-specific rules — so you don't have to repeat yourself.
 
-There are two filenames for the same idea. `AGENTS.md` is the open, cross-tool format that most agents read. `CLAUDE.md` is what Claude Code reads, and it reads only that.
+There are two filenames for the same idea. Codex and many other agents read `AGENTS.md`; Claude Code reads `CLAUDE.md`.
 
 **Create both, from the start.** Put the actual content in `AGENTS.md`, and make `CLAUDE.md` a single line:
 
@@ -43,9 +43,9 @@ There are two filenames for the same idea. `AGENTS.md` is the open, cross-tool f
 That is the whole file. Claude Code expands the import at session start, so it loads exactly what every other agent loads, and you maintain one file rather than two that drift apart.
 
 {: .note }
-If you only ever use Claude Code, a plain `CLAUDE.md` with the content in it works fine and nothing here changes. The two-file version costs one line and means you are not redoing this later. [Other Coding Agents](other-agents.md#serving-both-from-one-file) explains why it matters.
+The two-file convention makes neither harness primary: `AGENTS.md` is the shared source of truth and `CLAUDE.md` is the compatibility import Claude Code requires. [Coding Agents](other-agents.md#serving-both-from-one-file) explains the implementation.
 
-The rest of this section says `CLAUDE.md`, because that is the filename Claude Code loads and where the size limits and precedence rules apply. Everything it says is equally true of the `AGENTS.md` at the other end of that import.
+The product-specific details below use Claude Code's filenames because its import is the extra compatibility layer. The general rules—keep instructions short, version them, and point to deeper documentation—apply equally to Codex's `AGENTS.md` hierarchy.
 
 ### Where to put them
 
