@@ -1,6 +1,6 @@
 ---
 title: Working Effectively
-nav_order: 8
+nav_order: 10
 ---
 
 # Working Effectively
@@ -27,19 +27,29 @@ Point it at your data and ask an open scientific question. *What does the distri
 
 You advance the project and learn something at the same time. This is also where these tools are least like a faster autocomplete and most like a colleague who has actually read the data — and precisely why [Using AI in Research](using-ai.md) insists that evaluating the answer remains your job.
 
+## Treat the agent as a teacher, not just a doer
+
+A common criticism of generative AI is that it weakens people's abilities by depriving them of the learning and practice that come from doing the work themselves. That has not been my experience, nor the experience of colleagues who now use AI extensively. The difference, I think, is not an intrinsic property of the technology but how we choose to use it.
+
+I am learning many new things as I use AI because I treat the agent as a teacher as well as a doer. Broad tasks and open-ended questions give it room to suggest approaches you did not know about or might not have chosen yourself. When that happens — ideally during planning, before anything expensive depends on the choice — ask why it chose that approach.
+
+Sometimes you were right to question it. The agent may be missing context or expertise that you have, and explaining why another approach is better makes both the plan and your own reasoning more explicit. Other times it will introduce a method, tool, or way of thinking that is new to you. Ask it to explain the idea, its tradeoffs, and why it fits the problem; you have just added something to your own toolbox rather than merely receiving an output.
+
+Stay curious. Ask why, ask what the alternatives are, and ask what you should understand before accepting a choice. Used this way, an agent does not remove learning from the work. It puts a patient, on-demand teacher inside it.
+
 ## Separate planning from building
 
 Split the work into a planning phase and an implementation phase, deliberately, rather than letting them run together.
 
 The reason is not tidiness. **A plan is where mistakes are cheap.** Once the agent starts building, it builds on whatever you told it, including the parts you got wrong — and by the time a bad assumption is visible in code it has already propagated through everything downstream. Reviewing a plan is your chance to check the details you supplied before anything is constructed on top of them.
 
-In practice: start in plan mode, where Claude explores and proposes but does not edit. `Shift+Tab` cycles the permission modes, and the status bar shows where you are. Read the plan properly, argue with it, and only then let it work.
+In practice, begin with editing disabled: use Claude Code's Plan mode or Codex's `read-only` sandbox, or explicitly ask either agent to produce a plan before implementation. Read the plan properly, argue with it, and only then let the agent work.
 
-Most work settles into a rhythm of plan, execute, then back to plan for the next piece. The cycle is not symmetric — it runs Manual → Accept edits → Plan → Auto → Manual, so plan to auto is one press forward but auto back to plan is three. If you are starting a session anyway, `claude --permission-mode plan` puts you where you want to be.
+Most work settles into a rhythm of plan, execute, then back to plan for the next piece. The commands differ, but the workflow does not: change the harness boundary deliberately when moving from review to implementation.
 
 ## Commit the plan for anything large
 
-For a project of any size, do not leave the plan in the conversation. **Have Claude write it as a markdown document, commit it, and iterate on it before building anything.**
+For a project of any size, do not leave the plan in the conversation. **By “the plan,” this manual means a real file such as `PLAN.md` or `dev_docs/overview.md` inside the Git repository, not a passage that exists only in chat.** Have the agent write it, commit it, and iterate on it before building anything.
 
 Ask for the plan rather than writing it yourself. Then refine it the same way — *this section assumes we already have aligned reads, which we do not*, or *say more about how the two pipelines share input* — and make small edits by hand where that is quicker than explaining. The document is the thing you are working on for a while; the code comes later.
 
@@ -72,7 +82,7 @@ Three things make a gate worth having:
 Then apply gates at two scales. **Between steps**, a gate is what lets the next task start from something verified rather than something assumed — it is what makes small, testable steps more than an aspiration. **At the end**, an agreed definition of done is what stops the work drifting into indefinite polishing, or stopping three-quarters of the way with the last quarter uninspected.
 
 {: .note }
-**Other tools are building this in.** OpenAI's Codex has a [`/goal` command](https://learn.chatgpt.com/use-cases/follow-goals) whose premise is exactly the argument above — *"use `/goal` when a task needs Codex to keep working across turns toward a verifiable stopping condition"*. Given one, it will work unattended for hours, and it is recommended for migrations, large refactors, and experiments: the cases with clear validation loops. Claude Code has no single command for this, so you state the gate in the prompt and let [auto mode](managing-security.md#auto-mode) run. Either way the requirement is the same, which is the point of this section — the gate is what makes unattended work possible at all.
+Codex can make a durable objective explicit with its [`/goal` command](https://learn.chatgpt.com/use-cases/follow-goals). In Claude Code, state the same objective and gates in the prompt or plan and use [Auto mode](managing-security.md#auto-mode) for the run. Neither mechanism replaces a verifiable stopping condition; that is what makes unattended work reliable in either harness.
 
 When you cannot state a gate for a piece of work, that is worth noticing rather than working around. Sometimes it means the task is genuinely exploratory and you should be in [plan mode](#separate-planning-from-building) asking questions rather than building. Sometimes it means you have not actually decided what you want yet.
 
@@ -82,13 +92,13 @@ Once you are building:
 
 **Keep tasks small, and gated.** A change too large to read carefully was too large to ask for in one go — and each one should end at a check you named in advance.
 
-**Let Claude run the code.** Do not copy error messages into the chat. Ask it to run the thing — it sees the full output, has the surrounding context, and can diagnose directly. Relaying fragments of a stack trace by hand is slower and loses information.
+**Let the agent run the code.** Do not copy error messages into the chat. Ask it to run the thing—it sees the full output, has the surrounding context, and can diagnose directly. Relaying fragments of a stack trace by hand is slower and loses information.
 
-**Commit after each verified step**, and let Claude write the message. It will document the reasoning behind the change, which you would probably not have bothered to do.
+**Commit after each verified step**, and let the agent write the message. It will document the reasoning behind the change, which you would probably not have bothered to do.
 
-**Then `/clear` before the next task.** A conversation carrying three tasks' worth of dead ends makes everything after it worse.
+**Then start fresh before the next task.** In Claude Code, `/clear` resets the conversation; in either harness, a new session avoids carrying three tasks' worth of dead ends into the next one.
 
-**Know how to undo.** `/rewind` restores the conversation and the files to an earlier point in the session. Committing often is the more durable version of the same idea.
+**Know how to undo.** Git commits are the durable, cross-agent recovery mechanism. Claude Code also offers `/rewind`; other harness-local recovery features differ.
 
 ## Keep asking as you go
 
@@ -108,3 +118,58 @@ These cost a few seconds and occasionally redirect a project. The agent has been
 *Do you see any other interesting patterns?* is the one most likely to pay for the whole habit. It is the question that finds the thing you were not looking for — and, as [asking scientific questions](#ask-scientific-questions-not-just-technical-ones) argues, the thing you were not looking for is sometimes the result.
 
 One caution. An agent asked *are we on the right track?* has a pull toward answering yes. If you want a real answer, make disagreement the easy reply: *what is the strongest argument that this approach is wrong?*, or *if you were reviewing this, what would you object to first?* You will get better information, and you will get it earlier.
+
+## Keep the agent working for you
+
+The goal is not to spend all day supervising an agent. It is to make the agent as autonomous as the work safely allows. A run that is going well may need little or no input for hours or even days while it implements the plan, runs analyses, checks intermediate results, and interprets what it finds.
+
+Your attention should be reserved for the things only you can contribute: information the agent cannot access, consequential design decisions, scientific judgment, and expertise it does not already have. Clicking through routine permission requests, fetching files for it, and repeatedly answering questions that could have been settled in advance are signs that the workflow needs attention.
+
+If many of your prompts merely grant permissions, revisit the [permission settings](managing-security.md). Allow the agent to do more where that is appropriate, but do not weaken protections that the environment genuinely needs. Change the environment instead: use a machine with fewer security concerns, work inside a sandbox or virtual machine, give the agent read-only access to raw data, or use the model's own sandboxing features. Design the workspace so that routine work is safe to authorize broadly and consequential actions remain constrained.
+
+Frequent interruptions can also mean that the work was not planned far enough ahead. If the agent keeps asking you to make design decisions during implementation, return to the plan and make those decisions explicit. Before launching a large analysis, ask it to run a small end-to-end pilot. A pilot exposes missing inputs, ambiguous choices, permission problems, and unrealistic resource estimates while they are still cheap to fix.
+
+Finally, put clear [gates](#set-gates-you-can-check) between the steps of the plan. Have the agent verify each stage before proceeding, so a silent problem does not travel downstream and become a much larger complication. Good planning, a representative pilot, and executable gates are what turn autonomy from wishful thinking into a reliable way of working.
+
+## Manage multiple agents as a portfolio
+
+Once your agents can work for long periods without you, you will naturally start running several sessions on different projects at once. Getting this right becomes one of the hardest parts of adopting AI extensively. It is a different scale and mode of work from most pre-AI workflows, and a few months into adoption it is often the problem people most want to compare notes about.
+
+Parallel agents multiply execution, not your capacity for attention. You still have to hold the big picture, keep every project pointed in the right direction, review the work carefully, and sometimes edit or redo it. The paradox is that you may end up with more on your plate than before you had the help: far more work can move at once, but the parts that remain yours still require judgment and concentration.
+
+Be realistic about the number of projects you can tend. For many people the practical limit is somewhere around two to six active projects, depending on their complexity and how much intervention they need. Beyond your limit, projects cannibalize one another: reviews get shallow, decisions wait, and work that was supposed to save attention creates a backlog of things requiring it.
+
+Keep a simple document or sheet that puts every project into one well-defined state:
+
+| State | Meaning |
+|---|---|
+| **Active** | Running now and worth checking regularly. |
+| **Blocked** | Ready to be active but waiting for something not yet available, such as data from a collaborator or a few focused hours from you. |
+| **Parked** | Previously active, but deliberately put on ice because the active set is full. |
+| **To initiate** | Not started yet; a candidate to activate when capacity opens. |
+| **Done** | Finished and no longer competing for attention. |
+
+For each project, record the context you will need when you return:
+
+| Record | What to include |
+|---|---|
+| **Objective** | The question or outcome the project is meant to address. |
+| **Current step** | Where the project is in its plan and what is happening now. |
+| **Agent and session** | The agent being used and the session name, link, or identifier needed to reopen it. |
+| **Run location** | The computer, cluster, virtual machine, container, or terminal session where the agent or analysis is running. |
+| **Working directory** | The exact path containing the files the agent is acting on. |
+| **Repository** | The associated GitHub repository, branch, pull request, or other version-control context. |
+| **Related context** | Relevant Slack channels, documents, data locations, issue trackers, or collaborators. |
+| **Dependencies and blockers** | Anything the project needs before it can advance, and who or what it is waiting for. |
+| **Most recent result** | The last meaningful and verified thing the project produced. |
+| **Next action** | What should happen next, whether the agent can do it, and what input it needs from you. |
+
+This may sound excessive until the first time those details are spread across several windows and machines.
+
+That context matters because switching projects is not free. Each switch means finding the right windows, reconstructing what the project is about, remembering where it stopped, reviewing recent progress, deciding whether it needs you, and then recovering enough context to act well. A good tracker reduces this reorientation cost; limiting the active set reduces how often you pay it.
+
+The tool itself matters less than the structure. I use a Google Doc. Other people use a spreadsheet, Obsidian or another task manager, or an agent-built dashboard that monitors runs in real time. Start with the simplest thing you will actually maintain and automate it only when the manual version becomes a burden.
+
+If parallel work leaves you feeling scattered and fried, do not treat that as a personal failure or a reason to add another agent. Reduce the number of active projects, move the rest to parked, and make the state of each one explicit. Autonomy increases how much work can happen; it does not remove the need to choose how much work deserves your attention.
+
+**And do not forget to touch grass.**

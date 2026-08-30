@@ -33,22 +33,23 @@ The chapters are ordered by how widely they apply, narrowing as they go. Keep ne
 | `index.md` | 1 | — | Landing page; states the tier structure and where to start |
 | `using-ai.md` | 2 | anyone | Responsibility, reviewing generated code, data handling, disclosure, journal and funder policy |
 | `quick-reference.md` | 3 | anyone | One-page cheatsheet: setup, working rhythm, permission modes, sessions, tmux |
-| `getting-started.md` | 4 | anyone | Recommended stack, installing and verifying Claude Code |
-| `claude-intro.md` | 5 | anyone | How Claude Code works: interfaces, working directory, extensibility, effective use |
-| `managing-security.md` | 6 | anyone | Permissions, sandboxing, isolation |
-| `managing-context.md` | 7 | anyone | Context window, agent instructions, rules, auto memory, skills, plugins |
-| `working-effectively.md` | 8 | anyone | How to frame the work: broad requests, planning vs building, committing the plan |
-| `plugin.md` | 9 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
-| `example-workflows.md` | 10 | anyone | Step-by-step walkthrough of a project |
-| `other-agents.md` | 11 | anyone | The wider agent landscape, AGENTS.md, and serving several agents from one file |
-| `yale.md` | 12 | Yale | YCRC clusters and running Claude Code on shared hardware |
-| `lab-practices.md` | 13 | Dunn Lab | The reasoning behind our conventions, and data management |
+| `getting-started.md` | 4 | anyone | Recommended stack, installing and verifying Claude Code or Codex |
+| `claude-intro.md` | 5 | anyone | Vendor-neutral agent concepts: models, harnesses, loops, context, tools, permissions, and sessions |
+| `other-agents.md` | 6 | anyone | How Claude Code and Codex implement the concepts, and what carries between agents |
+| `managing-security.md` | 7 | anyone | Permissions, sandboxing, isolation |
+| `working-across-computers.md` | 8 | anyone | Remote agents, SSH, tmux, and separating control from compute |
+| `managing-context.md` | 9 | anyone | Context window, agent instructions, rules, auto memory, skills, plugins |
+| `working-effectively.md` | 10 | anyone | How to frame the work: broad requests, planning vs building, committing the plan |
+| `plugin.md` | 11 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
+| `example-workflows.md` | 12 | anyone | Step-by-step walkthrough of a project |
+| `yale.md` | 13 | Yale | YCRC clusters and running coding agents on shared hardware |
+| `lab-practices.md` | 14 | Dunn Lab | The reasoning behind our conventions, and data management |
 
 Quick Reference deliberately duplicates commands that appear in later chapters. Keep it to commands and one-line descriptions — the explanation belongs in the chapter it links to, so the two cannot drift far.
 
 Keep this table in sync with the frontmatter. `./scripts/check.sh` verifies that `nav_order` values are contiguous and unique and that every page is linked from `index.md`, but **it does not check this table** — that is on you.
 
-When adding a page, ask which tier it belongs to. Anything institution-specific belongs at 8 or later; anything lab-specific at 9 or later. A page that would need to be deleted before sharing the manual with another group is in the wrong tier.
+When adding a page, ask which tier it belongs to. Institution-specific and lab-specific chapters come after all chapters for the general audience. A page that would need to be deleted before sharing the manual with another group is in the wrong tier.
 
 ## Adding a new page
 

@@ -1,33 +1,44 @@
 ---
 title: Managing Security
-nav_order: 6
+nav_order: 7
 ---
 
 # Managing Security
 
-Claude Code can read your files, run commands, and reach the network. This chapter is about understanding the risks and benefits of allowing it to read and write files on your computer, deciding what to allow it to do without asking, what it must ask about, and what it may never do. We also cover the difference between a rule Claude follows and a boundary the operating system enforces, a critical distinction.
+A local coding agent can read your files, run commands, and reach the network. This chapter is about understanding the risks and benefits of allowing that access, deciding what may happen without asking, what requires approval, and what may never happen. It also covers the critical difference between a rule the harness follows and a boundary the operating system enforces.
 
 ## Why security matters
 
-Claude Code runs directly on your machine with access to your shell, filesystem, and network. This is what makes it powerful — it can read your code, run commands, edit files, and install packages. But that same access creates real risks, and they overlap substantially with ordinary cybersecurity risks. Think about granting Claude access to your computer much as you would think about granting a person access to it. Either way, through malice or through mistakes, harm is possible.
+Claude Code and Codex can both run directly on your machine with access to your shell, filesystem, and network. This is what makes them powerful: they can read code, run commands, edit files, and install packages. That same access creates real risks, overlapping substantially with ordinary cybersecurity risks. Think about granting an agent access to your computer much as you would think about granting a person access to it. Either way, through malice or mistakes, harm is possible.
 
 Information security conventionally sorts those harms into three, known as the **CIA triad** — no relation to the intelligence agency, just an unfortunate coincidence of initials. [NIST SP 800-12](https://csrc.nist.gov/pubs/sp/800/12/r1/final) is the standard reference. All three apply here:
 
-- **Confidentiality** — information reaching someone who should not have it. Claude can read anything your user account can read: API keys, credentials, SSH configs, environment variables, unpublished results, and on a shared system, other people's work. Anything it reads may be sent to the API, at which point it has left your machine.
-- **Integrity** — information being changed when it should not be. Claude may overwrite the wrong file, modify data in place, introduce a subtle error into an analysis, or commit something that breaks a pipeline other people depend on. The dangerous case is not the change you notice; it is the one you do not.
+- **Confidentiality** — information reaching someone who should not have it. An agent may be able to read anything your user account can read: API keys, credentials, SSH configs, environment variables, unpublished results, and on a shared system, other people's work. Anything sent to the model API has left your machine.
+- **Integrity** — information being changed when it should not be. An agent may overwrite the wrong file, modify data in place, introduce a subtle error into an analysis, or commit something that breaks a pipeline other people depend on. The dangerous case is not the change you notice; it is the one you do not.
 - **Availability** — losing access to something you need. Deleted work, an exhausted storage quota, a cluster account suspended for a policy violation, a week of compute burned by a runaway job. On shared infrastructure this lands on your colleagues as much as on you.
 
-**Prompt injection** cuts across all three and is worth understanding separately, because it is a *mechanism* rather than an outcome. Instructions hidden in a file, a web page, a dependency, or a tool's output can redirect what Claude does — a cloned repository whose README tells the agent to send credentials somewhere, for instance. The underlying point is that anything Claude reads is potentially an instruction and not merely data, which is why untrusted code and fetched web content deserve particular care.
+**Prompt injection** cuts across all three and is worth understanding separately, because it is a *mechanism* rather than an outcome. Instructions hidden in a file, a web page, a dependency, or a tool's output can redirect what an agent does—a cloned repository whose README tells it to send credentials somewhere, for instance. Anything an agent reads is potentially an instruction and not merely data, which is why untrusted code and fetched web content deserve particular care.
 
-The permission system described below is your primary defense. It lets you decide exactly which actions Claude can take automatically, which require your approval, and which are blocked entirely. But note in advance that permission rules constrain what Claude *decides* to do; only the [sandbox](#the-bash-sandbox) constrains what a running command *can reach*.
+The permission system described below is your primary defense. It lets you decide which actions an agent can take automatically, which require approval, and which are blocked entirely. Permission rules constrain what the harness will execute; only a [sandbox](#the-bash-sandbox) or other system boundary constrains what a running command *can reach*.
 
-## Claude-level control
+## Harness-level control
 
-Everything in this section shapes what Claude *decides* to do. Rules and modes are read by Claude Code and applied before a tool call runs, which makes them precise, easy to change, and the right place to start.
+Both harnesses expose controls for routine autonomy, approvals, filesystem access, and network access:
+
+| Control | Claude Code | Codex |
+|---|---|---|
+| Persistent configuration | `~/.claude/settings.json` | `~/.codex/config.toml` |
+| Interactive control | Permission modes and allow/ask/deny rules | Sandbox and approval policies |
+| Inspect or change during a session | `/permissions` | `/permissions` |
+| Restricted planning | Plan mode | `read-only` sandbox |
+| Normal autonomous work | Accept edits or Auto | `workspace-write` with `on-request` or automatic review |
+| Remove harness restrictions | `bypassPermissions` | `danger-full-access` with approvals bypassed |
+
+The [Coding Agents permission comparison](other-agents.md#permissions) gives the concise Codex flag and profile reference. The detailed configuration below uses Claude Code because this repository ships a Claude Code `settings.json` example; the security principles and system-level controls apply equally to both.
 
 They share one limit worth holding onto: they govern the agent. A command that does run is not constrained by them, and neither is a process that command spawns. That is what [System-level control](#system-level-control) is for.
 
-### Configuring permissions with settings.json
+### Claude Code: configuring permissions with settings.json
 
 Claude Code uses `settings.json` files to control what actions Claude can take. This is how you restrict dangerous commands, protect sensitive files, and tailor permissions per project or environment.
 
@@ -261,7 +272,7 @@ Selecting a mode in the panel writes to that project's `.claude/settings.local.j
 {: .warning }
 **If the sandbox cannot start, Claude Code warns and runs your commands unsandboxed.** Bubblewrap needs unprivileged user namespaces, which shared and managed systems commonly restrict, so this is a real possibility rather than an edge case. Run `/sandbox` and check whether a Dependencies tab appears rather than assuming you are protected. Set `sandbox.failIfUnavailable` to `true` to make an unavailable sandbox a hard error instead of a silent fallback.
 
-If you work on an HPC cluster, see [Computing at Yale](yale.md#claude-code-on-the-clusters) — the stakes are higher there and the sandbox is less likely to be available.
+If you work on an HPC cluster, see [Computing at Yale](yale.md#coding-agents-and-the-clusters)—the stakes are higher there and the sandbox is less likely to be available.
 
 A good pairing for local work: Manual mode plus sandbox auto-allow. You get few prompts, and what you get in exchange is a real kernel-enforced boundary rather than a model's judgment.
 
@@ -308,3 +319,5 @@ The most secure, simplest, and most straightforward boundary is a separate compu
 For long unsupervised coding sessions I use either a dedicated virtual machine in the cloud or an old computer set up with Ubuntu. Both are cheap — a spare laptop that is too slow for daily use is fine, and a small cloud instance costs little if you stop it when idle — and both mean I do not have to think carefully about what a bypassed session could reach. If it destroys itself, I reinstall.
 
 The practical requirements are the same either way. Keep nothing on it you cannot lose, give it credentials scoped to the one project rather than your usual keys, and push work to git rather than trusting the machine to hold it.
+
+[Working Across Computers](working-across-computers.md) explains how to operate a dedicated machine over SSH, keep the agent alive with tmux, or leave the agent local while sending heavy computation elsewhere.

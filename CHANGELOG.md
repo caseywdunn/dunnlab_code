@@ -6,6 +6,44 @@ release process in [`dev_docs/contributing.md`](dev_docs/contributing.md#releasi
 Lab members pick up a new version with `/plugin update dunnlab-code@dunnlab`;
 auto-update is off by default for third-party marketplaces.
 
+## 0.4.0
+
+The manual now treats Claude Code and Codex as peer coding-agent harnesses and
+expands its guidance for long-running, autonomous research workflows.
+
+### Added
+
+- **Agent Concepts** — a vendor-neutral conceptual template covering models,
+  harnesses, the agent loop, context, tools, permissions, sandboxes, and
+  sessions.
+- **Working Across Computers** — SSH, SCP, tmux, remote machines, and the
+  separation between an agent's control plane and remote compute.
+- Guidance on treating the agent as a teacher, reducing routine supervision,
+  piloting large analyses, and managing several active agent projects without
+  exceeding the user's own attention.
+- A quick three-step AI-reporting guide and a concise GAIDeT-based example.
+- A project tracker taxonomy and a table of the context worth recording for
+  each active, blocked, parked, pending, or completed project.
+
+### Changed
+
+- **Coding Agents** now maps Claude Code and Codex directly onto the same
+  concepts, including their instruction files, permissions, sandboxes,
+  sessions, skills, MCP servers, plugins, and cloud surfaces. Other agents are
+  noted briefly rather than ranked.
+- Getting Started, Quick Reference, Managing Security, Managing Context,
+  Example Workflows, and Computing at Yale now present Claude Code and Codex as
+  equal choices. The DunnLab plugin and cluster `settings.json` remain clearly
+  labeled Claude-specific implementations of otherwise portable practices.
+- The recommended stack is visible earlier: VS Code, terminal-first operation,
+  text-based files, Git and GitHub, the `gh` CLI, and tmux for persistent remote
+  sessions.
+- Plans are explicitly version-controlled Markdown files such as `PLAN.md` or
+  `dev_docs/overview.md`, with pilot runs and verification gates before large
+  analyses proceed.
+- The project's own AI-use statement now names both Claude Code and Codex and
+  uses GAIDeT task categories.
+
 ## 0.3.0
 
 An accuracy pass against current Claude Code and YCRC documentation, a

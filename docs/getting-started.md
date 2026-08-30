@@ -5,21 +5,39 @@ nav_order: 4
 
 # Getting Started
 
-The stack we recommend, and how to get Claude Code running on your own machine.
+The stack we recommend, and how to get Claude Code or Codex running on your own machine.
 
 ## The stack
 
 **Prefer industry-standard tools over domain-specific ones.** This is the single principle behind most of the choices below. It lets you draw on the enormous investment industry makes in data tooling, it gives you skills that are portable outside academia, and it means that when something breaks, someone has already written about it.
 
-The `dunnlab-defaults` skill encodes these preferences, along with best practices for each language, so Claude applies them without being asked.
+The optional [`dunnlab-defaults` skill](plugin.md#the-skills) encodes these preferences for Claude Code. With either agent, put durable conventions in `AGENTS.md` so they apply without being restated.
 
-### IDE
+### Terminal-first and text-first
 
-[Visual Studio Code](https://code.visualstudio.com/) is our editor. Its extensions integrate git, GitHub, Claude, and language-specific tooling, and it is where most of the day goes. Claude Code also has a [VS Code extension](https://code.claude.com/docs/en/vs-code), so you can work in the same window rather than alternating with a terminal.
+[Visual Studio Code](https://code.visualstudio.com/docs) is our editor. Its integrated terminal, source-control tools, and language extensions put the project in one window. Both [Claude Code](https://code.claude.com/docs/en/vs-code) and [Codex](https://learn.chatgpt.com/docs/codex/ide) have editor integrations, but the terminal is the center of the workflow rather than an accessory to it.
 
-### Version control
+We usually launch coding agents in the terminal, even while editing in VS Code. We use agent plugins and skills for instructions and context, but prefer ordinary command-line tools for the work itself. An agent can run a command, inspect its complete output, retry it, and record what happened; a workflow that depends on clicking through a GUI is much harder for it to operate autonomously.
 
-We rely on [git](https://git-scm.com/) and [GitHub](https://github.com/) heavily. This is how code (and often prose) is shared, backed up, and tracked over time. With an AI assistant writing code, a clean commit history becomes considerably more valuable.
+Prefer text-based formats whenever they can represent the work adequately: Markdown (`.md`) or LaTeX (`.tex`) rather than Word (`.docx`), CSV or TSV rather than Excel (`.xlsx`), and scripts or configuration files rather than settings stored only in an application. Plain text is searchable, diffable, easy for agents to read and edit, and durable across software versions. Use a binary format when its features are genuinely needed, but keep the source of record in text where practical.
+
+### Git and GitHub are the backbone
+
+We rely heavily on [Git](https://git-scm.com/doc) and [GitHub](https://docs.github.com/en/get-started/start-your-journey/what-is-github). They are how code, plans, documentation, and configuration are shared, backed up, reviewed, and tracked over time. With an AI assistant doing much of the work, a clean commit history becomes more valuable, not less.
+
+Treat the repository as the durable project workspace. A plan is a real Markdown file in the repository; code and documentation evolve beside it; issues record work that has not happened yet; commits record verified steps that have. This gives people and agents the same history and makes it possible to reconstruct why the project took its current shape.
+
+Let the agent create a small commit after each verified step and write a message that explains why the change was made. The resulting history is both a recovery mechanism and a detailed record of the work delegated to AI. Review changes before they leave your machine, but do not spend your time manually composing commit messages the agent is better positioned to write.
+
+Install the [GitHub CLI](https://cli.github.com/) and authenticate it once:
+
+```bash
+gh auth login
+```
+
+Once authorized, the agent can use commands such as `gh repo create`, `gh issue create`, `gh issue comment`, `gh issue close`, and `gh pr create`, as well as inspect pull-request checks and reviews. This puts GitHub's project-management surface in the same terminal the agent already controls. Authentication grants the agent actions under your account, so do this only in an environment you trust and with access appropriate to the project.
+
+If any part of this stack is unfamiliar, ask the agent to explain it, install it, or walk you through the setup, and use the official documentation linked above for more depth.
 
 Do not store large data files or analysis results in git repositories. Git is designed for small, mostly text files. GitHub blocks any individual file over 100 MB and recommends keeping a repository under 1 GB; in practice a well-kept analysis repo should be far smaller than that — if yours is approaching 100 MB, something belongs elsewhere.
 
@@ -44,23 +62,33 @@ The Python ecosystem we use includes:
 
 **[Rust](https://www.rust-lang.org/)** when performance and low-level control are dominant concerns.
 
-## Setting up Claude Code
+## Setting up a coding agent
 
-The rest of this chapter sets up Claude Code and the optional DunnLab plugin on your own computer.
+Install Claude Code, Codex, or both. They occupy the same place in this workflow: each can work locally from the terminal, integrate with an editor, and hand work to a cloud environment. The [Coding Agents](other-agents.md) chapter compares their implementation details.
 
-There are a few ways to run Claude Code:
+Both are available through several surfaces:
 
-- **The Claude desktop application**, a dedicated graphical interface.
-- **An extension in another tool**, such as the Claude Code extension for VS Code.
-- **A command line program**, running in your terminal alongside your existing editor and tools.
+- **A desktop or web application**, including remote and cloud work.
+- **An editor extension**, such as their VS Code integrations.
+- **A command-line program**, running in your terminal alongside your existing editor and tools.
 
-I use the command line most often. It works in a wider variety of situations and gives clearer, more direct control, and it is where most developers use Claude Code — so it tends to be the most up to date and best supported interface. This manual assumes the command line throughout; if you are using another interface, the equivalent is usually easy to find.
+We use the command line most often. It works in a wider variety of situations, gives the agent direct access to the surrounding toolchain, and tends to expose new capabilities first. This manual assumes the command line throughout; if you are using another interface, the equivalent is usually easy to find.
 
-### 1. Install Claude Code
+### 1. Install an agent
 
-Follow the official installation instructions at [Claude Code Overview](https://code.claude.com/docs/en/overview).
+Follow the official instructions for [Claude Code](https://code.claude.com/docs/en/overview), [Codex](https://learn.chatgpt.com/docs/codex/cli), or both. On macOS and Linux, their standalone installers are:
 
-### 2. Install the plugin
+```bash
+# Claude Code
+curl -fsSL https://claude.ai/install.sh | bash
+
+# Codex
+curl -fsSL https://chatgpt.com/codex/install.sh | sh
+```
+
+From a project directory, run `claude` or `codex` and complete the sign-in flow. Ask either one to explain the repository as a first read-only task.
+
+### 2. Optional: install the DunnLab plugin for Claude Code
 
 Register the dunnlab marketplace and install the plugin:
 
@@ -73,7 +101,11 @@ This pulls the plugin from GitHub and caches it locally. To pick up changes late
 
 Note that methods for installing plugins differ when using the desktop app or extension.
 
-### 3. Verify installation
+### 3. Verify the agent
+
+For either agent, start in a Git repository and ask it to report its working directory, active instructions, permission boundary, and Git status. In Codex, `/status` and `/permissions` expose the session configuration. In Claude Code, `/context` and `/permissions` expose the corresponding information.
+
+If you installed the DunnLab plugin, run the following Claude Code slash command:
 
 Run the following slash command to confirm everything is wired up:
 
@@ -83,7 +115,7 @@ Run the following slash command to confirm everything is wired up:
 
 You should see a welcome message and a list of available skills. Plugin skills are namespaced by the plugin name; the bare `/dunnlab-check` also works as long as nothing else has claimed that name.
 
-### 4. Know what you already have
+### 4. Optional: know Claude Code's bundled skills
 
 Claude Code ships with a set of **bundled skills** that are available in every session with nothing to install. Several are worth knowing about:
 
@@ -99,7 +131,7 @@ Claude Code ships with a set of **bundled skills** that are available in every s
 
 Type `/` to see everything available in the current session.
 
-### 5. Install recommended plugins
+### 5. Optional: install additional Claude Code plugins
 
 These are actual plugins and do need installing, from Anthropic's official marketplace:
 

@@ -40,6 +40,15 @@ Adopt these two practices when an assistant has access to your files.
 
 ## Reporting AI use
 
+{: .note }
+> **AI reporting in three steps**
+>
+> 1. **Before the work, check the rules and agree on a plan.** Review the AI policies and reporting requirements of the intended journal, funder, institution, or other recipient. If they do not fit your planned use, change the AI plan or reconsider where you will send the work. Decide what information you need to record, and communicate the plan clearly to every collaborator before the work begins.
+>
+> 2. **Before drafting the statement, check again.** Once the work is complete, reread every applicable policy and note what must be reported, where the statement belongs, and whether a format is required. Requirements can change during a project. If none apply, still consider including a short description of your AI use.
+>
+> 3. **Write a statement that satisfies every requirement.** Many journals and funding agencies specify what must be reported without prescribing the wording. In that case, use the [GAIDeT](#gaidet)-based [Roll your own](#roll-your-own) approach below.
+
 There is considerable variation in how AI use is reported in science. There is more transparency when coding with AI agents: if you have the agent make your git commits, the record of what it did is detailed and quite informative. If you write prose with coding tools — a text editor and git, with LaTeX or markdown documents — you get the same provenance and version tracking for free.
 
 Most people write prose in other tools, such as Google Docs or Microsoft Word, which do not record changes at the same granularity. Approaches to describing AI use when writing prose vary much more widely — and are often missing entirely. A [systematic map of 230 ecology and evolutionary biology journals](https://doi.org/10.1186/s41073-026-00230-1) (Drobniak et al. 2026) found that nearly half offered no guidance on AI use at all. Where policies did exist they were largely generic and publisher-driven: text-mining of 124 guideline documents turned up highly standardized precautionary language about responsibility and prohibitions, but little operational guidance on acceptable uses or disclosure formats. Explicit AI disclosures appeared in fewer than 6% of papers, even in journals that had a formal policy.
@@ -118,6 +127,8 @@ The framework is recent enough that worked examples in published papers are stil
 
 #### Roll your own
 
-Another option is not to adhere to any one of these standards, but to borrow their common structure. A useful statement names at least two things: **which tool**, including its version, and **which specific tasks** it was given.
+If your journal or institution does not require a particular format, you can write your own statement. **Freeform should not mean taxonomy-free, though.** Drawing the task categories from a formal taxonomy makes omissions less likely and lets readers compare your use with other work. [GAIDeT](#gaidet) is a good default because it covers the whole research lifecycle and records AI use as tasks delegated under human supervision.
 
-This manual reports its own AI use on the [home page](index.md#ai-use), written that way.
+A useful statement names the tool and model or version, the specific tasks delegated, and how people reviewed the work and retained responsibility. This manual's [AI-use statement](index.md#ai-use) is a fuller example. A concise statement can be enough when the work was limited:
+
+> Following the GAIDeT taxonomy, we used Claude Code with Claude Opus 4.8 for code generation, data visualization, and proofreading and editing. The authors reviewed all outputs, independently verified the analyses, and take responsibility for the final work.
