@@ -32,12 +32,14 @@ Corrections and additions are welcome, please file issues at <https://github.com
 
 ## AI use
 
-This manual, the plugin, and the scripts in this repository were written by Casey Dunn with Claude, Anthropic's AI assistant, from the first commit in March 2026 onward.
+This manual, the plugin, and the scripts in this repository were written by Casey Dunn with Claude Code from the first commit in March 2026 onward, and later with OpenAI Codex as well.
 
-Claude drafted or rewrote most of the prose in these chapters, wrote the plugin skills and the check scripts, and checked factual claims against vendor and YCRC documentation. I set the structure, decided every convention, edited throughout, and am responsible for all of it, including any errors.
+Together, these agents drafted or rewrote most of the prose in these chapters, wrote the plugin skills and check scripts, and checked factual claims against vendor and YCRC documentation. I set the structure, decided every convention, edited throughout, and am responsible for all of it, including any errors.
 
 Following this manual's own advice on [rolling your own](using-ai.md#roll-your-own) and borrowing GAIDeT's vocabulary, the tasks delegated under human supervision were: literature search and systematization, text generation, proofreading and editing, code generation, and process automation.
 
-Models: Claude Opus 4.6, 4.7, 4.8, and Opus 5.
+Agents: Anthropic Claude Code and OpenAI Codex.
 
-The git history is the detailed record — almost every commit carries a `Co-Authored-By` trailer naming the model that contributed to it.
+Models: Claude Opus 4.6, 4.7, 4.8, and Opus 5; OpenAI GPT-5 via Codex.
+
+The git history is the detailed record. Most earlier commits carry a `Co-Authored-By` trailer naming the Claude model that contributed to them.

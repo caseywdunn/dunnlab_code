@@ -20,6 +20,32 @@ Running several is now normal rather than exotic. A common pattern is a terminal
 | **[Aider](https://aider.chat/)**, **[goose](https://block.github.io/goose/)**, **[OpenCode](https://github.com/sst/opencode)** | Open-source terminal agents. Model-agnostic, so you can point them at whichever provider you have access to. |
 | **[Devin](https://devin.ai/)**, **[Windsurf](https://windsurf.com/)** | Cognition's asynchronous agent and the IDE it acquired. |
 
+### Codex permissions
+
+Codex deserves a little more detail because it is the closest match to Claude Code. The local product is the same agent presented through a terminal interface and IDE extension; Codex cloud instead runs work asynchronously in an OpenAI-managed container. A local session can be started with `codex`, pointed at a directory with `codex -C <directory>`, resumed later, or run non-interactively with `codex exec`.
+
+For local Codex, the important distinction is between two controls that work together in the official [agent approvals and security model](https://developers.openai.com/codex/agent-approvals-security):
+
+- The **sandbox policy** determines what a command can technically read, write, or reach. The three basic modes are `read-only`, `workspace-write`, and `danger-full-access`.
+- The **approval policy** determines when Codex stops to ask you. The main choices are `on-request`, `untrusted`, and `never`; [Auto-review](https://developers.openai.com/codex/sandboxing/auto-review) can instead evaluate eligible approval requests automatically without removing the sandbox boundary.
+
+The controls can be combined, but these are the useful starting points:
+
+| Setup | Behavior |
+|---|---|
+| **Read-only** — `--sandbox read-only --ask-for-approval on-request` | Inspects the project and answers questions; asks before edits, command execution, or network access. Good for planning and review. |
+| **Auto** — `--sandbox workspace-write --ask-for-approval on-request` | Reads, edits, and runs commands inside the workspace automatically; asks before leaving it or using the network. This is the normal local default. |
+| **Edit with command review** — `--sandbox workspace-write --ask-for-approval untrusted` | Can edit the workspace, but asks before running commands Codex does not classify as trusted. |
+| **Auto-review** — `--approve-for-me` | Keeps the `workspace-write` boundary while routing eligible approval requests through automatic review instead of making you click through them. |
+| **Unattended read-only** — `--sandbox read-only --ask-for-approval never` | Can inspect but not change the project and never interrupts for approval; useful in non-interactive checks. |
+| **Full access** — `--dangerously-bypass-approvals-and-sandbox` | Removes both the sandbox and approval prompts. Use only inside a separate environment whose isolation you trust. |
+
+Use `/permissions` to inspect or change permissions during an interactive session. The CLI flags above are useful when launching a session, and the same values can be made persistent in `~/.codex/config.toml`. Network access is separate and is off by default in `workspace-write`, which is why an otherwise autonomous session may still ask before downloading a dependency or contacting an API.
+
+Newer Codex versions also have beta [permission profiles](https://developers.openai.com/codex/permissions), which combine filesystem and network rules into a named policy. The built-ins are `:read-only`, `:workspace`, and `:danger-full-access`, and you can define narrower custom profiles for particular projects. This profile system replaces rather than layers on top of the older `sandbox_mode` settings, so follow the current OpenAI documentation before adopting it in shared configuration.
+
+The full-access setting is the Codex equivalent of Claude's `bypassPermissions`: it is a deployment choice, not a convenience toggle. The same advice applies to both—make the surrounding machine, container, or virtual machine safe before removing the agent's own boundary.
+
 Two things follow from this list that matter more than any ranking.
 
 **They are model-agnostic to varying degrees.** Several of these can run against Claude models, and Claude Code can run against Bedrock or Vertex. The tool and the model are separate choices.
