@@ -65,21 +65,26 @@ Revise it as you learn — a plan is a working document, not a contract. What ma
 
 This is a different thing from the standing instructions in [Managing Context](managing-context.md). `AGENTS.md` says how work is done here, always. A plan document says what we are doing now, and gets archived when it is done. The `dunnlab-new-project` skill builds the pattern in: it writes `dev_docs/overview.md` before any code exists, and reviewing that document is a step in the workflow rather than an afterthought.
 
-## Set gates you can check
+<a id="set-gates-you-can-check"></a>
+## Set gates the agent can check
 
-An agent keeps going until something tells it to stop. If your stopping condition is *looks right*, it will stop at looks right — which is the failure mode this manual keeps returning to, because plausible-looking wrong output is exactly what these tools are good at producing.
+A gate is a decision rule for the agent, not an appointment for you to inspect its work. At the end of a step, the agent evaluates a criterion and uses the result to decide what happens next: proceed, diagnose and retry, change course within agreed bounds, or stop and ask for help. The point is to let sound work continue without waiting for you while preventing an unverified result from silently becoming the input to everything downstream.
 
-So decide, before the work starts, how you will know each step succeeded and how you will know the whole thing is finished. **The clearer the verification loop, the better the results**, and the effect is larger than almost anything else you can change.
+Define those rules before the work starts. If the criterion is merely *looks right*, the agent can declare success when the output looks plausible—which is the failure mode this manual keeps returning to. **The clearer the agent's verification and decision loop, the more safely it can work autonomously.**
 
-Three things make a gate worth having:
+Four things make a gate useful:
 
-**State it before the work, not after.** A criterion you invent after seeing the output is a criterion you will bend to fit it. Written down in advance it is also something the agent can aim at and check itself against, which turns it from a review step into a target.
+**Make it agent-checkable.** Prefer an executable or directly observable criterion: a passing test, a script that exits successfully, an expected row-count range, a figure that regenerates identically, a known-answer case that reproduces, or a quantitative quality threshold. The agent should be able to gather the evidence and determine whether the criterion passed without waiting for you to look.
 
-**Prefer something it can run.** A passing test, a script that completes, an expected row count, a figure that regenerates identically, a known-answer case that reproduces. Anything the agent can execute, it can iterate against without you in the loop — and it will, until the gate is green. A gate you have to eyeball only fires when you happen to look.
+**State it before the work, not after.** A criterion invented after seeing the output is easy to bend around whatever happened. Written in the plan beforehand, it becomes both a target and an independent check on the result.
 
-**Include a scientific check, not just a technical one.** A passing test suite means the code runs, not that the analysis is right. Add the checks you would apply to a colleague's result: does the row count survive the join, is the effect still there in a subsample, does the control behave as it should, does the number carry the units you expect.
+**Specify what each outcome means.** A useful gate says more than *check this*. Tell the agent to proceed if it passes, diagnose and retry if it fails, and stop only if repeated attempts fail, evidence is contradictory, or the next move requires a decision outside the plan. Otherwise a failed check may become either an unnecessary interruption or an invitation to improvise indefinitely.
 
-Then apply gates at two scales. **Between steps**, a gate is what lets the next task start from something verified rather than something assumed — it is what makes small, testable steps more than an aspiration. **At the end**, an agreed definition of done is what stops the work drifting into indefinite polishing, or stopping three-quarters of the way with the last quarter uninspected.
+**Include scientific checks, not just technical ones.** A passing test suite means the code runs, not that the analysis is right. Give the agent checks it can calculate against the scientific result: whether row counts survive a join, an effect persists in a subsample, a control behaves as expected, values remain within physical bounds, or units are consistent.
+
+Apply these gates at two scales. **Between steps**, the agent proceeds only when the prior result has passed its stated checks. **At the end**, an agent-checkable definition of done tells it when to stop rather than drift into indefinite polishing or declare victory with work left unverified.
+
+Some decisions genuinely require human judgment: choosing between scientific interpretations, accepting a consequential tradeoff, or authorizing access the agent should not have. Those are human approval gates. Name them deliberately and use them where your judgment is essential; do not make routine verification depend on your availability.
 
 {: .note }
 Codex can make a durable objective explicit with its [`/goal` command](https://learn.chatgpt.com/use-cases/follow-goals). In Claude Code, state the same objective and gates in the prompt or plan and use [Auto mode](managing-security.md#auto-mode) for the run. Neither mechanism replaces a verifiable stopping condition; that is what makes unattended work reliable in either harness.
@@ -129,7 +134,7 @@ If many of your prompts merely grant permissions, revisit the [permission settin
 
 Frequent interruptions can also mean that the work was not planned far enough ahead. If the agent keeps asking you to make design decisions during implementation, return to the plan and make those decisions explicit. Before launching a large analysis, ask it to run a small end-to-end pilot. A pilot exposes missing inputs, ambiguous choices, permission problems, and unrealistic resource estimates while they are still cheap to fix.
 
-Finally, put clear [gates](#set-gates-you-can-check) between the steps of the plan. Have the agent verify each stage before proceeding, so a silent problem does not travel downstream and become a much larger complication. Good planning, a representative pilot, and executable gates are what turn autonomy from wishful thinking into a reliable way of working.
+Finally, put clear [agent-checkable gates](#set-gates-the-agent-can-check) between the steps of the plan. Have the agent verify each stage and use the result to decide whether to proceed, retry, or escalate, so a silent problem does not travel downstream and become a much larger complication. Good planning, a representative pilot, and executable gates are what turn autonomy from wishful thinking into a reliable way of working.
 
 ## Manage multiple agents as a portfolio
 
