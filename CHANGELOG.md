@@ -6,6 +6,15 @@ release process in [`dev_docs/contributing.md`](dev_docs/contributing.md#releasi
 Lab members pick up a new version with `/plugin update dunnlab-code@dunnlab`;
 auto-update is off by default for third-party marketplaces.
 
+## 0.4.1
+
+### Fixed
+
+- Reframed verification gates as criteria the agent evaluates autonomously to
+  decide whether to proceed, retry, change course within agreed bounds, or
+  escalate. Human approval gates are now distinguished from routine checks
+  rather than implied at every step boundary.
+
 ## 0.4.0
 
 The manual now treats Claude Code and Codex as peer coding-agent harnesses and
