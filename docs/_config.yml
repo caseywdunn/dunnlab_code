@@ -22,3 +22,6 @@ callouts:
   note:
     title: Note
     color: blue
+  recommendations:
+    title: Recommendations
+    color: blue

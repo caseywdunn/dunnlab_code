@@ -30,6 +30,23 @@ And for prose in particular:
 
 1. **Citation standards.** LLMs fabricate references convincingly: plausible authors, plausible titles, DOIs that either resolve to something else or to nothing. Every citation needs to be checked against the actual source, and you should review what you cite. This is the failure mode most likely to reach print, because a fabricated reference looks exactly like a real one until someone follows it.
 
+## Reproducibility and the data path
+
+A reproducible computational analysis preserves its data, code, and runtime. When an analysis invokes an LLM as it runs, that model and the software around it become part of the runtime. This is a fragile dependency: hosted models can change, disappear, or produce different outputs when given the same inputs. The tutorial [*Designing reproducible large-language-model-assisted scientific analyses*](https://doi.org/10.1016/j.patter.2026.101644) by Dunn, Schultz, and Musser (2026) organizes this problem around the **data path**: the sequence of operations that transforms the declared inputs into the outputs evaluated in the paper.
+
+- **Off the data path:** the LLM helps produce a durable artifact, such as code, but the published analysis runs without calling an LLM. The artifact sits on the data path; the LLM does not. For example, an assistant writes a Python script, you review and test it, and the committed script transforms the data.
+- **On the data path:** data pass through an LLM at run time, or the LLM makes a decision required to produce the reported result. For example, the model directly classifies records, standardizes values, or decides which analysis step to run. Reproducing the result then depends on access to the model and its surrounding harness as well as the data and code.
+
+The operational test is simple: **can the published analysis be rerun from inputs to results without invoking an LLM?** If yes, the LLM is off the data path. If no, it is on the data path. Keep it off the path when ordinary code can do the same job; on-path use can be appropriate when the required capability cannot readily be reduced to a fixed, inspectable pipeline.
+
+{: .recommendations }
+> - **Place the LLM off the data path where possible.** Prefer durable, inspectable code to a live model call when either can perform the task.
+> - **Preserve LLM-related artifacts in a versioned, archived repository.** For on-path use, this includes prompts, skills, schemas, invocation records, and relevant intermediate outputs.
+> - **Verify LLM results, and document how.** Test off-path code with standard software-engineering methods; assess on-path outputs with several task-appropriate checks, such as held-out benchmarks, known-answer fixtures, random spot-checks, cross-method agreement, and sensitivity tests.
+> - **Consider open-weight models.** Published weights make the model more archivable, though exact reproduction can still depend on the tokenizer, inference software, hardware, and sampling settings.
+> - **Record the model and its version at the time of analysis.** For on-path calls, also record the harness version when available, sampling parameters, and timestamp.
+> - **Measure determinism within a model and agreement across models.** Repeat the same call and compare results across models, especially when the LLM step is central to the analysis.
+
 ## Working with data
 
 Adopt these two practices when an assistant has access to your files.
