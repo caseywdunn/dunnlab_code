@@ -8,6 +8,9 @@ Prefix is `Ctrl-b`. Written below as `C-b` — press it, release, then the key.
 
 ## Install
 
+tmux reads the file as `~/.tmux.conf` — note the leading dot. The copy in this repo is
+named `tmux.conf`, so renaming it is part of installing it.
+
 ```bash
 # Back up anything already there, then copy the config into place.
 cp ~/.tmux.conf ~/.tmux.conf.bak 2>/dev/null
@@ -16,6 +19,17 @@ curl -o ~/.tmux.conf https://raw.githubusercontent.com/caseywdunn/dunnlab_code/m
 # Already running tmux? Pick it up without restarting:
 tmux source-file ~/.tmux.conf
 ```
+
+If you already have the repo cloned, copy from it instead — renaming as you go:
+
+```bash
+cp ~/.tmux.conf ~/.tmux.conf.bak 2>/dev/null
+cp /path/to/dunnlab_code/assets/tmux/tmux.conf ~/.tmux.conf
+tmux source-file ~/.tmux.conf
+```
+
+Downloaded it without a destination and ended up with `tmux.conf` in your current
+directory? `mv tmux.conf ~/.tmux.conf`.
 
 Check your version with `tmux -V` first. Everything here works on 3.0+; on 2.x the
 `-N3` wheel-scroll count and a few copy-mode commands are unavailable.
