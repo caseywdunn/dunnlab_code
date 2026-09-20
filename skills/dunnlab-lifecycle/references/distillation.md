@@ -1,119 +1,77 @@
 # Phase 3: Distillation
 
-Build the analyses the paper actually reports. Priorities, in order when they conflict: **reproducibility, simplicity, clarity** — subject to achieving the scientific goals.
+Turn the selected exploratory work into durable analyses that meet the spec. Prioritize reproducibility, simplicity, and clarity while meeting the scientific goals. A reader should be able to trace inputs through methods to reported results without an agent interpreting the workflow.
 
-The product has to be *human auditable*. A reader with the repo open should be able to see what was run without an agent interpreting the code back to them. If understanding the analysis requires an LLM, the analysis is not auditable, and no amount of available code fixes that.
+## Retain sound work and close the gaps
 
-## Distillation is a rewrite
+Start from the spec and the components identified during Exploration. Keep verified transformations, shared code, and useful execution records. Refactor or replace only what is needed to eliminate ambiguity, implement the specified method, or meet the durability and validation requirements. A rewrite is an option when the existing implementation cannot meet those requirements, not the default.
 
-Move every existing analysis into `exploratory/` — including the ones the paper reports — and build the distilled set new from `dev_docs/analysis-spec.md`.
+Preserve exploratory baselines before modifying their code or outputs. Build or promote the selected analysis into `analyses/` or its recorded equivalent, using shared source code where appropriate. Do not move files in ways that break evidence pointers. A promoted analysis must run without hidden notebook state, unrecorded edits, or dependencies on mutable exploratory files.
 
-This costs a full recompute, so it is worth being clear about why pruning is not enough. Analyses that survive a pruning keep the shape exploration gave them: names that encode when they were run, three matrix variants whose differences nobody can state, parameters that drifted between runs because they were set by hand. Those are the properties that make the set hard to audit, and they are inherited, not fixed, by deleting the neighbours. Rebuilding from a spec makes the command template and the analysis table honest by construction — they describe the runs because the runs were generated from them.
+Define the final analyses and their provenance explicitly. Selecting files from exploration is insufficient unless their inputs, methods, parameters, and outputs are shown to match the spec. Minimizing changes reduces opportunities for inconsistency; it does not waive verification.
 
-If the recompute is genuinely unaffordable — months of cluster time — say so and propose the alternative explicitly rather than quietly pruning. That is the user's tradeoff to make, not yours.
+Begin the durable build discipline here: close gaps in small coherent steps, verify consequential transformations, and document how to run them. Use `dunnlab-new-project` Step 8 and relevant engineering checks from Step 9 when available. A script, notebook executable from a clean kernel, or workflow engine is acceptable if it meets the same reproducibility requirements.
 
-## Filenames encode identity
+Plan for a clean recomputation, or reuse an already documented clean run if it covers the final workflow exactly. If cost or an unavailable dependency prevents required execution, prepare a concrete alternative with its evidence limits. Ask only for a tradeoff or resources not already authorized. Do not label a partial or cached run as a successful clean run.
 
-Use Snakemake-style names: the matrix short name first, then one field per wildcard, dot-delimited.
+## Stable identities and a minimal analysis set
 
-```
-hydro62-18s28s.gtr-g.ufboot.treefile
-hydro62-18s28s-trimmed.gtr-g.ufboot.treefile
-hydro62-18s28s.partitioned.ufboot.treefile
-```
+Give each input artifact, analysis, and reported output a stable identity shared by the spec, run records, manifests, and report. Retain clear identities established during Exploration. Use short descriptive filenames or an explicit lookup; filenames need not encode every parameter. Distinguish analysis identity from execution identity so reruns do not overwrite their provenance.
 
-Read that name and you know which row of the analysis table produced it. Nothing in a distilled filename records *when* it ran, what order it came in, or which attempt it was — that is exploratory provenance, and it belongs in git history, not the filename. This is a deliberate departure from the ISO-date prefixes `dunnlab-defaults` recommends for versioned data files; dates are the right choice while things are changing and the wrong one once they are fixed.
+Record parent inputs and transformations for derivatives. Reuse a derivative when it serves multiple analyses under the same assumptions. When two derivatives differ, state the scientifically relevant difference; merge them only after verifying equivalence. The required set includes inputs for controls, diagnostics, and validation, as well as primary results.
 
-Matrix short names carry taxon sampling, gene region, and optional processing, one field each:
+Use provenance records for execution history. Preserve dates or collection labels when they identify scientifically meaningful inputs. Simplifying the workflow must not erase sampling differences, post hoc choices, or the distinction between exploratory and confirmatory analyses.
 
-```
-hydro62-18s28s            62 hydrozoan taxa, 18S + 28S
-hydro62-18s28s-trimmed    the same, after trimAl
-siph31-cox1               31 siphonophore taxa, COI
-```
+For stochastic methods, configure and capture seeds or random streams where supported. Replicates need explicit identities and appropriately distinct streams. Record remaining nondeterminism; a seed alone does not promise identical results across environments.
 
-Keep them short enough to use as filenames and meaningful enough to read in a table. The same short name is the matrix's identity everywhere: filename, manifest row, methods table, figure caption.
+## Capture completed runs, then generate manifests
 
-## The matrix set is minimal
+Capture provenance at execution time. Reading the current configuration after a run does not establish what produced an existing output. Each execution record must identify:
 
-A matrix exists because an analysis in the spec requires it. Not because it was built once during exploration, and not because it might be useful.
+- Analysis ID, run ID, and role from the spec.
+- Source revision or preserved source snapshot, spec/configuration fingerprint, and the command or entry point actually executed with resolved parameters.
+- Input identities and hashes or immutable versions; include consequential reference resources or external service responses.
+- Actual software/model versions, environment specification or lockfile identity, and stochastic settings where applicable.
+- Completion status, logs or verification evidence, and output identities, locations, and hashes.
 
-Where two analyses can share a matrix, they share it. Where matrices must differ, the difference has to be statable in one clause — "the same as `hydro62-18s28s` with third codon positions removed." If you cannot say what distinguishes two matrices in a clause, that is the signal they should be one matrix.
+Record failed attempts as failures. Mark a run complete only after its expected outputs pass relevant integrity checks. An existing output may be reused only when a completed record matches the current inputs, code, environment requirements, and parameters and the stored outputs still verify. Otherwise rebuild affected steps. This overrides existence-only checkpointing in companion skills.
 
-Record derivation explicitly, because "trimmed version of" is the relationship readers most often need and most often cannot find:
+Generate compact audit manifests from these records and the actual artifacts. A default layout is:
 
-```mermaid
-graph LR
-    A[hydro62-18s28s] -->|trimAl -gt 0.8| B[hydro62-18s28s-trimmed]
-    A -->|drop 3rd positions| C[hydro62-18s28s-nopos3]
-```
+| Artifact | Contents |
+|---|---|
+| `analyses/manifests/artifacts.tsv` | Artifact ID, role, location, hash/version, parent IDs, producing run ID, and relevant measured summaries |
+| `analyses/manifests/analyses.tsv` | Analysis ID, selected completed run ID, purpose, input/output IDs, and a pointer to the full execution record |
 
-## One seed
+Use a schema suited to the project; JSON or another structured format may be clearer for nested relationships. Define the fields, units, and missing-value conventions. Do not force all scientific inputs into a table or a common set of summary statistics. Generate method and result summaries from these records where useful.
 
-Set a single random seed in the workflow config and report it once in the methods. Every analysis uses it.
+Version the small manifests and keep their referenced records and artifacts recoverable. Store large or restricted content in an appropriate versioned archive, with access requirements documented; do not assume all outputs belong in git.
 
-The exception is replication, where variation across runs is the point. Then the seed becomes a wildcard like any other and gets a column in the analysis table — which is the honest representation, since the runs genuinely differ.
+Regenerating a manifest from the same preserved run records should be deterministic. A new execution has a new run ID and may have different timestamps or stochastic outputs. Compare those reruns using the validation criteria; do not demand byte-identical execution metadata or silently replace the selected baseline.
 
-## The manifests are generated, not written
+## Complete the computational path
 
-This is the heart of the phase. The workflow emits two tables; both are committed; the methods sections render from them.
+Include the following where applicable:
 
-`analyses/manifests/matrices.tsv` — one row per matrix:
+- Acquisition scripts for obtainable inputs, or documented access/import procedures for restricted data, physical measurements, or manually collected material. Preserve the exact source snapshot or version used.
+- Input and transformation checks for relevant assumptions, such as schemas, units, ranges, missingness, or sampling relationships.
+- Focused tests, including a small known-answer, analytic, or controlled synthetic case for consequential computations where feasible. If no such case is appropriate, document the alternative check and its limits.
+- Configuration containing consequential parameters and paths, plus an environment specification sufficient to reconstruct the tools.
+- Executable generation of reported computational results and figures. For human interpretation or annotation, preserve the protocol, decisions, and material used as explicit inputs; state which parts require renewed human work.
 
-| name | description | taxa | sites | occupancy | derived_from |
-|---|---|---|---|---|---|
-| hydro62-18s28s | 62 hydrozoans, 18S + 28S | 62 | 4184 | 0.87 | — |
-| hydro62-18s28s-trimmed | trimAl -gt 0.8 | 62 | 3102 | 0.94 | hydro62-18s28s |
+## LLMs on the data path
 
-`analyses/manifests/analyses.tsv` — the command template in the header, one row per run, one column per wildcard:
+Replace model-assisted transformations with durable code wherever that preserves the intended method. For an analysis with no required LLM step, verify it runs with model access disabled.
 
-| matrix | model | support | seed |
-|---|---|---|---|
-| hydro62-18s28s | GTR+G | ufboot1000 | 12345 |
-| hydro62-18s28s-trimmed | GTR+G | ufboot1000 | 12345 |
+If an LLM capability is part of the scientific method, document it as an explicit exception. Preserve the model/version, prompts, input/output schemas, settings, responses, and task-appropriate verification. Record access requirements and nondeterminism. Verify downstream replay from saved responses separately from a fresh model invocation; replay establishes reproducibility conditional on those responses. Do not describe it as a model-free reproduction of the entire method.
 
-Generate these from the run itself — read the alignments for the matrix statistics, read the workflow's own parameters for the analysis rows. `scripts/matrix_stats.py` in this skill computes taxa, sites, and occupancy from FASTA, PHYLIP, or NEXUS alignments; use it rather than writing another one.
+## Gate: the specified analysis runs
 
-The reason this matters more than it may appear: a table written by reading the code can drift from what ran, and cannot be checked without redoing the reading. A table generated by the run cannot drift, and Validation checks it by regenerating and diffing. This is what removes the need for an agent to interpret the analysis — the audit artifact is mechanical.
+- [ ] The workflow runs from preserved original inputs through all specified computational outputs in a clean workspace and reconstructed environment.
+- [ ] Manual, external-service, and model dependencies are explicit, with recoverable inputs and verification evidence; model access is disabled successfully where no LLM dependency is declared.
+- [ ] Every output traces to its analysis, completed run, inputs, and executed settings.
+- [ ] Audit manifests regenerate deterministically from selected records and agree with the actual artifacts.
+- [ ] Every required analysis, control, diagnostic, and validation implementation is accounted for; unplanned outputs are investigated and excluded from the selected set or added through a deliberate spec amendment.
+- [ ] Relevant tests and engineering checks pass, with any inapplicable checks justified.
 
-Report the tool version alongside the template. Capture it from the tool (`iqtree2 --version`), do not transcribe it.
-
-## Do not recapitulate exploration
-
-The distilled analysis should read as though it had been designed this way from the start, because the spec means it was.
-
-Concretely: datasets that arrived at different times during exploration are the same class of data in the distilled analysis. There is no "initial" and "additional" sampling, no `_v2` matrices, no parameters carrying a comment about why they were changed. Those distinctions are the history of your thinking, and while that history is real and sometimes belongs in the paper's discussion, encoding it in the analysis structure forces every reader to learn your search path before they can evaluate your result.
-
-## What else belongs in `analyses/`
-
-Distillation is not only the workflow. Include:
-
-- **Data acquisition scripts** that fetch raw data from public repositories by accession, so the analysis starts from something a stranger can obtain.
-- **Input validation** that checks assumptions before the expensive steps — expected taxa present, no duplicate IDs, sequences in the expected alphabet. See `dunnlab-bioinformatics`.
-- **Tests**, including at least one known-answer case small enough to run in CI.
-- **A configuration file** holding the seed, paths, and parameters, so nothing consequential is buried in a command line.
-
-## AI comes off the data path
-
-Every distilled analysis must rerun from raw data to results without invoking a language model. That is the operational test, and it is checkable: rerun it with no model available.
-
-Anything AI did during exploration has to be either reduced to committed code — the usual case, since most of it was munging, filtering, or formatting that a script does deterministically — or kept on the path deliberately, because the capability genuinely cannot be reduced to a fixed pipeline. On-path steps are legitimate but carry obligations: record the model and version, preserve prompts and schemas in the repo, and verify the output by task-appropriate checks. `docs/using-ai.md` in the dunnlab_code repo covers what to record.
-
-If you find yourself keeping a model on the path because rewriting it as code is tedious, that is the wrong reason, and it is the single most common way analyses become unreproducible.
-
-## Gate: it runs
-
-This is the point to pick up the incremental build discipline from `dunnlab-new-project` Stage 8 — atomic tasks, tests and docs per task, commit between — which Exploration deliberately skipped. Its Stage 9 checklist covers the engineering side of the gate below; run it rather than duplicating it.
-
-Check by running it, from a clean state:
-
-- [ ] The workflow completes from raw data to final outputs with no manual steps
-- [ ] No LLM is invoked anywhere on the path, or on-path steps are documented with model, version, and verification
-- [ ] Every output filename parses into its analysis table row
-- [ ] `matrices.tsv` and `analyses.tsv` regenerate and match what is committed
-- [ ] Every matrix in the manifest is used by at least one analysis
-- [ ] Every analysis in the spec has produced output, and nothing outside the spec has
-- [ ] Tests pass, including the known-answer case
-- [ ] A fresh clone plus the environment file reproduces the run
-
-Report which of these you actually ran and what they showed. An unchecked box is more useful than one ticked on inspection.
+Record commands, source/input identities, results, and limitations in the gate report. Build the environment in isolation instead of deleting the user's working environment. Identify the clean run so Validation can reuse its evidence if the relevant source, inputs, and environment have not changed. Required execution that remains unavailable keeps the gate open.

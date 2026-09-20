@@ -87,7 +87,7 @@ If you are loading a local copy with `--plugin-dir`, just `git pull`. Changes ar
 
 - **dunnlab-defaults** — Lab-wide coding conventions: preferred languages, formatting, testing, project structure, and version control practices. The foundational skill the others build on.
 - **dunnlab-new-project** — Step-by-step workflow for scaffolding a new project from scratch, with progress that survives `/clear`.
-- **dunnlab-lifecycle** — Four-phase analysis lifecycle (Planning, Exploration, Distillation, Validation) with agent-checkable gates, for turning exploratory work into publication-ready analyses.
+- **dunnlab-lifecycle** — Four-phase lifecycle (Planning, Exploration, Distillation, Validation) for scientific analyses in any discipline, with recorded gate evidence, reuse of sound exploratory work, and reproducible reported results.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
 - **dunnlab-bioinformatics** — Sequence analysis conventions: data hygiene, input validation, gene ID handling, and default tools.
 - **dunnlab-devcontainer** — Add a `.devcontainer/` configuration for reproducible, isolated Claude Code environments.

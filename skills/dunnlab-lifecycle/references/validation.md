@@ -1,57 +1,73 @@
 # Phase 4: Validation
 
-Distillation showed the analyses run. Validation checks they are *right* — that rebuilding from the spec did not quietly change a result, and that what the manuscript says matches what was computed.
+Assess whether the distilled analyses support the reported claims, whether changes since exploration altered results, and whether the deliverable matches the computed evidence. Successful execution and agreement with an earlier implementation are useful evidence, but neither alone establishes scientific correctness.
 
-The risk this phase addresses is specific. Distillation rewrote the analyses, so every reported number now comes from code that has never been compared against anything. A rebuild that runs cleanly and produces subtly different answers is the expected failure, not an unlikely one.
+## Establish comparison criteria
 
-## Check distilled results against exploratory ones
+Use the metrics and acceptance criteria recorded in the spec before examining validation differences. Choose criteria appropriate to the result: exact equality for deterministic counts or labels, justified numerical tolerances for estimates, distributional or uncertainty-based comparisons for stochastic outputs, and explicit assessment criteria for qualitative judgments. Compare uncertainty and scientific implications as well as point estimates where relevant.
 
-For each claim in the paper, find the exploratory result that originally motivated it — `exploratory/findings.md` should point at it — and compare it to the distilled result.
+If criteria are missing, record them and their rationale before comparing. If a criterion must change after inspecting results, disclose the change and why; do not loosen it merely to make a discrepancy pass.
 
-Agreement is reassuring. Disagreement is the point of the exercise, and it has to be resolved rather than noted:
+## Compare with preserved evidence
 
-- **The distilled version is correct.** Exploration had a bug, or used data superseded since. Record this — it may change what the paper claims.
-- **The exploratory version is correct.** Distillation introduced an error. Fix it and rerun.
-- **Both are defensible.** Usually a parameter or matrix differs in a way the spec did not pin down. Pin it down, then rerun.
+For each claim, locate its exploratory baseline through `exploratory/findings.md` and verify the baseline's input versions, parameters, code, and outputs. Compare like with like, or identify deliberate differences before interpreting disagreement.
 
-What is not acceptable is discovering the discrepancy and moving on because the distilled number is the one in the manuscript. The comparison only has value if it can change something.
+Resolve discrepancies in writing:
 
-Where a distilled analysis has no exploratory counterpart, say so explicitly. It means a reported result has never been computed a second way, which is worth the reader's — and the user's — attention.
+- **Exploration had an error or used superseded inputs.** Establish the correction with appropriate checks, revise the claim if needed, and preserve the original finding and the reason it changed.
+- **Distillation introduced an error.** Reopen Distillation, fix the implementation, and rerun the affected analysis and checks.
+- **Both results follow from defensible choices.** State the dependence, clarify the spec, and assess whether the claim needs qualification or additional validation.
+- **The cause is unresolved.** Keep the required check open; do not select the preferred result by convenience.
 
-## Rerun everything from clean
+Where no usable exploratory counterpart exists, identify alternative evidence in the spec: an independent implementation, an analytic result, a known-answer benchmark or controlled simulation, or an independent assessment against a documented protocol. A second execution of the same code is a reproducibility check, not an independent correctness check. Reusing exploratory components may preserve their errors, so retain domain-appropriate controls even when the baseline and distilled results agree.
 
-- **Full workflow from a fresh clone**, with the environment built from its specification, starting from raw data fetched by the acquisition scripts. Not from cached intermediates.
-- **The test suite**, including known-answer cases.
-- **The rerun-without-LLM test.** Run the workflow with no model available. If it completes, AI is off the data path. If it fails, either that step needs to become code or it is a documented on-path step — there is no third option.
-- **Regenerate the manifests** and diff against the committed `matrices.tsv` and `analyses.tsv`. A difference means the tables and the runs have diverged, which is exactly the failure the generated-manifest design exists to catch. Investigate it rather than committing the new version.
+The comparison criterion can pass with justified alternative evidence that meets the stated acceptance criteria. Merely noting that a baseline is missing is insufficient. If adequate evidence is unavailable, keep the gate open or explicitly revise the deliverable and claims so the unsupported result is no longer required.
 
-## Check the manuscript against the manifests
+## Robustness of the reported results
 
-Every number, table, and figure in the manuscript should trace to a distilled output:
+Target plausible failure modes of central claims. Build on early sensitivity checks rather than repeating them without cause:
 
-- Matrix statistics quoted in the text match `matrices.tsv` — taxa, sites, occupancy.
-- The methods command template, populated with each row of `analyses.tsv`, is the command that actually ran.
-- Tool versions in the methods match what the run captured.
-- Every figure regenerates from committed outputs.
-- Nothing cited traces back to `exploratory/`.
+- **Analytical choices.** Test defensible alternatives in preprocessing, modeling, measurement interpretation, or inference. Vary one factor at a time when useful for attribution; test combinations when interactions are plausible.
+- **Inputs and sampling.** Examine dependence on relevant subsets, collection batches, missing-data assumptions, boundary conditions, or simulation settings while respecting the sampling structure.
+- **Controls and uncertainty.** Check known controls and whether the reported uncertainty or agreement measures support the claimed interpretation.
 
-That last one is worth checking directly rather than assuming. A number carried into the manuscript during exploration and never re-derived is easy to miss and is the kind of error that survives to print.
+Keep checks proportionate to the claims and authorized budget. Report changes, null findings, and limitations. Sensitivity may justify a narrower claim; it should not be tuned away. If a class of robustness checks is inapplicable, justify that judgment in the report.
 
-## Code review
+Add new checks and their expected outputs to the spec before running them, following the reopening rules in `SKILL.md`. Preserve their run records and include reported sensitivity results in the same provenance system as primary analyses. A check that needs new implementation reopens Distillation; a changed scientific scope reopens Exploration.
 
-Distillation already ran the engineering checks — environment builds, tests pass, README accurate (`dunnlab-new-project` Stage 9). Do not repeat them here; this phase is about whether the science is right, which no amount of green tests establishes.
+## Verify reproducibility without redundant full runs
 
-Run the `dunnlab-codereview` checklist over `analyses/`. Pay particular attention to the acquisition and validation scripts — they run first, are tested least, and a silent failure there propagates through everything downstream.
+Require evidence for a full computational run from original preserved inputs in an isolated clean workspace with the environment reconstructed from its specification. Use public acquisition scripts or the documented access procedure for restricted inputs. Do not start from cached intermediates and call that a clean run.
 
-## Gate: ready for publication
+Reuse Distillation's clean run and engineering checks when they cover the current source, spec, inputs, and environment. Record that identity match. After changes, rerun affected checks and establish clean execution evidence covering the final workflow; repeat the full expensive computation only when earlier evidence no longer covers it or an independent rerun is itself a validation requirement. Report actual coverage without describing a partial rerun as a fresh full run.
 
-- [ ] Every claim compared against its exploratory counterpart, with discrepancies resolved in writing
-- [ ] Full workflow reruns from a fresh clone and raw data
-- [ ] Tests pass
-- [ ] Rerun-without-LLM completes, or on-path steps are documented and verified
-- [ ] Manifests regenerate identically to what is committed
-- [ ] Every manuscript number traces to a distilled output
-- [ ] Code review complete
-- [ ] `exploratory/` is either included as-is or removed deliberately, and the README says which
+Regenerate audit manifests from selected preserved run records and verify artifact hashes. Investigate unexpected differences before replacing a baseline. Compare a new execution's scientific outputs using the defined criteria; expected changes in run IDs or timestamps are not scientific failures.
 
-Report what you ran and what it showed. If something could not be checked — a step needing cluster time nobody has, a comparison with no exploratory counterpart — name it. An honest gap is useful; a quietly skipped check is the thing that makes the whole structure worthless.
+Verify model-free execution where no LLM dependency is declared. For documented on-path LLM steps, distinguish replay of preserved responses from a new invocation and report which was tested, how outputs were assessed, and what remains dependent on model availability or nondeterminism. Apply the same clarity to other external or human dependencies.
+
+## Trace the deliverable to the analysis
+
+Every result produced by this project and reported in the deliverable must trace to a selected distilled output or a documented interpretation of it:
+
+- Reported numbers, units, uncertainty, tables, and figures agree with generated artifacts, allowing documented display rounding.
+- Described methods and software versions match actual execution records.
+- Figures and result summaries regenerate from preserved outputs using recorded code; separately document human interpretation or presentation steps.
+- Controls, sensitivity results, exclusions, and post hoc choices are described where they affect interpretation.
+- No reported computational result depends solely on an exploratory file that was never re-derived or explicitly validated.
+
+Use a compact claim-to-output mapping when the spec does not already provide sufficient traceability. External literature claims should have citations rather than being forced into the project's output manifest.
+
+Run `dunnlab-codereview` when available, focusing on consequential transformations and acquisition checks. Reuse still-valid engineering evidence and record scientific checks separately. Review alone does not substitute for comparison or execution.
+
+## Gate: ready for the intended scientific deliverable
+
+- [ ] Each reported claim has a baseline comparison or justified alternative evidence meeting the stated criteria; discrepancies are resolved.
+- [ ] Central claims have appropriate robustness evidence and reported limitations, or a justified explanation of inapplicability.
+- [ ] Clean execution and relevant engineering checks cover the final workflow, with evidence identities recorded.
+- [ ] External, human, and model dependencies are verified to the stated level; reproducibility limits are explicit.
+- [ ] Manifests agree with selected run records and preserved artifacts; new-run comparisons meet specified criteria.
+- [ ] Reported results trace to the distilled analysis and accurately describe its methods and uncertainty.
+- [ ] Relevant code review is complete.
+- [ ] The README or release documentation states how to obtain inputs, rerun the analysis, and access preserved exploratory evidence, including any restrictions.
+
+Record which checks ran, which valid evidence was reused, and which scientific judgments were made. Required unresolved checks keep the gate open. When all criteria pass, record `phase: validation` and `gate_status: passed`; do not publish, submit, or remove exploratory evidence unless the user has authorized that action.

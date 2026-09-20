@@ -18,13 +18,13 @@ Follow these steps when starting a new project from scratch. This skill referenc
 
 ## Is this a research analysis project?
 
-If the goal is a scientific result that will be published — analyses behind figures, tables, and reported numbers — the `dunnlab-lifecycle` skill governs the project's overall direction across its four phases (Planning, Exploration, Distillation, Validation). This skill still owns scaffolding, and the two are designed to interlock:
+If the goal is a scientific analysis supporting a paper, report, dataset release, or other research deliverable, the `dunnlab-lifecycle` skill governs the project's overall direction across its four phases (Planning, Exploration, Distillation, Validation). This skill still owns scaffolding, and the two are designed to interlock:
 
-- **Stages 1–3, 6–7 run as written.** Git, permissions, devcontainer, directory layout, and environment are the same for any project.
-- **Stages 4–5 produce `dev_docs/overview.md`,** which the lifecycle's Planning phase extends rather than replaces.
-- **Stop at Stage 8 and hand off to Exploration.** Do not run the build loop, for the reason given there.
+- **Steps 1–3, 6–7 handle scaffolding.** Apply repository and environment setup as needed within the requested scope, preserving existing setup on resume.
+- **Steps 4–5 produce `dev_docs/overview.md`,** which the lifecycle's Planning phase extends rather than replaces.
+- **At Step 8, hand off to the lifecycle's current phase.** Exploration uses a lighter loop designed for eventual reuse; Distillation applies the durable build discipline to the remaining gaps.
 
-For a tool, package, or pipeline with no publication attached — a CLI, a library, a plugin — ignore all of that and run this skill straight through. Most projects are this kind, and the lifecycle's phases would only add ceremony.
+For a tool, package, or pipeline whose task is software development rather than producing scientific results — a CLI, a library, a plugin — run this skill straight through without adding the analysis lifecycle.
 
 ## Progress tracking
 
@@ -184,7 +184,7 @@ Include instructions for environment setup in README.md.
 
 ### Step 8: Enter development mode
 
-**Research analysis projects stop here** and continue with the `dunnlab-lifecycle` skill's Exploration phase. The loop below builds carefully and incrementally, which is what a tool needs and the opposite of what exploration needs — at this stage you do not yet know which analyses matter, so polishing them is wasted effort and the polish itself makes the eventual cleanup harder. Come back to this discipline at Distillation, when the scope is settled and the build is worth doing properly.
+**Research analysis projects use `dunnlab-lifecycle` to select the current phase here.** During Exploration, keep runs inexpensive while using clear identities, rerunnable transformations, reusable components, and basic correctness checks that make later Distillation easier. Defer speculative abstractions and exhaustive hardening of uncertain branches. At Distillation, retain verified work and use the loop below to close the gaps against the spec; do not require a rewrite or restart a mature project in Exploration.
 
 Read `dev_docs/overview.md` and the project scope notes from the progress file, then break development into atomic tasks tailored to the project type. The decomposition depends on what's being built:
 
