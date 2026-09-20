@@ -46,7 +46,7 @@ notes: "18S+28S siphonophore phylogeny; awaiting Nematocyst dataset"
 
 Commit this file. It tracks *where you are*; the scientific record lives in the plan, the spec, and the generated manifests. It sits in `dev_docs/` rather than a harness directory like `.claude/` for two reasons: a reader auditing the repo should be able to see when the analysis was declared final, and the skill has to work under any harness that reads `SKILL.md`.
 
-Projects run for months across many sessions with `/clear` between them, so re-read this file whenever you resume rather than trusting conversation context.
+Projects run for months across many sessions with the context cleared between them, so re-read this file whenever you resume rather than trusting conversation context.
 
 ## Working a phase
 
@@ -90,7 +90,7 @@ That skill is two things joined together, and only one of them is yours to drive
 
 Stage 8 is where these two skills most easily fight. It drives a disciplined incremental build — atomic tasks, tests and docs per task, commit and clear between. That is right for a tool or package, and right for building the distilled pipeline in Phase 3. It is wrong for Exploration, which needs to be fast and disposable and will be actively slowed by it. When a research project reaches Stage 8, hand off to Exploration here and come back to that discipline at Distillation.
 
-Two state files coexist and do not conflict because they work at different scales: `dev_docs/lifecycle.yaml` records which phase the project is in, and `.claude/new-project-progress.yaml` is a within-stage task checklist. Keep it that way — if this file starts tracking tasks, they will drift apart.
+Two state files coexist and do not conflict because they work at different scales: `dev_docs/lifecycle.yaml` records which phase the project is in, and `.agent/new-project-progress.yaml` is a within-stage task checklist. Keep it that way — if this file starts tracking tasks, they will drift apart.
 
 ### Directory layout
 

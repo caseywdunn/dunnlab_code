@@ -9,7 +9,7 @@ description: >
   Also trigger when the user describes a new analysis goal (e.g., "I need
   to analyze some RNA-seq data", "let's build a phylogenetics pipeline")
   and the working directory is empty or lacks project structure (no
-  README.md, no CLAUDE.md, no src/ or scripts/ directory).
+  README.md, no AGENTS.md or CLAUDE.md, no src/ or scripts/ directory).
 ---
 
 # Dunn Lab New Project Setup
@@ -28,7 +28,7 @@ For a tool, package, or pipeline with no publication attached — a CLI, a libra
 
 ## Progress tracking
 
-This skill persists its progress to `.claude/new-project-progress.yaml` so it can resume after `/clear` or a new session.
+This skill persists its progress to `.agent/new-project-progress.yaml` so it can resume after the context is cleared or a new session starts. Projects scaffolded before this moved may still have it at `.claude/new-project-progress.yaml`; read that as a fallback and migrate it.
 
 ### On first invocation (no progress file exists)
 
@@ -38,10 +38,10 @@ This skill persists its progress to `.claude/new-project-progress.yaml` so it ca
    - `.gitignore` exists → skip initial .gitignore in Step 2 (still update it in Step 6)
    - `.devcontainer/` exists → skip Step 3
    - `README.md` exists → mark as pre-existing in Step 4 notes (still review/update it)
-   - `CLAUDE.md` exists → same as README
+   - `AGENTS.md` or `CLAUDE.md` exists → same as README
    - `dev_docs/` exists → same as README
    - `environment.yml`, `renv.lock`, or `Cargo.toml` exists → skip Step 7
-2. Build the initial task list and write it to `.claude/new-project-progress.yaml` with this format:
+2. Build the initial task list and write it to `.agent/new-project-progress.yaml` with this format:
 
 ```yaml
 # Dunn Lab new-project progress — do not edit manually
@@ -60,20 +60,20 @@ tasks:
   # ... remaining steps
 ```
 
-3. Load the task list into TodoWrite so it is visible during the session.
+3. Load the task list into the harness's in-session task list (TodoWrite in Claude Code) so progress stays visible while you work.
 
 ### On subsequent invocations (progress file exists)
 
-1. Read `.claude/new-project-progress.yaml`.
+1. Read `.agent/new-project-progress.yaml`.
 2. If `devcontainer: true` and `in_devcontainer: false`, check whether you're now inside a container (e.g., `/.dockerenv` exists or `$REMOTE_CONTAINERS` is set). If so, update `in_devcontainer: true` in the progress file — this confirms the user successfully reopened in the devcontainer and you can continue to Stage 2.
-3. Load it into TodoWrite.
+3. Load it into the in-session task list.
 4. Resume from the first task that is not `completed` or `skipped`.
 
 ### Keeping progress up to date
 
-- When you finish a step, mark it `completed` in both TodoWrite and the progress file.
+- When you finish a step, mark it `completed` in both the in-session task list and the progress file.
 - When you start a step, mark it `in-progress`.
-- If the plan changes (steps added, removed, reordered, or revised based on user feedback), update the progress file to reflect the new plan. The progress file is the durable source of truth; TodoWrite is the in-session view.
+- If the plan changes (steps added, removed, reordered, or revised based on user feedback), update the progress file to reflect the new plan. The progress file is the durable source of truth; the in-session task list is just the view.
 - Use the `notes` field to capture key decisions (e.g., chosen language, project type) so they survive across sessions.
 
 ---
@@ -103,7 +103,9 @@ Do these in order — settings.json first so all subsequent tool calls benefit f
 
 1. **Initialize git** with `git init` (skip if already initialized).
 
-2. **Create `.claude/settings.json`** with reasonable permissions for local development. Use `acceptEdits` as the default mode so file edits don't require individual approval, while package installs, git mutations, and network access still prompt. Read `references/settings-permissions.md` for the full permission rules, the JSON format, and the rule-syntax gotchas, then generate the settings file.
+2. **Configure permissions** so file edits proceed without individual approval while package installs, git mutations, and network access still prompt.
+
+   In Claude Code, create `.claude/settings.json` with `acceptEdits` as the default mode — read `references/settings-permissions.md` for the full rules, the JSON format, and the rule-syntax gotchas, then generate the file. In Codex, the equivalent is the sandbox and approval policy (`--sandbox workspace-write --ask-for-approval on-request`, or a persistent setting in `~/.codex/config.toml`); the deny-list reasoning in that reference still applies even though the syntax does not.
 
 3. **Create a minimal `.gitignore`** with `.DS_Store` and other common ignores. This will be expanded in a later step once the language and project type are known.
 
@@ -130,9 +132,10 @@ If the user did not opt for a devcontainer:
 Before writing any code, create the following:
 
 - **README.md** with a project title and placeholder sections for the overview, setup instructions, usage examples, and development notes. If `devcontainer: true` in the progress file, include a "Development container" section explaining how to use it (install Docker and the VS Code Dev Containers extension, then reopen the project in the container).
-- **`dev_docs/overview.md`** outlining the scientific question or engineering goal, key data sources and their formats, and the planned analysis workflow or architecture. This serves as a reference that can be loaded into context by Claude Code when working on relevant parts of the project.
-- **Additional `dev_docs/` files** as needed to document the project (e.g., data model, analysis workflow, interpretation notes). Keep each file atomic and focused on a single topic — this way Claude Code can load only the relevant file into context rather than pulling in the entire project's documentation, which helps stay within the context window on larger projects.
-- **CLAUDE.md** with a brief project summary, links to the above documentation, and any project-specific instructions for using Claude Code. Also specify to use the dunnlab-defaults skill for coding conventions and project structure.
+- **`dev_docs/overview.md`** outlining the scientific question or engineering goal, key data sources and their formats, and the planned analysis workflow or architecture. This serves as a reference that can be loaded into context by a coding agent when working on relevant parts of the project.
+- **Additional `dev_docs/` files** as needed to document the project (e.g., data model, analysis workflow, interpretation notes). Keep each file atomic and focused on a single topic — this way the agent can load only the relevant file into context rather than pulling in the entire project's documentation, which helps stay within the context window on larger projects.
+- **AGENTS.md** with a brief project summary, links to the above documentation, and any project-specific instructions for working on it with a coding agent. Also specify to use the dunnlab-defaults skill for coding conventions and project structure.
+- **CLAUDE.md** containing the single line `@AGENTS.md`. Claude Code does not read AGENTS.md, and maintaining two copies invites them to drift — the import gives both harnesses the same file. See `dunnlab-defaults` for the reasoning.
 
 Ask the user any clarifying questions needed to fill in these documents.
 
@@ -191,7 +194,7 @@ Read `dev_docs/overview.md` and the project scope notes from the progress file, 
 
 Present the proposed task breakdown to the user for review before starting implementation — they may want to reorder, merge, or split tasks based on their priorities.
 
-Write the finalized tasks into the progress file and TodoWrite. Then implement them one by one. After each task:
+Write the finalized tasks into the progress file and the in-session task list. Then implement them one by one. After each task:
 - Run tests to verify functionality.
 - Run linters and formatters to maintain code quality.
 - Update documentation to reflect new functionality or changes.
@@ -199,7 +202,7 @@ Write the finalized tasks into the progress file and TodoWrite. Then implement t
 
 Do not move on to the next task until the current one is fully implemented, tested, and documented. Each task should be small enough to complete in a single session — this prevents context overload and keeps diffs reviewable.
 
-After completing each task, commit your changes and then run /clear before starting the next task. When the user re-invokes this skill after clearing, it will automatically resume from the progress file — no need to start over.
+After completing each task, commit your changes and then clear the context before starting the next task. When the user re-invokes this skill after clearing, it will automatically resume from the progress file — no need to start over.
 
 ### Step 9: Final verification
 
@@ -211,4 +214,4 @@ Run through this checklist when wrapping up. For each item, actually run the rel
 - [ ] **Linters and formatters clean**: run the project's linter and formatter (`ruff format --check . && ruff check .`, `cargo clippy`, etc.) and fix any issues
 - [ ] **Code review**: look over the project for performance issues, security concerns, or potential bugs — if a refactor is needed, break it into a new task and implement it before moving on
 - [ ] **README accurate**: follow the setup instructions in README.md as if you were a new user — do they actually work?
-- [ ] **CLAUDE.md and dev_docs/ current**: verify these files reflect the final state of the project, not the initial plan
+- [ ] **AGENTS.md and dev_docs/ current**: verify these files reflect the final state of the project, not the initial plan

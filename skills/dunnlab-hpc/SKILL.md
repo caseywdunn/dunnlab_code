@@ -29,7 +29,9 @@ Transfer nodes: `transfer-bouchet.ycrc.yale.edu`, `transfer-mccleary.ycrc.yale.e
 
 ## Login node policy
 
-Run `/sandbox` once on the cluster to check whether Claude Code's Bash sandbox is available. It needs `bubblewrap` and `socat` and unprivileged user namespaces, which shared systems often restrict — and when it cannot start, Claude Code warns and runs commands unsandboxed rather than failing. Do not assume you are protected without checking.
+Check once on the cluster whether your harness's sandbox actually starts. Shared systems often restrict the kernel features these depend on, and the failure mode is quiet: the agent warns and then runs commands unsandboxed rather than refusing. Do not assume you are protected without checking.
+
+In Claude Code, run `/sandbox`; its Bash sandbox needs `bubblewrap`, `socat`, and unprivileged user namespaces. In Codex, confirm the sandbox mode in effect with `/permissions` — `workspace-write` also keeps network access off by default, which is worth knowing before a job tries to download a reference.
 
 **Never run heavy computation on login nodes.** The following lightweight tasks are acceptable on login nodes:
 
@@ -393,5 +395,5 @@ Store environments in your project directory or home — **never in scratch** (o
 - **Max interactive apps**: 4 concurrent OOD interactive instances per user.
 - **Job rate limits**: YCRC enforces submission rate limits — use job arrays or `dsq` instead of submission loops.
 - **Module system**: Use `module reset` then `module load` for software. Run `module avail` to see available packages.
-- **AI coding agents**: YCRC does not formally support coding agents on the clusters and warns about data exposure, credential leakage, and destructive actions taken with your permissions. See <https://docs.ycrc.yale.edu/ai/aicodingtools/> and use restrictive Claude Code permissions (`assets/settings.json` in this repo). YCRC also documents connecting Claude Science to a cluster by SSH tunnel to a **compute node, not a login node**.
+- **AI coding agents**: YCRC does not formally support coding agents on the clusters and warns about data exposure, credential leakage, and destructive actions taken with your permissions. See <https://docs.ycrc.yale.edu/ai/aicodingtools/> and use restrictive permissions — `assets/settings.json` in this repo for Claude Code, or a `workspace-write` sandbox with `on-request` approvals for Codex. YCRC also documents connecting Claude Science to a cluster by SSH tunnel to a **compute node, not a login node**.
 - **Paid storage**: YCRC cannot accept new or increased paid storage allocations on Bouchet, Grace, or McCleary; availability may return in late 2026.

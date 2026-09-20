@@ -189,12 +189,13 @@ Use idiomatic project structures for each language, but generally follow this ex
 project-name/
 ├── .gitignore
 ├── README.md
-├── CLAUDE.md
+├── AGENTS.md         # Project instructions; Codex reads this directly
+├── CLAUDE.md         # One line: @AGENTS.md
 ├── dev_docs/
 │   ├── overview.md
 │   └── data-model.md # These are example documents
 ├── .claude/
-│   └── rules/        # Path-scoped guidance, loaded on demand
+│   └── rules/        # Claude Code only; path-scoped, loaded on demand
 ├── CONTRIBUTING.md
 ├── data/
 │   ├── raw/          # Never modify raw data
@@ -210,14 +211,24 @@ project-name/
 
 README.md should include a project overview, setup instructions (for environment, dependencies, and the project itself), and usage examples. Also include a Development section covering how to run the tests, plus any relevant notes about data sources or analysis workflows.
 
-dev_docs/ should include any relevant documentation for the project, such as an overview of the data model, descriptions of analysis workflows, or notes on interpretation of results. It is intended to be both human readable and to be loaded into context by Claude Code when working on relevant parts of the project.
+dev_docs/ should include any relevant documentation for the project, such as an overview of the data model, descriptions of analysis workflows, or notes on interpretation of results. It is intended to be both human readable and to be loaded into context by a coding agent when working on relevant parts of the project.
 
-CLAUDE.md should document how to use Claude Code for this project, including any custom skills or commands. **Keep it to 100 lines or less** — the [official guidance](https://code.claude.com/docs/en/memory) targets 200, and we hold to a stricter limit because everything in it is paid for in every session. It must also include links and descriptions to the following files at a minimum so they can be loaded into context as needed:
+AGENTS.md holds the project instructions: how to build, test, and work on this project, plus any custom skills or commands. **Keep it to 100 lines or less** — the [official guidance](https://code.claude.com/docs/en/memory) targets 200, and we hold to a stricter limit because everything in it is paid for in every session. It must also include links and descriptions to the following files at a minimum so they can be loaded into context as needed:
 - README.md
 - CONTRIBUTING.md
 - Each file in `dev_docs/` (e.g., `overview.md`, `data-model.md`)
 
-When project guidance outgrows that limit, put it in `.claude/rules/` rather than lengthening CLAUDE.md. A rule file with a `paths:` frontmatter field loads only when Claude opens a matching file, so detailed conventions cost nothing until they are relevant:
+Codex reads [`AGENTS.md`](https://agents.md/) directly. Claude Code reads CLAUDE.md and not AGENTS.md, so make CLAUDE.md a one-line import rather than a second copy:
+
+```markdown
+@AGENTS.md
+```
+
+Two files maintained in parallel drift, and a reader cannot tell which is current. One file with an import gives both harnesses the same version-controlled instructions.
+
+When project guidance outgrows that limit, move it out rather than lengthening AGENTS.md. Codex discovers `AGENTS.md` files further down the tree, so guidance that applies to one directory can live there — `scripts/AGENTS.md` — and both harnesses will pick it up when working in it.
+
+Claude Code additionally supports `.claude/rules/`, where a `paths:` frontmatter field scopes a rule to matching files so detailed conventions cost nothing until they are relevant. Use it for guidance that is genuinely Claude-specific, such as tool permissions; put anything both harnesses need in a nested AGENTS.md instead:
 
 ```markdown
 ---
