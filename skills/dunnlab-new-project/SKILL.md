@@ -16,6 +16,16 @@ description: >
 
 Follow these steps when starting a new project from scratch. This skill references conventions from the `dunnlab-defaults` skill — apply those standards throughout.
 
+## Is this a research analysis project?
+
+If the goal is a scientific result that will be published — analyses behind figures, tables, and reported numbers — the `dunnlab-lifecycle` skill governs the project's overall direction across its four phases (Planning, Exploration, Distillation, Validation). This skill still owns scaffolding, and the two are designed to interlock:
+
+- **Stages 1–3, 6–7 run as written.** Git, permissions, devcontainer, directory layout, and environment are the same for any project.
+- **Stages 4–5 produce `dev_docs/overview.md`,** which the lifecycle's Planning phase extends rather than replaces.
+- **Stop at Stage 8 and hand off to Exploration.** Do not run the build loop, for the reason given there.
+
+For a tool, package, or pipeline with no publication attached — a CLI, a library, a plugin — ignore all of that and run this skill straight through. Most projects are this kind, and the lifecycle's phases would only add ceremony.
+
 ## Progress tracking
 
 This skill persists its progress to `.claude/new-project-progress.yaml` so it can resume after `/clear` or a new session.
@@ -55,7 +65,7 @@ tasks:
 ### On subsequent invocations (progress file exists)
 
 1. Read `.claude/new-project-progress.yaml`.
-2. If `devcontainer: true` and `in_devcontainer: false`, check whether you're now inside a container (e.g., `/.dockerenv` exists or `$REMOTE_CONTAINERS` is set). If so, update `in_devcontainer: true` in the progress file — this confirms the user successfully reopened in the devcontainer and you can continue to Phase 2.
+2. If `devcontainer: true` and `in_devcontainer: false`, check whether you're now inside a container (e.g., `/.dockerenv` exists or `$REMOTE_CONTAINERS` is set). If so, update `in_devcontainer: true` in the progress file — this confirms the user successfully reopened in the devcontainer and you can continue to Stage 2.
 3. Load it into TodoWrite.
 4. Resume from the first task that is not `completed` or `skipped`.
 
@@ -68,9 +78,9 @@ tasks:
 
 ---
 
-## Phase 1: Bootstrap
+## Stage 1: Bootstrap
 
-The goal of this phase is to get the repo initialized and permissions configured as quickly as possible so that subsequent steps can run with minimal user intervention.
+The goal of this stage is to get the repo initialized and permissions configured as quickly as possible so that subsequent steps can run with minimal user intervention.
 
 ### Step 1: Define the project scope
 
@@ -113,7 +123,7 @@ If the user did not opt for a devcontainer:
 
 ---
 
-## Phase 2: Plan
+## Stage 2: Plan
 
 ### Step 4: Create project planning documentation
 
@@ -136,7 +146,7 @@ Once the planning documents are drafted:
 
 ---
 
-## Phase 3: Scaffold and build
+## Stage 3: Scaffold and build
 
 ### Step 6: Create directory structure and update .gitignore
 
@@ -170,6 +180,8 @@ Scaffold test infrastructure alongside the directory structure:
 Include instructions for environment setup in README.md.
 
 ### Step 8: Enter development mode
+
+**Research analysis projects stop here** and continue with the `dunnlab-lifecycle` skill's Exploration phase. The loop below builds carefully and incrementally, which is what a tool needs and the opposite of what exploration needs — at this stage you do not yet know which analyses matter, so polishing them is wasted effort and the polish itself makes the eventual cleanup harder. Come back to this discipline at Distillation, when the scope is settled and the build is worth doing properly.
 
 Read `dev_docs/overview.md` and the project scope notes from the progress file, then break development into atomic tasks tailored to the project type. The decomposition depends on what's being built:
 

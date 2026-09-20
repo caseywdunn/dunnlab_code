@@ -35,6 +35,7 @@ Frontmatter `name` is optional for personal and project skills, where the direct
 
 - **dunnlab-defaults** — Coding conventions, preferred languages, project structure, testing, and version control practices. The foundational skill the others reference.
 - **dunnlab-new-project** — Step-by-step workflow for scaffolding new projects. References dunnlab-defaults for conventions.
+- **dunnlab-lifecycle** — Four-phase analysis lifecycle with gates between phases. Router SKILL.md plus one reference per phase; delegates to dunnlab-new-project, dunnlab-defaults, dunnlab-bioinformatics, and dunnlab-codereview rather than restating them.
 - **dunnlab-hpc** — YCRC cluster reference: partitions, storage, SLURM, Snakemake integration.
 - **dunnlab-bioinformatics** — Sequence analysis conventions. Builds on dunnlab-defaults and dunnlab-new-project.
 - **dunnlab-devcontainer** — Scaffolds a `.devcontainer/` configuration.
