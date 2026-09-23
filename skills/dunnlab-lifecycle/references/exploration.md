@@ -20,7 +20,13 @@ Start with the cheapest informative comparison for each distinct question before
 
 This is a default, not a one-run limit. Add replication when variability obscures the answer, test interactions when choices may matter jointly, and use a structured design when the question warrants one. Failure to detect a change in one comparison does not establish that a parameter never matters. Record the conditions under which it appeared unimportant.
 
-Use early sensitivity checks when they affect whether to pursue a result or whether the method is credible. Defer extensive robustness testing until the central claims are settled. Validation checks the claims that survive; it should not be the first opportunity to notice an obvious dependence on an arbitrary choice.
+Use early sensitivity checks when they affect whether to pursue a result or whether the method is credible. As central claims settle, design and investigate the sensitivity analyses needed to support them here. Carry the selected analyses into the spec and reproduce their reported results during Distillation. Validation assesses that existing evidence; it does not perform the missing investigation.
+
+### Sensitivity analyses belong to the scientific analysis
+
+Target plausible failure modes of the claims: defensible alternatives in preprocessing or modeling, dependence on data subsets or missing-data assumptions, and relevant simulation conditions. Vary one factor at a time when useful for attribution, and test combinations when interactions are plausible. Respect the sampling structure and the authorized budget. Record null findings and changes in the result; narrow the claim when warranted rather than tuning sensitivity away.
+
+When Validation identifies missing or inadequate sensitivity evidence, return here to decide what investigation is needed and amend the spec. Keep that work focused on the documented deficiency rather than reopening an unlimited sweep. If a sensitivity analysis is already fully specified and only its implementation or output is missing, complete it in Distillation.
 
 ## Spend the least that answers the question
 
@@ -69,9 +75,9 @@ Write `dev_docs/analysis-spec.md` or the project's equivalent. Include:
 
 - **Inputs and derivations.** Identify inputs and necessary derivatives, their roles, and scientifically consequential differences. Do not require a particular data representation.
 - **Analyses.** Give stable analysis IDs, entry points or command templates, resolved parameters, expected outputs, and relevant stochastic settings. Identify existing components to retain and the gaps to close during Distillation.
-- **Claims and deliverables.** Link each intended claim, figure, table, or other result to its supporting analyses. Include controls and diagnostics with an explicit purpose even if they do not produce a headline claim.
-- **Validation plan.** Identify exploratory baselines or alternative evidence, comparison metrics and tolerances with rationale, and targeted robustness checks. Specify these before examining validation differences. Record uncertainty where a criterion still needs scientific input.
+- **Claims and deliverables.** Link each intended claim, figure, table, or other result to its supporting analyses. Include sensitivity analyses, controls, and diagnostics with an explicit purpose even if they do not produce a headline claim. Specify those needed to support the claims for completion in Distillation.
+- **Validation plan.** Identify preserved baselines or alternative evidence and the existing sensitivity results to assess. Define comparison metrics and tolerances with rationale before examining validation differences. Resolve scientific choices needed for these criteria here; Validation uses them to assess the completed analysis set.
 
 Check the mapping in both directions: every planned result has an analysis, and every analysis serves a result, control, diagnostic, or validation need. Required inputs and parameters are identified, and validation criteria are usable. Save the spec and evidence through the project's version-control workflow and apply the shared gate rules.
 
-The spec fixes a reviewable scope, not an immutable conclusion. Amend it deliberately when evidence changes the design, documenting the reason and reopening affected gates. New validation checks need a spec entry before execution; they are not a reason to resume an unlimited exploration sweep.
+The spec fixes a reviewable scope, not an immutable conclusion. Amend it deliberately when evidence changes the design, documenting the reason and reopening affected gates. Deficiencies reported by Validation may bring the project back here; settle the scientific questions, carry the selected work through Distillation, and then return to Validation.

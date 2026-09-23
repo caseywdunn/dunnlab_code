@@ -10,9 +10,48 @@ Preserve exploratory baselines before modifying their code or outputs. Build or 
 
 Define the final analyses and their provenance explicitly. Selecting files from exploration is insufficient unless their inputs, methods, parameters, and outputs are shown to match the spec. Minimizing changes reduces opportunities for inconsistency; it does not waive verification.
 
+Complete the specified sensitivity analyses, controls, and diagnostics alongside the primary analyses. Preserve their outputs and run records so Validation can assess the existing evidence. If a missing analysis requires a new scientific design or a methodological choice, return to Exploration to settle it rather than leaving that investigation for Validation.
+
+When Validation identifies an implementation error, provenance gap, or failure to reproduce the specified analysis, reopen this phase, make the repair, and rerun affected work. Preserve the failed assessment and the evidence of the correction, then return to Validation after this gate passes again. Do not invent missing execution provenance after the fact; recover verifiable records or rerun the affected computation.
+
 Begin the durable build discipline here: close gaps in small coherent steps, verify consequential transformations, and document how to run them. Use `dunnlab-new-project` Step 8 and relevant engineering checks from Step 9 when available. A script, notebook executable from a clean kernel, or workflow engine is acceptable if it meets the same reproducibility requirements.
 
 Plan for a clean recomputation, or reuse an already documented clean run if it covers the final workflow exactly. If cost or an unavailable dependency prevents required execution, prepare a concrete alternative with its evidence limits. Ask only for a tradeoff or resources not already authorized. Do not label a partial or cached run as a successful clean run.
+
+## Keep analysis commands in the rules
+
+Treat the workflow rules as the reader's view of the scientific computation. Keep external executables and their meaningful options visible in `shell:` blocks. Resolve simple values from configuration in `params:`; do not move the entire command into a Python function or opaque option bundle. Declare consumed artifacts in `input:` and produced artifacts in `output:` so the data flow is visible without tracing wrapper code.
+
+For example, this illustrative Snakemake rule keeps the inference visible while delegating checks to small scripts (the model and search count come from the scientific design, not this example):
+
+```python
+rule constrained_inference:
+    input:
+        matrix="matrices/{matrix}.faa",
+        constraint="constraints/{matrix}__{hypothesis}.nwk",
+    output:
+        tree="trees/{matrix}__{hypothesis}.treefile",
+        report="trees/{matrix}__{hypothesis}.iqtree",
+    params:
+        prefix="trees/{matrix}__{hypothesis}",
+        model=config["model"],
+        runs=config["search_runs"],
+        seed=config["seed"],
+    threads: config["threads"]
+    log: "logs/{matrix}__{hypothesis}.log"
+    shell:
+        """
+        python scripts/check_inputs.py --matrix {input.matrix:q} --constraint {input.constraint:q}
+        iqtree3 -s {input.matrix:q} -g {input.constraint:q} \\
+          -m {params.model:q} --runs {params.runs} --seed {params.seed} \\
+          -T {threads} --prefix {params.prefix:q} > {log:q} 2>&1
+        python scripts/check_tree.py --matrix {input.matrix:q} --tree {output.tree:q}
+        """
+```
+
+Only add those validators when they address an actual correctness requirement. A separate validation rule is also appropriate, provided downstream targets depend on its successful output. Keep version checks, output checks, and provenance generation out of command-building wrappers. Record the command actually executed using the engine's shell-command logging or tool logs instead of maintaining a second command implementation for reporting.
+
+Keep checks proportional to the science and likely mistakes. Trusted research inputs do not require a security-oriented validation framework. Prefer a few focused checks and existing workflow features over custom orchestration, nested receipts, or repeated verification at every layer. Broad shared validation utilities should not become dependencies of expensive analysis jobs unless their changes actually affect those computations; separate validation dependencies where possible.
 
 ## Stable identities and a minimal analysis set
 
@@ -67,11 +106,12 @@ If an LLM capability is part of the scientific method, document it as an explici
 
 ## Gate: the specified analysis runs
 
+- [ ] A reader can identify the analysis executables, meaningful options, inputs, outputs, and dependencies directly in the rules. Necessary validation is separate and proportionate; straightforward external calls are not buried in wrappers.
 - [ ] The workflow runs from preserved original inputs through all specified computational outputs in a clean workspace and reconstructed environment.
 - [ ] Manual, external-service, and model dependencies are explicit, with recoverable inputs and verification evidence; model access is disabled successfully where no LLM dependency is declared.
 - [ ] Every output traces to its analysis, completed run, inputs, and executed settings.
 - [ ] Audit manifests regenerate deterministically from selected records and agree with the actual artifacts.
-- [ ] Every required analysis, control, diagnostic, and validation implementation is accounted for; unplanned outputs are investigated and excluded from the selected set or added through a deliberate spec amendment.
+- [ ] Every specified primary analysis, sensitivity analysis, control, and diagnostic has produced its required outputs and run records. Unplanned scientific analyses return to Exploration for a scope decision before joining the selected set.
 - [ ] Relevant tests and engineering checks pass, with any inapplicable checks justified.
 
 Record commands, source/input identities, results, and limitations in the gate report. Build the environment in isolation instead of deleting the user's working environment. Identify the clean run so Validation can reuse its evidence if the relevant source, inputs, and environment have not changed. Required execution that remains unavailable keeps the gate open.
