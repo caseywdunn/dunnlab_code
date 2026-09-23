@@ -80,6 +80,40 @@ Keep stage-specific helpers with their rules and external analysis commands
 visible there. Do not replace a large Snakefile with opaque Python orchestration,
 deep include chains, or one file per trivial rule; small workflows can stay whole.
 
+Start each rule file with a short comment block or module docstring explaining
+its scientific purpose and data flow. State what its inputs represent and what
+its products are used for, then list the scientific steps in data-flow order,
+with the exact relevant rule names after each step. Identify the downstream
+handoff when it crosses a file boundary. For thin entry points, summarize the
+included stages and final aggregate target instead of duplicating their rule
+lists. A one-step file needs only a one-step summary.
+
+For example, a taxon-sampling rule file could begin:
+
+```python
+"""
+Build broad reference trees for distance-based taxon selection. These sampling
+trees guide matrix construction for final phylogenetic inference and AU tests.
+
+1. Validate the input sequence catalog: validate_catalog.
+2. Extract eligible regions from catalog sequences: prepare_sampling_sequences,
+   search_sampling_domains_hmmsearch, extract_sampling_regions.
+3. Build profile-based alignments: align_sampling_sequences_hmmalign,
+   build_sampling_matrices.
+4. Infer and validate sampling trees: infer_sampling_tree_iqtree,
+   validate_sampling_tree.
+
+Next: select_taxon_panel in panels_matrices.smk uses these trees to select
+sequences for downstream matrix construction.
+"""
+```
+
+Adapt the summary to the actual rules, not a generic pipeline. Keep it scientific
+and reader-facing: no development history, repeated command options or detailed
+validation internals. Update the summary and rule lists whenever rules are
+renamed, moved or their purpose changes; check that the listed names exist and
+the stated handoffs match the dependencies.
+
 Order stage includes and rules in data-flow order: producers before consumers,
 with input preparation followed by analysis, validation and summaries. Put imports,
 configuration and necessary helper definitions before their uses. Place `rule all`
