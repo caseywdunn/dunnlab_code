@@ -10,6 +10,10 @@ Generic completion and reuse requirements live in
 [execution provenance](provenance.md). Yale submission, storage, and executor
 settings belong to `dunnlab-hpc`.
 
+The analysis README should show how to launch the workflow and a generated
+`--rulegraph` view of that same scope. Read [rule graph generation](rulegraphs.md)
+when adding or changing entry points, configuration, targets, or README diagrams.
+
 ## Use thin entry points and stage-specific rules
 
 For a substantial multi-stage analysis, keep the main workflow file thin: load

@@ -61,6 +61,9 @@ an engine solely to satisfy a directory convention.
 For Snakemake implementation or refactoring, read
 [Snakemake organization](references/snakemake.md): thin entry points, stage rules,
 visible commands, meaningful names, and shared full and bounded execution.
+For Snakemake project READMEs, include explicit launch and dry-run commands plus
+a generated rule graph. Follow [rule graph generation](references/rulegraphs.md)
+to derive it from the workflow and check freshness in CI.
 
 Provide one normal source-to-result route per analysis. Retrieval reuses verified
 local inputs and obtains missing inputs using their recorded identity. Optional

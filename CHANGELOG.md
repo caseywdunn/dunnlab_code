@@ -13,6 +13,8 @@ auto-update is off by default for third-party marketplaces.
 - `dunnlab-workflow-design` owns computational design from exploration onward,
   with references for Snakemake organization, execution provenance, and reader
   documentation.
+- Snakemake project README guidance specifies launch/dry-run commands and generated
+  rule graphs, with one regeneration command and a CI check for stale images.
 
 ### Changed
 

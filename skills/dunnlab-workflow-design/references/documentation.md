@@ -11,12 +11,34 @@ set of execution instructions one canonical home, commonly a workflow README;
 link to it from other guides instead of copying commands or analysis grids.
 Domain guides explain methods, inputs, products, and requirements.
 
-Show explicit, copyable execution commands and dry-run commands where supported;
-do not make readers derive execution commands by removing flags. State the working
-directory and required environment. Define each entry point's scope precisely: a
-domain-specific Snakefile is not a repository-wide workflow. Explain that stage
-targets normally build missing upstream dependencies, and identify any restricted
-entry point that deliberately consumes only completed staged inputs.
+## Make launching the analysis explicit
+
+Give the analysis README a clearly labeled run section containing:
+
+- The working directory, environment setup/activation, and required inputs or
+  their acquisition command.
+- A copyable dry-run command and a separate execution command, with the actual
+  Snakefile, configuration, target, and cores or execution profile where relevant.
+- What the command runs and where its main outputs appear. Distinguish the full
+  analysis from optional or bounded stages and explain required upstream work.
+
+For a repository with several analyses, make the root README an obvious index
+to each analysis's canonical launch instructions. For a single analysis, those
+instructions can live directly in the root README. Do not leave the only launch
+command in an agent instruction file, a development note, or an unexplained batch
+script. Check the documented dry-run command against the actual project when the
+required environment and inputs are available; record unavailable checks honestly.
+
+Do not make readers derive execution commands by removing dry-run flags. A
+domain-specific Snakefile is not a repository-wide workflow. Identify restricted
+entry points that deliberately consume only completed staged inputs.
+
+For Snakemake projects, embed a generated `--rulegraph` visualization next to the
+launch instructions. Use [rule graph generation](rulegraphs.md) for the shared
+generation command and CI freshness check; do not maintain a second diagram by
+hand. The graph explains dependency structure, while the commands explain launch.
+
+## Keep the reproduction route and evidence clear
 
 Present one normal source-to-result route that reuses verified local inputs and
 obtains missing ones. External caches are optional optimizations. Document access
