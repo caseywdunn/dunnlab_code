@@ -68,6 +68,73 @@ When revising documentation, search the root and domain guides for repeated
 commands, stale development narratives and broken cross-references. Update related
 guides consistently while leaving immutable run records intact.
 
+## Use thin entry points and stage-specific rules
+
+For a substantial multi-stage analysis, keep the main workflow file thin: load
+configuration, include named rule files grouped by scientific purpose, and
+declare final targets. In Snakemake, a suitable layout is a domain `Snakefile` with
+`rules/discovery.smk`, `rules/matrices.smk`, `rules/inference.smk`,
+`rules/topology.smk` and `rules/reports.smk`, adapted to the actual analysis.
+Use a small common configuration loader only where shared setup warrants it.
+Keep stage-specific helpers with their rules and external analysis commands
+visible there. Do not replace a large Snakefile with opaque Python orchestration,
+deep include chains, or one file per trivial rule; small workflows can stay whole.
+
+Order stage includes and rules in data-flow order: producers before consumers,
+with input preparation followed by analysis, validation and summaries. Put imports,
+configuration and necessary helper definitions before their uses. Place `rule all`
+at the bottom of the entry point, after the stage includes, and mark it explicitly
+with `default_target: True`; do not rely on the first rule being the default.
+Apply the same convention to restricted entry points. This is a readability
+convention, not execution sequencing: Snakemake schedules from dependencies.
+Direct references such as `rules.catalog.output.receipt` do require the producer
+rule to have been defined earlier. Do not use `ruleorder` to express execution
+sequence; it resolves competing producers, not dependencies.
+
+Provide one coherent full-workflow entry point per domain and named stage targets.
+Define the default target's scope explicitly; a target called `all` should cover
+the declared full analysis, while targets such as `inference` or `topology`
+select bounded scientific stages. Connected downstream analyses should be part
+of that dependency graph, not accessible only through an unrelated entry point.
+Document that stage targets normally build missing upstream dependencies.
+
+Where an established workflow must consume completed inputs without rebuilding
+them, retain a thin restricted entry point that includes the same configuration
+and downstream rules but omits upstream construction rules. This is a bounded
+view of the same analysis, not a duplicate implementation or a second parameter
+set. Test that missing staged inputs fail rather than triggering upstream work.
+Do not add such entry points without an actual reuse or execution-boundary need.
+
+Changing includes or default targets can change what existing launch commands
+schedule even when scientific parameters are unchanged. Inspect batch scripts,
+snapshot packaging and documented commands; make bounded launchers request an
+explicit target. Check relative script/environment paths after moving rules.
+Dry-run the full graph and bounded paths, checking analysis counts, shared matrix
+identities and excluded stages. Preserve submitted snapshots and completed runs;
+an organizational refactor alone is not a reason to rerun them.
+
+## Name rules for readable rule graphs
+
+Use consistent snake_case names: `<action>_<scientific_object>_<tool>` for
+external scientific tools, for example `align_matrix_mafft`,
+`infer_tree_model_selection_iqtree`, `infer_constrained_tree_iqtree`,
+`test_topologies_au_iqtree`, and `quantify_expression_salmon`. Use the same tool
+suffix wherever that tool performs the scientific step; do not append versions
+or implementation languages such as `_python` or `_r`.
+
+For other steps, use action and object without an artificial tool suffix:
+`prepare_discovery_sequences`, `select_taxon_panel`, `validate_inferred_tree`,
+and `report_matrices`. Reserve `validate_` for checks, `record_` for provenance,
+and `report_` for reports. Name substantive custom methods by their scientific
+purpose. Avoid vague names, numbered steps and redundant domain prefixes.
+Keep short aggregate targets such as `all`, `matrices`, `inference` and `topology`.
+A reader should understand each analysis step from its rule-graph label alone.
+
+When renaming, update rule references, launch filters, tests and documented
+targets together. Verify that commands and graph dependencies remain unchanged;
+do not rewrite names in preserved run records or rerun completed analyses merely
+because a rule was renamed.
+
 ## Keep analysis commands in the rules
 
 Treat the workflow rules as the reader's view of the scientific computation. Keep external executables and their meaningful options visible in `shell:` blocks. Resolve simple values from configuration in `params:`; do not move the entire command into a Python function or opaque option bundle. Declare consumed artifacts in `input:` and produced artifacts in `output:` so the data flow is visible without tracing wrapper code.
@@ -75,7 +142,7 @@ Treat the workflow rules as the reader's view of the scientific computation. Kee
 For example, this illustrative Snakemake rule keeps the inference visible while delegating checks to small scripts (the model and search count come from the scientific design, not this example):
 
 ```python
-rule constrained_inference:
+rule infer_constrained_tree_iqtree:
     input:
         matrix="matrices/{matrix}.faa",
         constraint="constraints/{matrix}__{hypothesis}.nwk",
@@ -158,6 +225,7 @@ If an LLM capability is part of the scientific method, document it as an explici
 
 - [ ] Public documentation describes the current analyses, clearly separates workflow and exploratory products, and links to one canonical set of explicit execution and dry-run commands. Development notes and regression instructions are separate; reproduction limits remain visible.
 - [ ] A reader can identify the analysis executables, meaningful options, inputs, outputs, and dependencies directly in the rules. Necessary validation is separate and proportionate; straightforward external calls are not buried in wrappers.
+- [ ] Full-workflow and bounded entry points share stage rules and configuration. Dry runs confirm their documented scope, including any no-upstream-rebuild boundary; launchers and packaged dependencies match that organization.
 - [ ] The workflow runs from preserved original inputs through all specified computational outputs in a clean workspace and reconstructed environment.
 - [ ] Manual, external-service, and model dependencies are explicit, with recoverable inputs and verification evidence; model access is disabled successfully where no LLM dependency is declared.
 - [ ] Every output traces to its analysis, completed run, inputs, and executed settings.

@@ -113,6 +113,10 @@ Two state files coexist and do not conflict because they work at different scale
 
 `exploratory/` and `analyses/` are the default split for provisional and durable analysis artifacts; shared source code can serve both. Preserve an established equivalent layout and record its paths. Keep original inputs immutable and write derivatives separately. Organize analysis subdirectories and use a workflow engine only when the project's complexity warrants them.
 
+For substantial workflows, prefer thin domain entry points that assemble
+stage-specific rule files, with shared rules for full and bounded execution.
+See [workflow organization](references/distillation.md#use-thin-entry-points-and-stage-specific-rules).
+
 ### Precedence for analysis artifacts
 
 Use stable identities for distilled outputs and explicit provenance for history. Dates may be meaningful input identifiers, such as an observation period or release. Override existence-only checkpointing: an existing output is reusable only when its completed run record matches the current inputs, code, and parameters. Exploration's limited hardening requirements override generic demands to fully test and document every throwaway script, but never waive basic correctness checks.
