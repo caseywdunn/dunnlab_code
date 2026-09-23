@@ -85,13 +85,14 @@ If you are loading a local copy with `--plugin-dir`, just `git pull`. Changes ar
 
 ### Skills
 
-- **dunnlab-defaults** — Lab-wide coding conventions: preferred languages, formatting, testing, project structure, and version control practices. The foundational skill the others build on.
-- **dunnlab-new-project** — Step-by-step workflow for scaffolding a new project from scratch, with progress that survives `/clear`.
-- **dunnlab-lifecycle** — Four-phase lifecycle (Planning, Exploration, Distillation, Validation) for scientific analyses in any discipline, with recorded gate evidence, reuse of sound exploratory work, and reproducible reported results.
+- **dunnlab-defaults** — Language, code style, dependency management, testing, and version-control conventions.
+- **dunnlab-workflow-design** — Computational workflow design from exploration onward: readable data flow, shared implementation, execution provenance, valid reuse, and reproduction instructions.
+- **dunnlab-bioinformatics** — Biological methods, preferred tools and usage details, sequence identifiers, and domain-specific checks.
+- **dunnlab-lifecycle** — Scientific planning, exploration, selection of reported analyses, and evidence-based readiness; distillation retains the working implementation and closes evidence gaps.
+- **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
-- **dunnlab-bioinformatics** — Sequence analysis conventions: data hygiene, input validation, gene ID handling, and default tools.
 - **dunnlab-devcontainer** — Add a `.devcontainer/` configuration for reproducible, isolated Claude Code environments.
-- **dunnlab-codereview** — Code review checklist and process.
+- **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
 - **dunnlab-biblio** — BibTeX conventions for manuscripts: entry keys, author lists, title capitalization.
 
 ### Commands

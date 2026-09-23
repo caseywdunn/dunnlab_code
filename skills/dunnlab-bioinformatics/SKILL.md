@@ -1,156 +1,63 @@
 ---
 name: dunnlab-bioinformatics
 description: >
-  Bioinformatics workflow conventions for the Dunn Lab. Use when building
-  or modifying sequence analysis pipelines, phylogenetics, gene annotation,
-  or multi-species comparative analyses. Covers data hygiene, tool defaults,
-  and naming conventions.
+  Design sequence, phylogenetic, annotation, and comparative analyses using Dunn
+  Lab tool preferences, biological input checks, and identifier conventions.
+  Use for bioinformatics method and tool choices; general workflow architecture
+  belongs to dunnlab-workflow-design.
 ---
 
-# Dunn Lab Bioinformatics Workflows
+# Dunn Lab Bioinformatics Design
 
-Follow these conventions for bioinformatics projects. This skill builds on `dunnlab-defaults` (coding standards, project structure, orchestration) and `dunnlab-new-project` (scaffolding) — apply those skills as well when starting or structuring a bioinformatics project.
+Use this skill for biological methods, tool settings, identifiers, and scientific checks. Apply the relevant guidance during exploration as well as later analysis. The preferred tools are defaults for a requested analysis, not a requirement to add every analysis below.
 
-## Raw data is immutable
+For dependencies, configuration, provenance, output reuse, and reproduction, use [dunnlab-workflow-design](../dunnlab-workflow-design/SKILL.md). Scientific questions and readiness for reporting belong to [dunnlab-lifecycle](../dunnlab-lifecycle/SKILL.md); coding and environment conventions belong to [dunnlab-defaults](../dunnlab-defaults/SKILL.md). Repository scaffolding and HPC execution belong to their respective skills when needed.
 
-**Never modify raw data files.** Raw data lives in `data/raw/` or is referenced from an external source and must remain byte-for-byte identical to what was originally obtained.
+Read [Tool and analysis preferences](references/tools.md) when choosing or configuring alignment, tree inference, annotation, ORF prediction, completeness assessment, duplicate resolution, orientation, or contamination screening. Preserve a project's justified alternatives and record consequential departures from these defaults.
 
-All transformations produce derivative files in `data/processed/` (or a descriptive subdirectory). Each processing step should be scripted and reproducible so the processed files can be regenerated from raw data at any time.
+## Biological inputs and checks
 
-## Input validation
+Establish the biological unit and expected input type before choosing a method: reads, transcripts, coding sequences, proteins, genes, or orthogroups. Keep gene, transcript, and protein identifiers distinguishable. Record the relevant species, assembly/annotation release, sequence type, coordinate conventions, and reference database release with the analysis inputs.
 
-Validate all input files before processing. Catch problems early rather than debugging cryptic failures downstream.
+Validate inputs before the consuming stage, including relationships between files:
 
-- **FASTA/FASTQ**: Check for valid headers, consistent line wrapping, no illegal characters in sequences, no duplicate sequence IDs, and non-empty sequences.
-- **GFF/GTF**: Verify tab-delimited structure, required columns, valid strand/phase values, and that coordinates are within sequence bounds.
-- **Newick/tree files**: Verify balanced parentheses and parseable structure.
-- **CSV/TSV metadata**: Check for expected columns, consistent delimiters, and no encoding issues.
+- **FASTA/FASTQ:** Check non-empty sequences, usable and unique record IDs, and the alphabet expected for nucleotide, protein, or aligned data. For FASTQ, also check sequence/quality lengths and paired-read identity when relevant. Valid FASTA need not have uniform line wrapping.
+- **GFF/GTF:** Check the nine-column structure, strand/phase values as appropriate to the feature, sequence IDs, and coordinates against the matching reference. Preserve the format's coordinate and attribute semantics during conversion.
+- **Trees and alignments:** Parse the tree, check unique tip labels, and reconcile them with sequence and species mappings. Check equal aligned sequence lengths and required taxon coverage before tree inference.
+- **Metadata tables:** Check expected columns, types, uniqueness of keys, and join cardinality. Detect unmatched identifiers rather than silently losing samples or sequences.
 
-Use BioPython parsers where possible — they will raise on malformed records. For tabular formats, use `pandas` with strict dtype enforcement. Report clear error messages that identify the problematic file and line/record.
+Prefer Biopython for supported sequence/tree formats and pandas for tables. Parsing alone does not establish these biological invariants; add explicit checks for the conditions the analysis relies on. Errors should identify the file and offending record or identifier.
 
-## Compressed file handling
+For single-cell expression analyses, prefer Scanpy when Python fits the task;
+retain R methods such as Seurat when their capabilities are needed. Choose the
+library for the biological method rather than adding a second implementation.
 
-Bioinformatics files are often distributed and stored gzip-compressed (`.fasta.gz`, `.fastq.gz`, `.tsv.gz`). Handle compressed inputs transparently — detect `.gz` extensions and decompress on the fly using Python's `gzip` module or BioPython's `SeqIO.parse(gzip.open(...))`. Never require the user to decompress files manually as a preprocessing step. Most bioinformatics tools (MAFFT, DIAMOND, etc.) also accept gzipped input natively.
+Support gzip-compressed inputs without requiring manual decompression. Use text-mode gzip streams with parsers, or a workflow-managed derivative for tools that require an uncompressed file. Check the selected tool's actual compression support; DIAMOND supports gzip queries, but this is not universal across bioinformatics tools.
 
-## Gene name sanitization
+## Identifier transformations
 
-When producing derivative datasets, sanitize gene names and identifiers in two steps:
+When producing sanitized derivative identifiers:
 
-1. **Optional regex extraction**: Always provide the user with an option to specify a regex with a capture group to extract or transform gene IDs before sanitization. This allows stripping prefixes (e.g., `^maker-.*?-(.+)$`), removing version suffixes (e.g., `^(.+)\.\d+$`), or extracting IDs from complex headers (e.g., `^.*\|(.+)$`). Apply this regex first, before character sanitization.
-2. **Character sanitization**: Remove or replace characters that are problematic in downstream tools: spaces, parentheses, colons, semicolons, commas, quotes, pipes, and shell-special characters. Replace problematic characters with underscores (`_`). Collapse runs of multiple underscores to a single one.
+1. Provide an optional regex with a capture group for extraction before sanitization, such as `^(.+)\.\d+$` to remove a version suffix. Leave extraction disabled unless selected for the dataset; check unmatched and empty results.
+2. Replace characters problematic for the downstream formats/tools with underscores: spaces, parentheses, colons, semicolons, commas, quotes, pipes, and shell-special characters. Collapse repeated underscores.
+3. Write `name_mapping.tsv` with `original`, `regex_extracted`, and `sanitized` columns. Check that transformed IDs are non-empty and unique; fail on collisions.
 
-After both steps:
-- Log all name transformations so the mapping back to original names is preserved (write a `name_mapping.tsv` with `original`, `regex_extracted`, and `sanitized` columns).
-- Validate that sanitized names are still unique — raise an error if sanitization creates collisions.
+Apply mappings consistently to sequence headers, annotation tables, tree tips, and other files referencing the transformed IDs. Sanitization does not replace correct shell quoting.
 
-## Multi-species analyses — globally unique gene IDs
+### Multi-species gene IDs
 
-When integrating datasets from multiple species, gene IDs must be globally unique. Before merging any cross-species data, rename gene IDs using the convention:
+Before merging cross-species datasets, use globally unique IDs with the lab convention:
 
-```
+```text
 Genus_species@gene_id
+Homo_sapiens@BRCA1
+Nematostella_vectensis@NVE12345
 ```
 
-For example: `Homo_sapiens@BRCA1`, `Mus_musculus@Brca1`, `Nematostella_vectensis@NVE12345`.
+Use the full binomial with an underscore for the species prefix, and sanitize the gene ID portion before prefixing. Reserve `@` as the separator and check source IDs for conflicts. For unnamed species or datasets requiring specimen/assembly distinctions, document an unambiguous prefix in the species mapping rather than inventing a binomial or allowing collisions.
 
-Rules:
-- The species prefix uses the full binomial with an underscore: `Genus_species`.
-- The `@` separator is chosen because it does not appear in standard gene IDs and is not a shell metacharacter.
-- Apply this renaming to FASTA headers, annotation tables, tree tip labels, and any other files that reference gene IDs.
-- Maintain a mapping file (`species_gene_mapping.tsv`) with columns: `species`, `original_id`, `global_id`.
-- Apply sanitization (above) to the `gene_id` portion before prefixing.
+Maintain `species_gene_mapping.tsv` with `species`, `original_id`, and `global_id` columns, linked to any sanitization mapping. Carry the resulting IDs through FASTA, annotations, trees, and all cross-file joins. When multiple transcripts or proteins are retained for one gene, preserve their distinct IDs and gene relationships.
 
-## Gene annotation
+## Quality summaries
 
-Annotate genes using both of these tools:
-
-- **EggNOG-mapper** — for orthology-based functional annotation (GO terms, KEGG, COG categories).
-- **PROST** — for structure-based remote homology detection and annotation.
-
-Run both and integrate results. Where annotations conflict, retain both with their source labeled. Store annotation results in `results/annotations/` with clear filenames indicating the tool and input (e.g., `eggnog_Genus_species.tsv`, `prost_Genus_species.tsv`).
-
-## Default bioinformatics tools
-
-Use these tools unless there is a specific reason to choose an alternative:
-
-| Task | Tool | Notes |
-|------|------|-------|
-| Multiple sequence alignment | **MAFFT** | Use `--auto` for general use; `--linsi` for high-accuracy on smaller sets |
-| Phylogenetic inference | **IQ-TREE 3** | Use ModelFinder (`-m MFP`) for automatic model selection on deep searches, or a fixed model such as `Q.PFAM+F+R6` for faster protein searches (e.g. monophyly masking of gene trees). Use ultrafast bootstrap (`-B 1000`) for support values |
-| Alignment trimming | **trimAl** | Trim poorly-aligned regions before tree inference; use `-automated1` for general use |
-| Sequence similarity search | **DIAMOND** | Use `blastp` or `blastx` mode as appropriate; significantly faster than BLAST for large-scale searches |
-| ORF prediction | **TransDecoder** | Predict ORFs from transcriptomes; use `-S` for strand-specific data; retain primary isoforms (`.p1`) only |
-| Completeness assessment | **BUSCO** | Assess transcriptome/proteome/genome completeness; use the appropriate lineage database (e.g. `metazoa_odb12`). Confirm the lineage name against `busco --list-datasets` — the `odb` version advances with BUSCO releases |
-
-Install all tools via **bioconda** when possible (consistent with `dunnlab-defaults`).
-
-## Duplicate and paralog resolution
-
-When gene trees contain multiple sequences from the same species (paralogs, isoforms, or assembly artifacts), resolve them before downstream analysis. Two complementary strategies:
-
-- **Monophyletic pruning** (phylogenomic workflows): When within-species duplicates form a monophyletic clade in a gene tree, retain a single representative — preferring the sequence with the lowest long-branch score or, if scores are similar, the longest sequence. Use tools like **PhyKIT** for long-branch score calculation and **ETE3** for tree manipulation.
-- **Branch-length thresholding** (transcriptomic workflows): Collapse sequences from the same species that are separated by less than a branch-length threshold. Test multiple thresholds and evaluate with BUSCO to find the optimal collapse point. Retain the longest sequence from each collapsed group.
-
-In both cases:
-- Track which sequences were removed and why (write a pruning summary with columns: `gene`, `retained_id`, `removed_id`, `reason`).
-- After pruning, validate that no within-species duplicates remain in gene trees intended for species-tree inference.
-- Sequences not present in any gene tree cannot be phylogenetically validated — flag or exclude them depending on the analysis.
-
-## Sequence orientation
-
-When working with transcriptome data where strand orientation may be unknown, verify and correct sequence orientation before translation or alignment. Use DIAMOND `blastx` hits to infer orientation — compare query and subject coordinate order to determine if a reverse complement is needed. Apply this step when the user requests it or when the data source does not guarantee strand orientation.
-
-## Summary tables
-
-For multi-sample workflows, produce per-sample metrics at each processing stage and aggregate them into a single summary TSV (e.g., `results/sample_summary.tsv`). Include key quality metrics such as input sequence counts, filtering statistics, BUSCO completeness, and any tool-specific outputs. This provides at-a-glance quality assessment across all samples and makes it easy to identify outliers or failed samples.
-
-## Contamination screening
-
-Not required for every project, but when working with raw sequencing reads — especially from non-model organisms — consider screening for contamination before downstream analysis. Use **Kraken2** for taxonomic classification to detect human, bacterial, and other contaminant sequences. Map reads against human and rRNA references (e.g., SILVA) with **BWA** to quantify contamination levels. Apply this step when the user requests it or when contamination is a plausible concern (e.g., field-collected samples, mixed-species extractions).
-
-## Project structure additions
-
-Bioinformatics projects extend the standard `dunnlab-defaults` structure, for example:
-
-```
-project-name/
-├── data/
-│   ├── raw/              # Immutable original data
-│   └── processed/        # Sanitized, renamed, validated derivatives
-│       └── name_mapping.tsv
-├── results/
-│   ├── alignments/       # MAFFT output
-│   ├── trees/            # IQ-TREE output
-│   ├── searches/         # DIAMOND output
-│   └── annotations/      # EggNOG and PROST output
-├── scripts/
-│   ├── validate_inputs.py
-│   ├── sanitize_names.py
-│   └── ...
-└── environment.yml       # Include mafft, iqtree3, diamond, eggnog-mapper, etc.
-```
-
-## Environment setup
-
-The `environment.yml` should include bioinformatics dependencies from bioconda:
-
-```yaml
-channels:
-  - conda-forge
-  - bioconda
-  - defaults
-dependencies:
-  - python>=3.10
-  - biopython
-  - pandas
-  - mafft
-  - iqtree>=3
-  - trimal
-  - diamond
-  - eggnog-mapper
-  - busco
-```
-
-Pin `iqtree>=3` explicitly — bioconda still carries 2.x under the same package name, and the conventions above assume IQ-TREE 3.
-
-Add PROST and any other tools as needed per project.
+For multi-sample workflows, aggregate metrics from the stages actually run into a per-sample TSV, such as `results/sample_summary.tsv`. Include input/retained sequence counts, filtering and mapping losses, and relevant tool metrics such as BUSCO completeness. Represent failed or unassessed samples explicitly so they cannot disappear from comparisons. Use these summaries to identify outliers and evaluate biological consequences of filtering; do not add unrelated analyses merely to populate a table.

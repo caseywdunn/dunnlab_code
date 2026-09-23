@@ -33,20 +33,52 @@ Frontmatter `name` is optional for personal and project skills, where the direct
 
 ### Current skills
 
-- **dunnlab-defaults** — Coding conventions, preferred languages, project structure, testing, and version control practices. The foundational skill the others reference.
-- **dunnlab-new-project** — Step-by-step workflow for scaffolding new projects. References dunnlab-defaults for conventions.
-- **dunnlab-lifecycle** — Four-phase analysis lifecycle with gates between phases. Router SKILL.md plus one reference per phase; delegates to dunnlab-new-project, dunnlab-defaults, dunnlab-bioinformatics, and dunnlab-codereview rather than restating them.
-- **dunnlab-hpc** — YCRC cluster reference: partitions, storage, SLURM, Snakemake integration.
-- **dunnlab-bioinformatics** — Sequence analysis conventions. Builds on dunnlab-defaults and dunnlab-new-project.
-- **dunnlab-devcontainer** — Scaffolds a `.devcontainer/` configuration.
-- **dunnlab-codereview** — Code review checklist and feedback process.
-- **dunnlab-biblio** — BibTeX conventions for manuscripts.
+- **dunnlab-defaults** — Language, code style, dependency management, testing, and version-control conventions.
+- **dunnlab-workflow-design** — Computational workflow design from exploration onward: readable data flow, shared implementation, execution provenance, valid reuse, and reproduction instructions.
+- **dunnlab-bioinformatics** — Biological methods, preferred tools and usage details, sequence identifiers, and domain-specific checks.
+- **dunnlab-lifecycle** — Scientific planning, exploration, selection of reported analyses, and evidence-based readiness; distillation retains the working implementation and closes evidence gaps.
+- **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
+- **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
+- **dunnlab-devcontainer** — Add a `.devcontainer/` configuration for reproducible, isolated Claude Code environments.
+- **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
+- **dunnlab-biblio** — BibTeX conventions for manuscripts: entry keys, author lists, title capitalization.
 
 ### Design principles
 
 - **Description budget**: Skill descriptions share a listing budget of **1% of the model's context window** by default (`skillListingBudgetFraction`). When the listing overflows, Claude Code shortens descriptions starting with the skills you invoke least — names always survive, descriptions may not. Each entry's `description` plus `when_to_use` is separately capped at 1,536 characters. Keep descriptions to one concise sentence with the key use case first, and check the cost with `/doctor`.
 - **Body size**: The full skill body loads on invocation and stays in context for the rest of the session. Longer skills consume more context. Aim for completeness without redundancy.
 - **Cross-references**: Skills can reference each other by name (e.g., "apply conventions from the `dunnlab-defaults` skill"). They don't need to duplicate shared content.
+
+### Ownership and composition
+
+Each convention has one authoritative skill. A companion references that owner
+instead of restating or overriding its policy. Workflow design applies during
+exploration as well as distillation; lifecycle determines the evidence needed for
+the selected scientific scope. Bioinformatics supplies methods and tool details,
+and HPC supplies the execution platform. Scaffolding ends when the repository is
+ready for the requested work.
+
+Keep substantial conditional details in references: Snakemake organization,
+execution provenance, reader documentation, and biological tool recipes. Preserve
+existing skill names when narrowing scope so installed invocations remain useful.
+A reference to a companion is a routing instruction, not a requirement to load
+all companions for every task.
+
+Use these scenarios when evaluating changes to skill boundaries:
+
+| Request | Applicable guidance | Expected boundary |
+|---|---|---|
+| Explore a small dataset in a notebook | Defaults; workflow design for the analysis path; lifecycle when organizing research | Rerunnable work and decision evidence; no mandatory notebook rewrite or full release process |
+| Design a multi-species sequence pipeline | Workflow design + bioinformatics; HPC if Yale execution is needed | General graph/provenance rules and domain choices compose without duplicate pipelines |
+| Retain selected exploratory analyses for a report | Lifecycle + workflow design + relevant domain skill | Select configurations and shared code, preserve history, close verification gaps |
+| Resume a scaffolded project to implement its plan | Relevant workflow/domain or software guidance | New-project checks unfinished setup only; it does not own the build loop |
+| Review a workflow change or propose a design | Review/design skills as relevant | Assess requested artifacts without launching a lifecycle or expensive computation |
+| Rename workflow rules or update documentation | Workflow design; targeted review | Verify scope and dependencies; reuse still-valid scientific execution evidence |
+
+For substantial skill changes, exercise representative scenarios with an
+independent agent using small isolated artifacts. Inspect the resulting behavior,
+not just whether the skill repeats its own wording. Record any unavailable runtime
+checks rather than treating a document review as an end-to-end execution test.
 
 ## Commands
 

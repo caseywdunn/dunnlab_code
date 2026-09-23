@@ -1,217 +1,69 @@
 ---
 name: dunnlab-new-project
 description: >
-  Step-by-step workflow for scaffolding a new Dunn Lab project from
-  scratch. Use whenever starting a new analysis, pipeline, tool, or
-  package — including when the user says "new project", "set up a repo",
-  "start a new analysis", "initialize a project", or asks to create
-  project structure, directory layout, or boilerplate for a new codebase.
-  Also trigger when the user describes a new analysis goal (e.g., "I need
-  to analyze some RNA-seq data", "let's build a phylogenetics pipeline")
-  and the working directory is empty or lacks project structure (no
-  README.md, no AGENTS.md or CLAUDE.md, no src/ or scripts/ directory).
+  Scaffold a new Dunn Lab repository or fill missing project setup: source and
+  test directories, environment, README, and agent instructions. Use for project
+  initialization, not ongoing development or scientific lifecycle management.
 ---
 
 # Dunn Lab New Project Setup
 
-Follow these steps when starting a new project from scratch. This skill references conventions from the `dunnlab-defaults` skill — apply those standards throughout.
+Create the minimum useful scaffold for the requested project, preserving existing work. This skill owns setup and then hands off; it does not run an ongoing development lifecycle. Apply `dunnlab-defaults` for language, dependency, coding, and documentation conventions.
 
-## Is this a research analysis project?
+## Establish scope and inspect what exists
 
-If the goal is a scientific analysis supporting a paper, report, dataset release, or other research deliverable, the `dunnlab-lifecycle` skill governs the project's overall direction across its four phases (Planning, Exploration, Distillation, Validation). This skill still owns scaffolding, and the two are designed to interlock:
+Infer the goal, language, project type, and expected inputs and outputs from the request and repository. Ask only for missing information that changes setup. Default to Python, use R when the needed packages warrant it, and Rust for performance-critical code. Do not require confirmation of an obvious choice or a separate planning approval when implementation is already authorized.
 
-- **Steps 1–3, 6–7 handle scaffolding.** Apply repository and environment setup as needed within the requested scope, preserving existing setup on resume.
-- **Steps 4–5 produce `dev_docs/overview.md`,** which the lifecycle's Planning phase extends rather than replaces.
-- **At Step 8, hand off to the lifecycle's current phase.** Exploration uses a lighter loop designed for eventual reuse; Distillation applies the durable build discipline to the remaining gaps.
+Inspect existing source, documentation, environment specifications, git state, and agent instructions. Complete only the missing setup relevant to the task; an existing analysis does not need a new repository or a restart of its lifecycle. Do not replace established layouts or permissions because they differ from a template.
 
-For a tool, package, or pipeline whose task is software development rather than producing scientific results — a CLI, a library, a plugin — run this skill straight through without adding the analysis lifecycle.
+A devcontainer is optional. Offer it when isolation would materially help and the preference is unknown; continue useful setup without one unless the user chooses it. Do not make container selection a universal pause.
 
-## Progress tracking
+## Repository and execution environment
 
-This skill persists its progress to `.agent/new-project-progress.yaml` so it can resume after the context is cleared or a new session starts. Projects scaffolded before this moved may still have it at `.claude/new-project-progress.yaml`; read that as a fallback and migrate it.
+- Initialize git when creating a repository and it is not already initialized. Preserve existing git configuration and work.
+- Create or update `.gitignore` for the language and actual layout. Default ignores include `.DS_Store`, Python caches, notebook checkpoints, bulk data/results, and logs; preserve tracked fixtures and provenance records. Add `target/` for Rust and `.Rhistory`, `.RData`, `.Rproj.user/` for R where relevant.
+- Preserve the active harness's permissions and sandbox policy. Configure permissions only when the user requests it. For requested Claude Code permission setup, read [references/settings-permissions.md](references/settings-permissions.md); do not translate or apply those settings to another harness automatically.
+- If a devcontainer was chosen, use `dunnlab-devcontainer` for its configuration. If further work requires reopening in it, record the handoff and explain the needed action. Do not require a commit or context reset as part of scaffolding.
 
-### On first invocation (no progress file exists)
+## Minimum documentation and directories
 
-1. Inspect the repo to detect which steps have already been completed. Use these heuristics to mark steps as `completed` or `skipped` in the initial task list:
-   - `.git/` exists → skip git init in Step 2
-   - `.claude/settings.json` exists → skip permissions setup in Step 2
-   - `.gitignore` exists → skip initial .gitignore in Step 2 (still update it in Step 6)
-   - `.devcontainer/` exists → skip Step 3
-   - `README.md` exists → mark as pre-existing in Step 4 notes (still review/update it)
-   - `AGENTS.md` or `CLAUDE.md` exists → same as README
-   - `dev_docs/` exists → same as README
-   - `environment.yml`, `renv.lock`, or `Cargo.toml` exists → skip Step 7
-2. Build the initial task list and write it to `.agent/new-project-progress.yaml` with this format:
+Create useful initial documentation from known information, leaving unresolved scientific choices explicit rather than inventing a detailed plan:
 
-```yaml
-# Dunn Lab new-project progress — do not edit manually
-updated: 2024-01-15T10:30:00
-devcontainer: true  # whether user opted for devcontainer
-in_devcontainer: false  # whether currently running inside a devcontainer
-tasks:
-  - id: step-1
-    name: Define the project scope
-    status: completed  # completed | in-progress | pending | skipped
-    notes: "Python RNA-seq pipeline"
-  - id: step-2
-    name: Initialize repo and configure permissions
-    status: in-progress
-    notes: ""
-  # ... remaining steps
-```
+- **README.md**: project purpose, current setup and entry points, and links to developer checks. For scientific analyses, follow workflow-design's reader-facing documentation guidance. Add development-container instructions only when one is configured.
+- **AGENTS.md**: a brief project summary, working/test commands, and links to relevant documentation; follow the 100-line limit in `dunnlab-defaults`. Reference companion skills only when they apply.
+- **CLAUDE.md**: use the single line `@AGENTS.md` for a new shared-instructions setup. Preserve and reconcile existing instructions instead of overwriting them.
+- **`dev_docs/overview.md`** when a plan is useful: goal, known inputs and outputs, current approach, and unresolved choices. For research, lifecycle Planning extends this same document; do not create a competing scientific plan here.
+- **CONTRIBUTING.md** or additional focused `dev_docs/` documents only when their content warrants a separate home.
 
-3. Load the task list into the harness's in-session task list (TodoWrite in Claude Code) so progress stays visible while you work.
+Use an idiomatic source layout (`scripts/` for analysis scripts, a package layout for reusable software) and add `notebooks/` when needed. Create test directories when there is behavior or a representative input to check; do not add placeholder tests merely to fill the scaffold. `dunnlab-workflow-design` owns workflow-specific organization, including data, results, and analysis entry points.
 
-### On subsequent invocations (progress file exists)
+## Dependencies
 
-1. Read `.agent/new-project-progress.yaml`.
-2. If `devcontainer: true` and `in_devcontainer: false`, check whether you're now inside a container (e.g., `/.dockerenv` exists or `$REMOTE_CONTAINERS` is set). If so, update `in_devcontainer: true` in the progress file — this confirms the user successfully reopened in the devcontainer and you can continue to Stage 2.
-3. Load it into the in-session task list.
-4. Resume from the first task that is not `completed` or `skipped`.
+Use the project's existing dependency mechanism when present. A specification's existence is not evidence that it builds; inspect it and verify the setup relevant to the task.
 
-### Keeping progress up to date
+- **Python**: prefer conda or mamba and `environment.yml` with the project name, Python version, and initial dependencies. Use separate files in `env/` only when distinct tool requirements warrant them. If environment creation is within scope, create it with `conda env create -f environment.yml` or the mamba equivalent. Diagnose dependency conflicts and adjust the specification when needed; report an unresolved setup failure instead of marking it complete.
+- **R**: use `renv`. For a new environment, initialize with `renv::init()`, install needed packages, and snapshot. Configure Bioconductor when needed, and document required system libraries.
+- **Rust**: use `Cargo.toml` and cargo; initialize a crate only when the project needs one and it does not already exist.
 
-- When you finish a step, mark it `completed` in both the in-session task list and the progress file.
-- When you start a step, mark it `in-progress`.
-- If the plan changes (steps added, removed, reordered, or revised based on user feedback), update the progress file to reflect the new plan. The progress file is the durable source of truth; the in-session task list is just the view.
-- Use the `notes` field to capture key decisions (e.g., chosen language, project type) so they survive across sessions.
+Document environment setup before usage. When checking reconstruction, create an isolated environment with a distinct name or path; never delete or overwrite the user's working environment to prove reproducibility. Large downloads or unavailable services do not justify fabricating a successful setup check; record the concrete limitation and continue independent work within scope.
 
----
+## Verify the scaffold and hand off
 
-## Stage 1: Bootstrap
+Verify what was created: dependency specifications parse, documented paths and commands match the files, and available starter code or a small representative case runs when execution is within scope. Run relevant formatting and tests for actual code changes. Do not require a full analysis, production hardening, or clean recomputation before scaffolding can finish.
 
-The goal of this stage is to get the repo initialized and permissions configured as quickly as possible so that subsequent steps can run with minimal user intervention.
+Summarize the scaffold, checks performed, unresolved setup dependencies, and the next action. Continue already authorized work under the appropriate skill:
 
-### Step 1: Define the project scope
+- **Scientific research goals**: `dunnlab-lifecycle` determines the current phase from existing evidence and extends the same plan.
+- **Computational workflows and pipelines**: `dunnlab-workflow-design` supplies design and execution principles from the first exploration onward; add the relevant domain skill for methods and tool choices.
+- **Ordinary software development**: `dunnlab-defaults` supplies coding and verification conventions.
+- **Yale execution**: `dunnlab-hpc` supplies cluster and SLURM details when needed.
 
-Before writing any code, understand what the user wants to build. Start by asking about the **goal** — what scientific question or engineering problem are they solving? Then follow up conversationally based on their answer to fill in any gaps:
+These routes can combine: a research pipeline uses lifecycle for scientific decisions and workflow-design for its computational implementation. A reusable CLI does not need research phase gates merely because it processes scientific data.
 
-- **Language**: Default to Python unless the user mentions R-specific packages (e.g., Seurat, DESeq2) or performance needs that suggest Rust. If the answer is obvious from context, confirm rather than ask.
-- **Inputs and outputs**: What data goes in, what results come out?
-- **Project type**: One-off analysis, reusable tool, or package? Infer from context when possible (e.g., "analyze some RNA-seq data" → analysis; "build a CLI" → tool).
-- **Devcontainer**: Ask whether they'd like one. Briefly explain that devcontainers provide a reproducible, isolated environment via Docker and VS Code, but are optional. Record the choice in the progress file.
+## Resume across sessions only when needed
 
-If the user gives a brief prompt (e.g., "new project for phylogenomics"), infer sensible defaults (Python, analysis, no devcontainer) and confirm them in a single message rather than asking each question individually.
+For setup that spans sessions, keep a compact checklist and handoff in `.agent/new-project-progress.yaml` if the project has no equivalent. Record completed setup, unresolved decisions, and any devcontainer transition. Keep this record limited to scaffolding; lifecycle and ongoing implementation own their own evidence and tasks.
 
-If there are problems with the user's plans (e.g., they suggest inappropriate tools, there are missing or unnecessary steps, there are better approaches, the data can't be used for this purpose, etc.), point out the issues and suggest better approaches.
+Read an existing `.agent/new-project-progress.yaml`, or legacy `.claude/new-project-progress.yaml` when that is the only record. Verify its notes against actual files and current scope; do not interpret old step numbers as commands to restart work or invoke the former build loop. No migration or new state file is required just to review or explain setup. Existing `devcontainer` and `in_devcontainer` fields can inform a pending handoff, but confirm the active environment before resuming dependent work.
 
-Use the answers to guide decisions in the following steps.
-
-### Step 2: Initialize repo and configure permissions
-
-Do these in order — settings.json first so all subsequent tool calls benefit from the permissions:
-
-1. **Initialize git** with `git init` (skip if already initialized).
-
-2. **Configure permissions** so file edits proceed without individual approval while package installs, git mutations, and network access still prompt.
-
-   In Claude Code, create `.claude/settings.json` with `acceptEdits` as the default mode — read `references/settings-permissions.md` for the full rules, the JSON format, and the rule-syntax gotchas, then generate the file. In Codex, the equivalent is the sandbox and approval policy (`--sandbox workspace-write --ask-for-approval on-request`, or a persistent setting in `~/.codex/config.toml`); the deny-list reasoning in that reference still applies even though the syntax does not.
-
-3. **Create a minimal `.gitignore`** with `.DS_Store` and other common ignores. This will be expanded in a later step once the language and project type are known.
-
-### Step 3: Set up devcontainer (optional)
-
-If the user opted for a devcontainer in Step 1:
-
-1. Use the `dunnlab-devcontainer` skill to add a `.devcontainer/` directory with the standard Claude Code devcontainer configuration.
-2. Commit all bootstrap files (settings.json, .gitignore, .devcontainer/).
-3. Tell the user to reopen the project in the devcontainer now — all remaining work should happen inside it. Update the progress file with `in_devcontainer: false` so that on the next invocation it can detect the transition.
-4. **Stop here.** The user will start a new session inside the devcontainer and resume with Step 4.
-
-If the user did not opt for a devcontainer:
-
-1. Commit the bootstrap files (settings.json, .gitignore).
-2. Continue directly to Step 4.
-
----
-
-## Stage 2: Plan
-
-### Step 4: Create project planning documentation
-
-Before writing any code, create the following:
-
-- **README.md** with a project title and placeholder sections for the overview, setup instructions, usage examples, and development notes. If `devcontainer: true` in the progress file, include a "Development container" section explaining how to use it (install Docker and the VS Code Dev Containers extension, then reopen the project in the container).
-- **`dev_docs/overview.md`** outlining the scientific question or engineering goal, key data sources and their formats, and the planned analysis workflow or architecture. This serves as a reference that can be loaded into context by a coding agent when working on relevant parts of the project.
-- **Additional `dev_docs/` files** as needed to document the project (e.g., data model, analysis workflow, interpretation notes). Keep each file atomic and focused on a single topic — this way the agent can load only the relevant file into context rather than pulling in the entire project's documentation, which helps stay within the context window on larger projects.
-- **AGENTS.md** with a brief project summary, links to the above documentation, and any project-specific instructions for working on it with a coding agent. Also specify to use the dunnlab-defaults skill for coding conventions and project structure.
-- **CLAUDE.md** containing the single line `@AGENTS.md`. Claude Code does not read AGENTS.md, and maintaining two copies invites them to drift — the import gives both harnesses the same file. See `dunnlab-defaults` for the reasoning.
-
-Ask the user any clarifying questions needed to fill in these documents.
-
-### Step 5: Review and finalize the plan
-
-Once the planning documents are drafted:
-
-1. Review the plan to make sure there aren't better options for the project structure, environment, or documentation based on the project scope and goals. This is a good time to catch any potential issues before scaffolding the project.
-2. Prompt the user to ask if they would like to make any changes. If they want changes, help them iterate until they're satisfied.
-3. Once the user confirms the plan is finalized, commit the planning documents to git.
-
----
-
-## Stage 3: Scaffold and build
-
-### Step 6: Create directory structure and update .gitignore
-
-Scaffold the project following the `dunnlab-defaults` project structure. Always prefer idiomatic structures for the language and project type.
-
-Update `.gitignore` as appropriate for the languages in the project. Always exclude:
-
-```
-data/
-results/
-*.pyc
-__pycache__/
-.ipynb_checkpoints/
-.DS_Store
-```
-
-Add language-specific ignores (e.g., `target/` for Rust; `.Rhistory`, `.RData`, `.Rproj.user/` for R).
-
-Scaffold test infrastructure alongside the directory structure:
-
-- **Python**: Create `tests/` with an empty `conftest.py` and a placeholder test file.
-- **R**: Set up `tests/testthat/` with a `testthat.R` runner and a placeholder test file.
-- **Rust**: The default `cargo init` includes a test module; add a `tests/` directory for integration tests if appropriate.
-
-### Step 7: Set up the environment
-
-- **Python**: Create `environment.yml` with the project name, Python version, and initial dependencies. If running inside a devcontainer, conda/mamba is already installed — create the environment directly. Otherwise, ensure conda or mamba is available first. Run `conda env create -f environment.yml` or `mamba env create -f environment.yml`. If creation fails (usually dependency conflicts), read the error, adjust versions or channels in `environment.yml`, and retry — don't skip environment setup.
-- **R**: Initialize `renv` with `renv::init()`. Install initial packages and snapshot with `renv::snapshot()`. If the project needs Bioconductor packages, configure the Bioconductor repository in `renv` before installing them. If `renv::restore()` fails on a package, check whether it needs a system library (common with spatial/genomics packages) and note the dependency in README.md.
-- **Rust**: `Cargo.toml` is created by `cargo init`. Add dependencies as needed.
-
-Include instructions for environment setup in README.md.
-
-### Step 8: Enter development mode
-
-**Research analysis projects use `dunnlab-lifecycle` to select the current phase here.** During Exploration, keep runs inexpensive while using clear identities, rerunnable transformations, reusable components, and basic correctness checks that make later Distillation easier. Defer speculative abstractions and exhaustive hardening of uncertain branches. At Distillation, retain verified work and use the loop below to close the gaps against the spec; do not require a rewrite or restart a mature project in Exploration.
-
-Read `dev_docs/overview.md` and the project scope notes from the progress file, then break development into atomic tasks tailored to the project type. The decomposition depends on what's being built:
-
-- **Analysis/pipeline**: first task gets a minimal end-to-end pipeline running (read input → stub processing → write output), then subsequent tasks fill in each processing step. Aim for 3–6 tasks for a typical pipeline — one per major processing stage.
-- **CLI tool**: first task sets up argument parsing and the entry point, then subsequent tasks implement each subcommand or feature. Aim for one task per subcommand plus one for integration tests.
-- **Package/library**: first task defines the public API with stub implementations and a test file, then subsequent tasks implement each function. Aim for one task per public function or logical group of functions.
-
-Present the proposed task breakdown to the user for review before starting implementation — they may want to reorder, merge, or split tasks based on their priorities.
-
-Write the finalized tasks into the progress file and the in-session task list. Then implement them one by one. After each task:
-- Run tests to verify functionality.
-- Run linters and formatters to maintain code quality.
-- Update documentation to reflect new functionality or changes.
-- Commit changes with descriptive messages.
-
-Do not move on to the next task until the current one is fully implemented, tested, and documented. Each task should be small enough to complete in a single session — this prevents context overload and keeps diffs reviewable.
-
-After completing each task, commit your changes and then clear the context before starting the next task. When the user re-invokes this skill after clearing, it will automatically resume from the progress file — no need to start over.
-
-### Step 9: Final verification
-
-Run through this checklist when wrapping up. For each item, actually run the relevant command rather than just eyeballing it:
-
-- [ ] **Environment from scratch**: delete and recreate the environment from the config file (`environment.yml`, `renv.lock`, or `Cargo.toml`) to confirm it builds cleanly
-- [ ] **Starter script runs**: execute the main entry point or pipeline with sample/test input and verify it completes without errors
-- [ ] **Tests pass**: run the full test suite (`pytest`, `cargo test`, `testthat`, etc.)
-- [ ] **Linters and formatters clean**: run the project's linter and formatter (`ruff format --check . && ruff check .`, `cargo clippy`, etc.) and fix any issues
-- [ ] **Code review**: look over the project for performance issues, security concerns, or potential bugs — if a refactor is needed, break it into a new task and implement it before moving on
-- [ ] **README accurate**: follow the setup instructions in README.md as if you were a new user — do they actually work?
-- [ ] **AGENTS.md and dev_docs/ current**: verify these files reflect the final state of the project, not the initial plan
+Follow the user's scope and the project's version-control workflow. Scaffolding does not require automatic commits, repeated approval pauses, or a context reset after each step.

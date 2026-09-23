@@ -218,7 +218,12 @@ conda activate myenv
 
 ### `batch.sh` conventions
 
-Every computationally intensive script or pipeline should include a companion `batch.sh` SLURM submission script in the same directory. This makes it clear how to run the code and with what resources.
+For directly submitted computationally intensive scripts, provide a companion
+`batch.sh` SLURM submission script so the launch command and resources are clear.
+For workflows dispatched by Snakemake's SLURM executor, document the executor or
+profile entry point instead of duplicating each rule in a separate batch script.
+`dunnlab-workflow-design` owns the dependency graph and shared computation; this
+skill owns how that computation is launched on Yale clusters.
 
 - Name the file `batch.sh` and place it alongside the script it runs. If there are multiple stages, use separate scripts (`batch_align.sh`, `batch_assemble.sh`, etc.).
 - Set `--job-name` to something descriptive (e.g., the analysis name or script name).

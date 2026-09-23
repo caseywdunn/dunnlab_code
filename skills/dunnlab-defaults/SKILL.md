@@ -1,23 +1,22 @@
 ---
 name: dunnlab-defaults
 description: >
-  Applies Dunn Lab coding conventions and defaults. Use when starting
-  and modifying new analysis scripts, writing documentation, or setting up project
-  structure. Includes preferred languages, formatting, and file
-  organization patterns.
+  Dunn Lab language, coding, dependency, testing, and documentation conventions.
+  Use when writing or reviewing code. Workflow architecture belongs to
+  dunnlab-workflow-design; repository scaffolding belongs to dunnlab-new-project.
 ---
 
 # Dunn Lab Defaults
 
-When working on Dunn Lab projects, follow these conventions:
+Apply these coding preferences within the requested task and established project conventions. Use `dunnlab-workflow-design` for computational workflow architecture and execution, `dunnlab-new-project` for repository scaffolding, and `dunnlab-lifecycle` for scientific analysis phases. These skills own their respective requirements; this skill does not define a second workflow or lifecycle.
 
 ## Preferred languages and tools
 
 Languages for data analysis and scripting:
 - **Python** for data analysis and scripting (prefer Python 3.10+)
-- Fall back to **R** for when analyses require specific R libraries such as seurat (use tidyverse conventions)
+- Fall back to **R** when analyses require specific R libraries such as Seurat (use tidyverse conventions)
 - Use **conda** or **mamba** for environment management
-- Use **Jupyter notebooks** for exploratory work; refactor into scripts for production; use quarto for manuscripts
+- Use **Jupyter notebooks** for exploratory work and **Quarto** for manuscripts. A retained notebook is acceptable when it runs from a clean kernel with explicit inputs and settings. Extract scripts or shared functions when reuse or execution needs warrant it; do not rewrite solely because work began in a notebook.
 
 Languages for performant critical code:
 - Use **Rust** for performance-critical code.
@@ -31,8 +30,8 @@ Languages for performant critical code:
   - Scientific computing: `numpy`, `scipy`
   - Machine learning: `scikit-learn`, `xgboost`
   - Deep learning: `pytorch`
-  - Bioinformatics: `biopython`, `scanpy`
   - Visualization: `matplotlib`, `seaborn`, `plotly`
+- Use `dunnlab-bioinformatics` for biological tool and library preferences.
 
 ### R best practices
 - Follow tidyverse style guidelines, using `styler` for formatting and `lintr` for linting.
@@ -58,12 +57,9 @@ Always include idiomatic dependency management. For example, an `environment.yml
 - Use `conda` or `mamba` for managing Python environments. Create an `environment.yml` file to specify dependencies.
   - For complex workflows with multiple stages, consider using separate environment files in an `env/` folder at the project root (e.g., `env/environment_data.yml`, `env/environment_analysis.yml`).
   - This keeps environments organized, allows for more efficient dependency management, and prevents problems resolving complex dependencies.
-  - If using Snakemake with multiple `.smk` files for different stages, each can have its own environment file.
-  - Whether there are one or multiple environment files, the README should document how to set up the environments before explaining how to use the workflow.
+  - Document environment setup before usage in the canonical setup guide; workflow documentation follows `dunnlab-workflow-design`.
 - Use `renv` for R projects to manage package dependencies and ensure reproducibility.
 - For Rust projects, manage dependencies with `Cargo.toml` and use `cargo` for building and testing.
-
-Use bioconda for installing bioinformatics tools when possible.
 
 ## File naming conventions
 
@@ -97,57 +93,6 @@ Parallelize where appropriate.
 
 Avoid premature optimization, but keep performance in mind as you write code. Do not write inefficient code for the sake of "getting something working" — aim for clean, efficient code from the start. Do not make big sacrifices in code quality or readability for small performance gains.
 
-## Computationally intensive code
-
-When writing code that is computationally intensive — long-running analyses, large dataset processing, GPU-accelerated training, or anything that would be impractical to run on a laptop — prepare it to run on HPC infrastructure.
-
-Code should target HPC (not local execution) when any of these apply:
-- Runtime exceeds ~10 minutes on a modern laptop
-- Memory requirements exceed available local RAM
-- GPU acceleration is needed (e.g., deep learning training)
-- The task involves processing many samples or files in parallel
-- The analysis is part of a production pipeline that must be reproducible on shared infrastructure
-
-When writing code destined for HPC, **invoke the `dunnlab-hpc` skill** to get cluster-specific details (partitions, storage paths, module names, resource limits). Include a companion `batch.sh` SLURM submission script alongside each computationally intensive script so it is clear how to run the code and with what resources. See the `dunnlab-hpc` skill for batch script templates and conventions.
-
-## Workflow orchestration
-
-Choose the orchestration tool based on workflow complexity:
-
-### Snakemake for complex workflows
-
-Use **Snakemake** when a workflow involves multiple independent tools, fan-out/fan-in patterns, or complex dependency graphs. Snakemake handles parallelism, cluster submission, and dependency resolution automatically.
-
-- Define each stage as a rule with explicit `input` and `output` files.
-- Use `conda:` directives per rule to isolate tool environments.
-- Store the `Snakefile` at the project root and keep per-rule wrapper scripts in `scripts/` if rule logic exceeds a few lines.
-
-- If the workflow is complex with many distinct steps, dependencies, and parallelization needs, create a `rules/` folder with multiple `.smk` files for different stages. The main Snakefile at the project root can then include these with `include: "rules/step1.smk"`, etc. This keeps the workflow organized and maintainable as it grows.
-
-### Bash or Python orchestrators for simple workflows
-
-For simpler multi-step pipelines that form a linear chain (A → B → C), a plain **bash** or **Python** script is sufficient. Use this when introducing Snakemake would add more complexity than it removes.
-
-- In bash, chain steps with `set -euo pipefail` and check for existing outputs before each step.
-- In Python, use `subprocess.run(..., check=True)` and `pathlib.Path.exists()` checks.
-
-### Checkpointing — skip completed stages
-
-All orchestrators must implement checkpointing: **do not re-run a stage if its output already exists**. This applies to Snakemake (built-in via output file tracking) and to bash/Python scripts (explicit existence checks).
-
-- Each stage should write its output to a well-defined path.
-- Before running a stage, check whether the output file or directory already exists; if so, skip it.
-- To re-run a specific stage, the user deletes that stage's output and re-launches the pipeline — the orchestrator picks up from there.
-- Never use sentinel/lock files or hidden state to track completion; the presence of the output itself is the checkpoint.
-
-### Multi-analysis projects
-
-When a project contains multiple distinct analyses that share raw data but have independent processing pipelines, organize each analysis in its own subdirectory (e.g., `analyses_kmer/`, `analyses_qc/`, `analyses_assembly/`). Each subdirectory gets its own Snakefile (or orchestration script), config file, and output directory. Shared raw data stays in `data/raw/` at the project root or is referenced from an external location.
-
-### Logging tool outputs
-
-Redirect stdout and stderr from external tools to structured log files in `logs/`. Use a consistent naming convention: `logs/{tool}/{sample}.log` or `logs/{stage}.log`. This keeps the working directory clean and makes debugging easier. In Snakemake, use the `log:` directive. In bash scripts, use `> logfile 2>&1` or `&> logfile` redirection. Exclude `logs/` from version control.
-
 ## Testing
 
 ### Standard test frameworks
@@ -160,7 +105,7 @@ Use the idiomatic test framework for each language — do not introduce third-pa
 
 ### Unit tests
 
-- Write unit tests for every nontrivial function. If a function has branching logic, error handling, or non-obvious transformations, it needs tests.
+- Test consequential behavior: branching logic, error handling, joins, and non-obvious transformations that could change a result or break an interface. Match test effort to the task and consequences; do not exhaustively harden disposable exploratory branches. Keep the scientific correctness checks required by `dunnlab-workflow-design` and `dunnlab-lifecycle`.
 - Keep tests focused — one behavior per test, with a clear name describing what is being verified (e.g., `test_parse_fasta_handles_empty_input`).
 - Use fixtures and parameterized tests to avoid duplication.
 
@@ -174,46 +119,22 @@ Use the idiomatic test framework for each language — do not introduce third-pa
 
 ### Integration tests
 
-- Write integration tests that exercise end-to-end workflows (e.g., raw input → processed output).
+- Use a small integration test when an end-to-end path or component interaction needs verification (e.g., raw input → processed output).
 - Place integration tests in a dedicated location:
   - **Python**: `tests/integration/`
   - **R**: `tests/testthat/test-integration-*.R`
   - **Rust**: `tests/` directory (Rust's built-in integration test location)
 - Integration tests may use real data files stored in a `tests/data/` or `tests/fixtures/` directory, but keep them small.
 
-## Default project structure
+## Code and project documentation
 
-Use idiomatic project structures for each language, but generally follow this example pattern for organization:
+Prefer idiomatic source and test structures for the language, preserving established layouts. `dunnlab-new-project` creates the minimum project scaffold; `dunnlab-workflow-design` owns the organization of analyses, inputs, outputs, and execution guides. Do not create directories or documents solely to fill a template.
 
-```
-project-name/
-├── .gitignore
-├── README.md
-├── AGENTS.md         # Project instructions; Codex reads this directly
-├── CLAUDE.md         # One line: @AGENTS.md
-├── dev_docs/
-│   ├── overview.md
-│   └── data-model.md # These are example documents
-├── .claude/
-│   └── rules/        # Claude Code only; path-scoped, loaded on demand
-├── CONTRIBUTING.md
-├── data/
-│   ├── raw/          # Never modify raw data
-│   └── processed/
-├── scripts/
-├── notebooks/
-├── results/
-│   ├── figures/
-│   └── tables/
-├── logs/             # Tool and pipeline stdout/stderr
-└── environment.yml   # or requirements.txt
-```
+For software projects, README.md should include a project overview, setup instructions, usage examples, and a link to the development guide. For scientific analyses, follow `dunnlab-workflow-design` for reader-facing READMEs and canonical reproduction instructions; keep developer checks and construction history in linked developer documentation.
 
-README.md should include a project overview, setup instructions (for environment, dependencies, and the project itself), and usage examples. Also include a Development section covering how to run the tests, plus any relevant notes about data sources or analysis workflows.
+Use `dev_docs/` for focused developer material such as the data model, implementation decisions, and internal verification instructions. Keep it readable by people and loadable as needed by coding agents; link to reader-facing methods and usage rather than duplicating them.
 
-dev_docs/ should include any relevant documentation for the project, such as an overview of the data model, descriptions of analysis workflows, or notes on interpretation of results. It is intended to be both human readable and to be loaded into context by a coding agent when working on relevant parts of the project.
-
-AGENTS.md holds the project instructions: how to build, test, and work on this project, plus any custom skills or commands. **Keep it to 100 lines or less** — the [official guidance](https://code.claude.com/docs/en/memory) targets 200, and we hold to a stricter limit because everything in it is paid for in every session. It must also include links and descriptions to the following files at a minimum so they can be loaded into context as needed:
+AGENTS.md holds the project instructions: how to build, test, and work on this project, plus any custom skills or commands. **Keep it to 100 lines or less** so standing context stays small. Include links and descriptions for the following files when present so they can be loaded as needed:
 - README.md
 - CONTRIBUTING.md
 - Each file in `dev_docs/` (e.g., `overview.md`, `data-model.md`)
@@ -226,39 +147,24 @@ Codex reads [`AGENTS.md`](https://agents.md/) directly. Claude Code reads CLAUDE
 
 Two files maintained in parallel drift, and a reader cannot tell which is current. One file with an import gives both harnesses the same version-controlled instructions.
 
-When project guidance outgrows that limit, move it out rather than lengthening AGENTS.md. Codex discovers `AGENTS.md` files further down the tree, so guidance that applies to one directory can live there — `scripts/AGENTS.md` — and both harnesses will pick it up when working in it.
-
-Claude Code additionally supports `.claude/rules/`, where a `paths:` frontmatter field scopes a rule to matching files so detailed conventions cost nothing until they are relevant. Use it for guidance that is genuinely Claude-specific, such as tool permissions; put anything both harnesses need in a nested AGENTS.md instead:
-
-```markdown
----
-paths:
-  - "scripts/**/*.py"
----
-
-# Analysis scripts
-
-- Every script takes `--input` and `--output`; never hardcode paths.
-- Write intermediates to `data/processed/`, never back into `data/raw/`.
-```
-
-Rules without a `paths:` field load every session, at the same priority as CLAUDE.md.
+When project guidance outgrows that limit, move detailed instructions into linked documents. Use nested instructions or path-scoped rules only where the active harness supports them; keep shared conventions accessible from the canonical project instructions instead of duplicating them for each agent.
 
 CONTRIBUTING.md should include all details needed for formatting, linting, testing, and any other project-specific development practices.
 
 ## Version control best practices
 
-Exclude data and results from version control with `.gitignore`, unless user specifically adds something to track. For example:
+Exclude bulk data, results, and logs from version control by default. Retain small fixtures and the provenance/specification records needed to interpret results; workflow-design defines their role. Respect files the user has chosen to track. For example:
 
 ```
 # Ignore data and results
 data/
 results/
+logs/
 ```
 
 Always include .DS_Store and other common OS artifacts in .gitignore.
 
-Before adding something to version control, check the file size and contents. If it's large or contains sensitive information, warn the user before committing.
+Before staging files, inspect size and contents to avoid including large artifacts or sensitive information unintentionally. Follow the project's commit workflow and the user's requested scope; using this skill does not require a commit.
 
 Use descriptive commit messages that explain *why* a change was made, not just *what* changed. For example:
 - Good: "Refactor data cleaning to handle missing values and edge cases"
@@ -266,20 +172,18 @@ Use descriptive commit messages that explain *why* a change was made, not just *
 
 ### Running formatting and linting before commits
 
-- Always run formatters and linters before committing. Use pre-commit hooks to automate this where possible.
-- For Python, run `ruff format .` and `ruff check --fix .` before committing.
-- For R, run `styler::style_dir()` and `lintr::lint_dir()` before committing.
-- For Rust, run `cargo fmt` and `cargo clippy` before committing.
+- Run relevant formatting and lint checks for changed code before committing. Preserve unrelated changes; do not apply repository-wide formatting fixes merely to make a small edit.
+- For Python, use `ruff format` and `ruff check`; for R, `styler` and `lintr`; for Rust, `cargo fmt` and `cargo clippy`.
+- Use pre-commit hooks or CI checks where the project already supports them, or add them when requested.
 
 ### Running tests before commits
 
-- **Always run the full test suite before committing.** Do not commit code with failing tests.
-- Use pre-commit hooks or CI checks to enforce this. At minimum, run:
-  - `pytest` for Python projects
-  - `testthat::test_local()` for R packages
-  - `cargo test` for Rust projects
+- Run tests relevant to the changed behavior and any checks required by the project. Run the full suite when the change crosses components, the suite is inexpensive, or a release or project policy requires it.
+- Use `pytest`, `testthat::test_local()`, or `cargo test` as appropriate. Fix failures caused by the change and report unrelated failures or checks that could not run; do not imply unrun checks passed.
 
 ### Updating documentation before commits
 
 - Update README.md and dev_docs/ files as needed to reflect changes in functionality, usage, or project structure.
 - If the change introduces new features or modifies existing ones, update the relevant sections in README.md and any relevant dev_docs/ files to keep documentation accurate and up to date.
+
+Work in small coherent increments with verification appropriate to each change. Preserve a concise handoff when pausing or changing sessions: current work, decisions, verification, and next action. Clear context when useful, not after every task by rule.

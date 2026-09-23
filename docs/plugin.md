@@ -24,17 +24,25 @@ Plugin skills are namespaced, so the full name is `/dunnlab-code:dunnlab-default
 
 ## The skills
 
-Each is a single markdown file you can read at `skills/<name>/SKILL.md` in [the repository](https://github.com/caseywdunn/dunnlab_code/tree/main/skills). Reading them is the authoritative answer to "what does this actually do" — this table is a map, not a substitute.
+Each has a markdown entry point, with references for substantial conditional details, at `skills/<name>/SKILL.md` in [the repository](https://github.com/caseywdunn/dunnlab_code/tree/main/skills). Reading them is the authoritative answer to "what does this actually do" — this table is a map, not a substitute.
 
 | Skill | What it settles |
 |-------|-----------------|
-| **`dunnlab-defaults`** | The foundational one. Preferred languages and their best practices, dependency and environment management, file naming, project structure, workflow orchestration, testing, and version control. The others build on it. |
-| **`dunnlab-new-project`** | A staged workflow for starting a project: define scope, initialize the repo and permissions, write planning documents before any code, then build in reviewable increments. Tracks its own progress in `.claude/new-project-progress.yaml`, so it survives `/clear` and resumes in a later session. |
-| **`dunnlab-bioinformatics`** | Sequence analysis conventions: input validation, gene name sanitization, globally unique cross-species gene IDs, paralog resolution, contamination screening, and a default tool for each job. Builds on `dunnlab-defaults`. |
+| **`dunnlab-defaults`** | Preferred languages, coding style, dependency management, focused tests, and version-control conventions. |
+| **`dunnlab-workflow-design`** | Computational structure from the first exploratory runs: readable commands, explicit dependencies, shared implementation, provenance, valid output reuse, and reproduction instructions. |
+| **`dunnlab-bioinformatics`** | Biological methods and tool recipes: identifiers, format checks, sequence orientation, annotation, paralog resolution, and quality assessment. |
+| **`dunnlab-lifecycle`** | Planning, exploration, distillation, and validation of scientific analyses. Tracks decisions and readiness for the selected scope; distillation selects and verifies reusable work. |
+| **`dunnlab-new-project`** | Repository, environment, and documentation scaffolding, then a handoff. Resumable setup can use `.agent/new-project-progress.yaml`; ongoing scientific work belongs to lifecycle. |
 | **`dunnlab-hpc`** | YCRC cluster reference — partitions, storage quotas, SLURM batch templates, GPU inventory, Snakemake integration. Yale-specific; see [Computing at Yale](yale.md). |
 | **`dunnlab-devcontainer`** | Scaffolds an isolated container to work in: a standard configuration built on the official Claude Code dev container feature, or a hardened one that adds a default-deny egress firewall. |
-| **`dunnlab-codereview`** | The review checklist and process, including how to give feedback that distinguishes blocking issues from nits. |
+| **`dunnlab-codereview`** | Review and verification using the relevant skill's standards, with feedback that distinguishes blocking issues from suggestions. |
 | **`dunnlab-biblio`** | BibTeX conventions for manuscripts: entry keys, full author lists, title capitalization, and a strict rule against ever guessing a bibliographic field. |
+
+Workflow design applies across lifecycle phases. Exploration uses the same reusable
+computation with provisional configurations and lightweight evidence. Distillation
+selects the analysis set, preserves its history, and completes the verification and
+documentation needed for reporting. Bioinformatics adds biological choices to this
+shared foundation; it does not prescribe a separate workflow architecture.
 
 Skills are loaded on demand, so the body of one costs you nothing until it is used. What is always in context is the one-line description of each, which is how Claude decides whether a skill applies — see [Managing Context](managing-context.md#skills) for the budget that governs this.
 

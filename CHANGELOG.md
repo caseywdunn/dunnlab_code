@@ -6,6 +6,34 @@ release process in [`dev_docs/contributing.md`](dev_docs/contributing.md#releasi
 Lab members pick up a new version with `/plugin update dunnlab-code@dunnlab`;
 auto-update is off by default for third-party marketplaces.
 
+## 0.5.0 (unreleased)
+
+### Added
+
+- `dunnlab-workflow-design` owns computational design from exploration onward,
+  with references for Snakemake organization, execution provenance, and reader
+  documentation.
+
+### Changed
+
+- Bioinformatics owns biological methods and tool recipes; defaults owns code
+  conventions; new-project ends at scaffolding and handoff.
+- Lifecycle tracks scientific decisions and scoped readiness. Distillation selects
+  reusable analyses, preserves exploratory history, and closes evidence gaps.
+- Removed conflicting existence-only output reuse, mandatory notebook conversion,
+  per-task context resets, and destructive environment verification guidance.
+- Review and HPC guidance use the shared workflow standards; documentation explains
+  the skill boundaries and updated implementation handoff.
+- Corrected MAFFT L-INS-i syntax and TransDecoder ORF/isoform guidance while
+  retaining the preferred biological tools and settings.
+
+### Fixed
+
+- Repository checks run on macOS Bash 3.2, enumerate actual skill entry points,
+  and exclude local permission history from public-document regression checks.
+- Pin the documentation build to GitHub Pages 232 so stale local lockfiles
+  cannot select Liquid 4.0.3, which fails with the preview's Ruby 3.3 runtime.
+
 ## 0.4.1
 
 ### Fixed

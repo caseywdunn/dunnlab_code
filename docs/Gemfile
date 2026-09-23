@@ -3,7 +3,8 @@ source "https://rubygems.org"
 # Matches the gem set GitHub Pages builds with, so local preview and the
 # deployed site agree. Includes jekyll-remote-theme, which _config.yml needs
 # for the just-the-docs theme.
-gem "github-pages", group: :jekyll_plugins
+# https://pages.github.com/versions/ — 232 includes Liquid 4.0.4 for Ruby 3.3.
+gem "github-pages", "232", group: :jekyll_plugins
 
 # Not pulled in by github-pages on Ruby 3.x.
 gem "webrick", "~> 1.8"

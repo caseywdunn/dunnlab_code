@@ -30,13 +30,17 @@ Launch either agent in the new directory:
 claude  # or: codex
 ```
 
-With the DunnLab Claude Code plugin, run:
+With the DunnLab Claude Code plugin, invoke the scaffolding skill:
 
 ```
 /dunnlab-new-project
 ```
 
-With Codex, or with Claude Code without the plugin, ask for the same outcome directly:
+Then provide the scope below. It explicitly requests a devcontainer and a review
+before implementation; these are choices for this example, not automatic effects
+of invoking the skill. Use `dunnlab-lifecycle` for the scientific planning alongside
+the scaffold. With Codex, or Claude Code without the plugin, provide the same scope
+directly:
 
 > Help me plan and scaffold this research project. Define the scientific question, inputs, outputs, tests, and verification gates with me. Create `README.md`, `.gitignore`, `AGENTS.md`, a one-line `CLAUDE.md` importing it, `dev_docs/overview.md`, and an appropriate `.devcontainer/`. Do not implement the analysis until I have reviewed and committed the plan.
 
@@ -98,13 +102,20 @@ Both support long stretches of routine work while retaining review or sandbox co
 
 ### 6. Have the agent implement the project
 
-With the planning documents already in place, ask the agent to implement `dev_docs/overview.md`, stopping at each gate and committing each verified step. With the DunnLab Claude Code plugin, you can run the project skill again:
+With the planning documents already in place, ask the agent to implement
+`dev_docs/overview.md`, evaluate its verification gates, and commit verified
+milestones. For a scientific analysis with the DunnLab Claude Code plugin, use:
 
 ```
-/dunnlab-new-project
+/dunnlab-lifecycle
 ```
 
-The skill checks which steps have already been completed and moves into implementation. Codex can do the same directly from the committed plan.
+Lifecycle selects the current scientific work; `dunnlab-workflow-design` guides
+its computational structure from exploration onward, and `dunnlab-bioinformatics`
+adds domain methods when relevant. For a software tool or package, ask for
+implementation directly using `dunnlab-defaults`. Invoke `dunnlab-new-project`
+again only if setup remains unfinished. Either agent can follow the same committed
+plan and evaluate routine gates without pausing for a new approval at each one.
 
 The agent should:
 

@@ -83,8 +83,9 @@ fi
 # The README and the architecture doc both enumerate skills. They drift.
 for doc in README.md dev_docs/plugin-architecture.md; do
   missing=""
-  for d in skills/*/; do
-    s=$(basename "$d")
+  for entry in skills/*/SKILL.md; do
+    [[ -f "$entry" ]] || continue
+    s=$(basename "$(dirname "$entry")")
     grep -q "$s" "$doc" || missing="$missing $s"
   done
   if [[ -z "$missing" ]]; then ok "$doc lists every skill"; else bad "$doc missing:$missing"; fi
@@ -95,24 +96,28 @@ head_ "Known-bad strings"
 
 # Each of these was a real error fixed in the 0.3.0 docs pass. They are cheap
 # to reintroduce by copy-paste, so they are asserted against here.
-declare -A FORBIDDEN=(
-  ["docs.anthropic.com"]="moved to code.claude.com (301)"
-  ["claude plugin add"]="not a real subcommand"
-  ["claude login"]="it is 'claude auth login'"
-  ["example-skill"]="skill does not exist"
-  ["dunnlab-review"]="skill is named dunnlab-codereview"
-  ["data-analysis.md"]="page does not exist"
+# Keep this compatible with the Bash 3.2 shipped with macOS.
+FORBIDDEN=(
+  "docs.anthropic.com|moved to code.claude.com (301)"
+  "claude plugin add|not a real subcommand"
+  "claude login|it is 'claude auth login'"
+  "example-skill|skill does not exist"
+  "dunnlab-review|skill is named dunnlab-codereview"
+  "data-analysis.md|page does not exist"
 )
 # A line that mentions one of these on purpose — documentation explaining
 # what the old mistake was — opts out with a `check-ignore` marker.
-for s in "${!FORBIDDEN[@]}"; do
+for entry in "${FORBIDDEN[@]}"; do
+  s=${entry%%|*}
+  reason=${entry#*|}
   hits=$(grep -rn --fixed-strings "$s" \
         --include='*.md' --include='*.json' --include='*.sh' \
         --exclude-dir=.git --exclude-dir=workshops \
-        --exclude='check.sh' --exclude='CHANGELOG.md' . 2>/dev/null \
+        --exclude='check.sh' --exclude='CHANGELOG.md' \
+        --exclude='settings.local.json' . 2>/dev/null \
         | grep -v 'check-ignore' || true)
-  if [[ -z "$hits" ]]; then ok "no '$s' (${FORBIDDEN[$s]})"
-  else bad "found '$s' — ${FORBIDDEN[$s]}"; echo "$hits" | sed 's/^/      /'; fi
+  if [[ -z "$hits" ]]; then ok "no '$s' ($reason)"
+  else bad "found '$s' — $reason"; echo "$hits" | sed 's/^/      /'; fi
 done
 
 # Bouchet purges scratch at 30 days; McCleary and Misha at 60. A bare "60 day"

@@ -50,7 +50,7 @@ Do not store large data files or analysis results in git repositories. Git is de
 The Python ecosystem we use includes:
 
 - **[conda](https://docs.conda.io/)** or **[mamba](https://mamba.readthedocs.io/)** for environment management
-- **[Jupyter](https://jupyter.org/) notebooks** for exploratory work, refactored into scripts once something is worth keeping
+- **[Jupyter](https://jupyter.org/) notebooks** for exploratory work; retain cleanly executable notebooks or extract shared functions and scripts when reuse or execution needs warrant it
 - **[ruff](https://docs.astral.sh/ruff/)** for formatting and linting — it replaces the older black and flake8 combination
 - **[Quarto](https://quarto.org/)** for executable manuscripts
 

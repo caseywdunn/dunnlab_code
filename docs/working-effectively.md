@@ -63,7 +63,7 @@ And it does more besides:
 
 Revise it as you learn — a plan is a working document, not a contract. What matters is that changing direction becomes an explicit edit rather than something that happens by accident across three sessions.
 
-This is a different thing from the standing instructions in [Managing Context](managing-context.md). `AGENTS.md` says how work is done here, always. A plan document says what we are doing now, and gets archived when it is done. The `dunnlab-new-project` skill builds the pattern in: it writes `dev_docs/overview.md` before any code exists, and reviewing that document is a step in the workflow rather than an afterthought.
+This is a different thing from the standing instructions in [Managing Context](managing-context.md). `AGENTS.md` says how work is done here, always. A plan document says what we are doing now, and gets archived when it is done. The `dunnlab-new-project` skill can create `dev_docs/overview.md` during setup; `dunnlab-lifecycle` develops the scientific plan in that same document. Request a review before implementation when you want that decision point. An already actionable, authorized plan does not require another approval merely because a skill is invoked.
 
 <a id="set-gates-you-can-check"></a>
 ## Set gates the agent can check
@@ -101,7 +101,7 @@ Once you are building:
 
 **Commit after each verified step**, and let the agent write the message. It will document the reasoning behind the change, which you would probably not have bothered to do.
 
-**Then start fresh before the next task.** In Claude Code, `/clear` resets the conversation; in either harness, a new session avoids carrying three tasks' worth of dead ends into the next one.
+**Start fresh when the context stops helping.** Preserve a concise handoff before changing sessions. In Claude Code, `/clear` resets the conversation; in either harness, a new session can avoid carrying unrelated dead ends forward. A reset is useful when the question changes or context becomes cluttered, rather than a requirement after every task.
 
 **Know how to undo.** Git commits are the durable, cross-agent recovery mechanism. Claude Code also offers `/rewind`; other harness-local recovery features differ.
 

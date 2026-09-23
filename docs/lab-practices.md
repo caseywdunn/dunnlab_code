@@ -17,15 +17,17 @@ A few are more consequential than a style preference, and they are the ones most
 
 **Python by default, R when a library requires it.** We prefer industry-standard tools over domain-specific ones, as [Getting Started](getting-started.md#languages) argues. R remains the right answer when the analysis needs a package that only exists there, when it is what you know and it works, or when a collaboration has already chosen it.
 
-**Raw data is immutable, enforced structurally.** `data/raw/` is never written to. Every transformation produces a new file under `data/processed/` from a script that can be re-run. This is a general principle — [Using AI in Research](using-ai.md#working-with-data) makes the case — but the bioinformatics skill turns it into specific checks.
+**Raw data is immutable, enforced structurally.** Preserve acquired inputs unchanged, commonly under `data/raw/`, and write derivatives separately using rerunnable transformations. This is a general principle — [Using AI in Research](using-ai.md#working-with-data) makes the case — owned by workflow design. Bioinformatics adds biological checks and identifier conventions.
 
-**Cross-species gene IDs are namespaced as `Genus_species@gene_id`.** The `@` separator is chosen because it does not appear in standard gene IDs and is not a shell metacharacter. Every renaming keeps a mapping file, so the transformation is always reversible. Merging datasets without this is a class of silent error that surfaces months later in a tree.
+**Cross-species gene IDs are namespaced as `Genus_species@gene_id`.** Reserve `@` as the separator and check source identifiers for conflicts. Every renaming keeps a mapping file and is checked for collisions. Merging datasets with ambiguous identities is a class of silent error that can surface months later in a tree.
 
 **Never abbreviate an author list, and never guess a bibliographic field.** A missing DOI gets a `% TODO` comment, not a plausible-looking value. This sounds pedantic until an AI assistant fills one in for you.
 
-**CLAUDE.md stays under 100 lines.** The [official guidance](https://code.claude.com/docs/en/memory) targets 200; we hold to half that, because everything in a CLAUDE.md is paid for in every session. When project guidance outgrows it, the answer is a path-scoped rule in `.claude/rules/`, not a longer CLAUDE.md — see [Managing Context](managing-context.md#rules).
+**Shared project instructions stay under 100 lines.** Keep the canonical instructions in `AGENTS.md`, with `CLAUDE.md` importing it. Put details in linked documents or supported directory-scoped instructions so standing context remains small — see [Managing Context](managing-context.md#rules).
 
-**Checkpointing is by output existence, not sentinel files.** A pipeline stage is skipped if its output already exists. To re-run a stage you delete its output. There is no hidden state tracking what has completed.
+**Reuse depends on execution evidence.** An existing output is reusable when a completed run matches the required inputs, relevant code, environment, and settings, and the artifact still verifies. Use the workflow engine's dependency tracking and logs, adding records only for missing evidence. File existence alone cannot distinguish a valid result from an interrupted or obsolete run. Preserve baselines and use the orchestrator's rerun controls for affected stages.
+
+**Exploration and reporting share computation.** Apply workflow design from the first consequential experiment. Distillation selects configurations and outputs, prunes the maintained scope, and closes verification gaps while preserving scientific history. Retained code should need a specific reason to be rewritten.
 
 ## Data management
 
