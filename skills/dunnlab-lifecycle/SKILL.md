@@ -25,6 +25,11 @@ Avoid both premature hardening of uncertain branches and throwaway work that mus
 
 **Distillation retains verified work and closes the gaps against a spec.** Minimize rewriting and duplicate implementations; see [references/distillation.md](references/distillation.md).
 
+Repository READMEs address readers of the scientific work, not its developers.
+Describe current analyses and reproduction; keep development history, internal
+regression instructions and launch-review notes in `dev_docs/`. Follow the
+[distillation documentation guidance](references/distillation.md#document-for-readers-not-developers).
+
 ## Scope of invocation
 
 For reviews, explanations, naming advice, or phase assessments, read and report without creating state, moving files, running analyses, or committing changes. Execute the lifecycle only to the extent authorized by the user's task. Existing authorization persists across phases; this skill does not require asking again for work already requested.

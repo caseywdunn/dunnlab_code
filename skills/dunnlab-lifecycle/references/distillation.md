@@ -18,6 +18,56 @@ Begin the durable build discipline here: close gaps in small coherent steps, ver
 
 Plan for a clean recomputation, or reuse an already documented clean run if it covers the final workflow exactly. If cost or an unavailable dependency prevents required execution, prepare a concrete alternative with its evidence limits. Ask only for a tradeoff or resources not already authorized. Do not label a partial or cached run as a successful clean run.
 
+## Document for readers, not developers
+
+Write root and analysis READMEs for readers of the paper or report who want to
+understand and reproduce the analyses. Describe the repository as it is: its
+scientific scope, methods, inputs, outputs, software requirements and usable
+entry points. Do not narrate construction with phrases such as "the new
+reanalysis," "what changed," "now migrated," or "no revised workflow has been
+launched." Development history, implementation decisions, progress, review gates,
+failed attempts and intermediate-input regression instructions belong in
+`dev_docs/` or dedicated provenance records, not public usage instructions.
+
+Keep the root README a concise overview linking to the analysis guide and report.
+Give each set of execution instructions one canonical home, commonly a workflow
+README; link to it from the root and domain READMEs instead of copying commands
+and analysis grids between them. Domain guides explain methods, inputs, products
+and requirements. Show explicit, copyable execution commands **and** dry-run
+commands that display what would run; do not make users derive execution commands
+by removing flags. State the working directory and required environment. Identify
+the scope of each entry point precisely: a domain-specific `Snakefile` is not a
+repository-wide workflow. Define institution-specific services or cluster names
+and link their official documentation; preserve separate links to local launchers.
+
+Keep limitations relevant to reproduction visible without turning READMEs into
+developer status logs. Distinguish workflow definitions from verified completed
+results and link the selected evidence; do not imply completion or publication
+merely by calling an analysis "published." Preserve detailed run histories and
+failed checks in their records, rather than deleting provenance to simplify prose.
+
+Make the output boundary explicit. In a `workflows/<domain>/` layout,
+`results/<domain>/` contains products of those workflows, not a mixture with
+exploratory outputs. Keep exploratory scripts, settings, inputs, intermediates,
+outputs and run records together under `exploratory/<domain>/` (or the established
+equivalent). A short closing archive link in the root README is sufficient.
+Inspect actual contents before claiming this boundary holds; preserve evidence
+paths when organizing files, and do not move data merely to make prose true.
+The maintained analysis report can remain outside the exploratory archive while
+its selected results are updated after workflow completion and validation.
+
+Present one normal source-to-result route per analysis. Retrieval should reuse
+valid local inputs and download missing inputs under the same command, verifying
+their pinned identity. Optional external caches are optimizations, not a required
+"local files versus downloads" choice. Handle interrupted downloads safely and
+never silently accept mismatched bytes. Frozen-intermediate regression checks
+test implementation equivalence; document them for developers rather than listing
+them as an alternative public reproduction route.
+
+When revising documentation, search the root and domain guides for repeated
+commands, stale development narratives and broken cross-references. Update related
+guides consistently while leaving immutable run records intact.
+
 ## Keep analysis commands in the rules
 
 Treat the workflow rules as the reader's view of the scientific computation. Keep external executables and their meaningful options visible in `shell:` blocks. Resolve simple values from configuration in `params:`; do not move the entire command into a Python function or opaque option bundle. Declare consumed artifacts in `input:` and produced artifacts in `output:` so the data flow is visible without tracing wrapper code.
@@ -106,6 +156,7 @@ If an LLM capability is part of the scientific method, document it as an explici
 
 ## Gate: the specified analysis runs
 
+- [ ] Public documentation describes the current analyses, clearly separates workflow and exploratory products, and links to one canonical set of explicit execution and dry-run commands. Development notes and regression instructions are separate; reproduction limits remain visible.
 - [ ] A reader can identify the analysis executables, meaningful options, inputs, outputs, and dependencies directly in the rules. Necessary validation is separate and proportionate; straightforward external calls are not buried in wrappers.
 - [ ] The workflow runs from preserved original inputs through all specified computational outputs in a clean workspace and reconstructed environment.
 - [ ] Manual, external-service, and model dependencies are explicit, with recoverable inputs and verification evidence; model access is disabled successfully where no LLM dependency is declared.
