@@ -68,12 +68,18 @@ limits are valid outcomes. Write `dev_docs/analysis-spec.md` or its equivalent w
 
 - **Inputs and derivations:** roles and scientifically consequential differences.
 - **Selected analyses:** stable identities, entry points, resolved parameters,
-  expected outputs, stochastic settings, components to retain, and remaining gaps.
+  selected samples/features and exclusions, expected outputs, stochastic settings,
+  components to retain, and remaining gaps.
 - **Claims and deliverables:** the analyses supporting each claim, figure, table,
-  or other result, including controls, diagnostics, and sensitivity analyses.
+  or other result, including its scope, controls, diagnostics, and sensitivity
+  analyses. Carry forward the applicable design safeguards from the plan and
+  record consequential changes learned during exploration.
 - **Validation criteria:** preserved baselines or alternative correctness evidence,
   relevant sensitivity results, comparison metrics, and justified tolerances.
   Establish criteria before examining validation differences.
+
+Include applicable publication or release handoff criteria when that is the
+deliverable; keep them with the existing spec rather than creating another plan.
 
 Check both directions: every result has support and every selected analysis serves
 a result or explicit checking need. Carry the working implementation and evidence

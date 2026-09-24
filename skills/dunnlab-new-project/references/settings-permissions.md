@@ -1,6 +1,6 @@
 # Claude Code Permissions for New Projects
 
-Use these permission rules when generating `.claude/settings.json`. The goal is to let Claude work fluidly for reading and running code while requiring confirmation for anything that modifies files, installs packages, or touches git history.
+Use these permission rules when the user requests Claude Code permission setup. They allow common inspection and verification commands, use `acceptEdits` for ordinary file edits, and block the listed sensitive paths and commands. Unlisted operations follow the active permission mode, as described below.
 
 ## JSON format
 

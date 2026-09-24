@@ -64,7 +64,7 @@ run() {
   if [[ "$out" == *"$expect"* ]]; then ok "$label" "$out"; else bad "$label" "got: $out"; fi
 }
 run "Claude Code installed" "Claude Code" claude --version
-run "Node.js is v20"        "v20"         node --version
+run "Node.js is v22"        "v22"         node --version
 run "Git delta installed"   "delta"       delta --version
 run "Conda installed"       "conda"       conda --version
 run "Python available"      "Python"      python --version

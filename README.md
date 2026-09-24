@@ -88,12 +88,12 @@ If you are loading a local copy with `--plugin-dir`, just `git pull`. Changes ar
 - **dunnlab-defaults** — Language, code style, dependency management, testing, and version-control conventions.
 - **dunnlab-workflow-design** — Computational workflow design from exploration onward: readable data flow, shared implementation, execution provenance, valid reuse, and reproduction instructions.
 - **dunnlab-bioinformatics** — Biological methods, preferred tools and usage details, sequence identifiers, and domain-specific checks.
-- **dunnlab-lifecycle** — Scientific planning, exploration, selection of reported analyses, and evidence-based readiness; distillation retains the working implementation and closes evidence gaps.
+- **dunnlab-lifecycle** — Scientific planning, exploration, selection, validation, and publication handoff; distillation retains the working implementation and closes evidence gaps.
 - **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
-- **dunnlab-devcontainer** — Add a `.devcontainer/` configuration for reproducible, isolated Claude Code environments.
+- **dunnlab-devcontainer** — Add an isolated Claude Code development container; workflow design handles preservation of the scientific runtime.
 - **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
-- **dunnlab-biblio** — BibTeX conventions for manuscripts: entry keys, author lists, title capitalization.
+- **dunnlab-biblio** — Verified manuscript, data, and software citations, claim support, and BibTeX conventions.
 
 ### Commands
 

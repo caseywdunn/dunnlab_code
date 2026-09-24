@@ -11,6 +11,12 @@ description: >
 
 The Dunn Lab runs computationally intensive analyses on Yale Center for Research Computing (YCRC) clusters. Full documentation: <https://docs.ycrc.yale.edu/>
 
+This skill owns Yale platform details and scheduler configuration. Use
+`dunnlab-workflow-design` for the computational path and execution evidence,
+`dunnlab-defaults` for dependency conventions, and domain skills for tool choices.
+Verify current cluster access, limits, and migration notices before scheduling or
+moving data; the reference below is not a live inventory.
+
 **Bouchet is the lab's primary cluster.** McCleary is retained only for YCGA raw sequence data work.
 
 ## Cluster overview
@@ -18,10 +24,10 @@ The Dunn Lab runs computationally intensive analyses on Yale Center for Research
 | Cluster | Focus | Status | SSH | OOD Portal |
 |---------|-------|--------|-----|------------|
 | **Bouchet** | General HPC (successor to Grace & McCleary) | Active — primary cluster | `bouchet.ycrc.yale.edu` | `ood-bouchet.ycrc.yale.edu` |
-| **McCleary** | YCGA sequencing & CryoEM | **YCGA-only** — non-YCGA work has moved to Bouchet | `mccleary.ycrc.yale.edu` | `ood-mccleary.ycrc.yale.edu` |
+| **McCleary** | YCGA sequencing & CryoEM | Transitioning toward YCGA-only; follow the phased migration below | `mccleary.ycrc.yale.edu` | `ood-mccleary.ycrc.yale.edu` |
 | **Misha** | Wu Tsai Institute (neuroscience & data science) | Active | `misha.ycrc.yale.edu` | `ood-misha.ycrc.yale.edu` |
 | **Hopper** | Regulated/sensitive data (incl. NIH Controlled Access) | Active | — | — |
-| **Grace** | Former general HPC | **Retired** — decommissioned in the 2026 migration | — | — |
+| **Grace** | Legacy general HPC | Decommissioning; shutdown planned in Phase 3 | — | — |
 
 Request accounts at <https://research.computing.yale.edu/account-request>. New McCleary accounts are only approved for groups using YCGA resources, CryoEM resources, or dedicated nodes.
 
@@ -119,7 +125,7 @@ Docs: <https://docs.ycrc.yale.edu/clusters/mccleary/> · Decommission plan: <htt
 
 **McCleary is winding down to a YCGA-only cluster.** The lab retains access for YCGA raw sequence data work; run everything else on Bouchet.
 
-Migration status:
+Migration status, checked against the linked YCRC plan on 2026-09-24:
 
 - **Phase 1 (complete)** — groups without dedicated nodes, CryoEM, or YCGA affiliation lost Grace/McCleary access on **June 1, 2026**.
 - **Phase 2 (late 2026 / early 2027)** — non-YCGA workloads and data belonging to YCGA-affiliated groups move to Bouchet. Anything you want to keep off McCleary must be transferred by then.

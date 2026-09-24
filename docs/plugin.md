@@ -31,12 +31,12 @@ Each has a markdown entry point, with references for substantial conditional det
 | **`dunnlab-defaults`** | Preferred languages, coding style, dependency management, focused tests, and version-control conventions. |
 | **`dunnlab-workflow-design`** | Computational structure from the first exploratory runs: readable commands, explicit dependencies, shared implementation, provenance, valid output reuse, and reproduction instructions. |
 | **`dunnlab-bioinformatics`** | Biological methods and tool recipes: identifiers, format checks, sequence orientation, annotation, paralog resolution, and quality assessment. |
-| **`dunnlab-lifecycle`** | Planning, exploration, distillation, and validation of scientific analyses. Tracks decisions and readiness for the selected scope; distillation selects and verifies reusable work. |
+| **`dunnlab-lifecycle`** | Planning, exploration, distillation, and validation of scientific analyses. Tracks decisions and readiness for the selected scope, with publication handoff guidance when needed. |
 | **`dunnlab-new-project`** | Repository, environment, and documentation scaffolding, then a handoff. Resumable setup can use `.agent/new-project-progress.yaml`; ongoing scientific work belongs to lifecycle. |
 | **`dunnlab-hpc`** | YCRC cluster reference — partitions, storage quotas, SLURM batch templates, GPU inventory, Snakemake integration. Yale-specific; see [Computing at Yale](yale.md). |
 | **`dunnlab-devcontainer`** | Scaffolds an isolated container to work in: a standard configuration built on the official Claude Code dev container feature, or a hardened one that adds a default-deny egress firewall. |
 | **`dunnlab-codereview`** | Review and verification using the relevant skill's standards, with feedback that distinguishes blocking issues from suggestions. |
-| **`dunnlab-biblio`** | BibTeX conventions for manuscripts: entry keys, full author lists, title capitalization, and a strict rule against ever guessing a bibliographic field. |
+| **`dunnlab-biblio`** | Verified manuscript, data, and software citations, claim support, and BibTeX conventions; never invents missing metadata. |
 
 Workflow design applies across lifecycle phases. Exploration uses the same reusable
 computation with provisional configurations and lightweight evidence. Distillation

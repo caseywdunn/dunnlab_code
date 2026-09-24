@@ -3,7 +3,7 @@ name: dunnlab-lifecycle
 description: >
   Plan, explore, distill, and validate scientific analyses, preserving the
   decisions and evidence behind reported results. Use when organizing research,
-  selecting analyses for a deliverable, or assessing scientific readiness.
+  selecting analyses for a deliverable, or assessing scientific readiness and handoff.
   Workflow architecture belongs to dunnlab-workflow-design.
 ---
 
@@ -51,6 +51,11 @@ specific dependency. The shared workflow design applies in every phase.
 - [Distillation](references/distillation.md)
 - [Validation](references/validation.md)
 
+For a manuscript or public code/data release handoff, also read
+[Publication and release handoff](references/publication.md). Apply its relevant
+criteria within the intended deliverable; it adds no lifecycle phase or required
+document set.
+
 ## Resume from evidence
 
 Read `dev_docs/lifecycle.yaml` when resuming and verify that its evidence still
@@ -91,6 +96,10 @@ records instead of copying them. Uncommitted code needs a preserved snapshot;
 a commit ID alone does not identify those edits.
 One assessment can cover Distillation and Validation for a small analysis when
 it identifies the evidence for each; separate files are not required by phase.
+Keep the assessment proportional: for a small analysis, a few sentences stating
+scope, discrepancies and their resolution, decision, limits, and evidence links
+can suffice. Keep detailed check results in one place; do not repeat a run record
+as narrative in the assessment and README.
 
 A pass records `gate_status: passed` and the evidence. Continue already authorized
 work; record the next phase as open when entering it. Failed or unavailable

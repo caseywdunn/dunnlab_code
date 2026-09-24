@@ -15,7 +15,7 @@ Apply these coding preferences within the requested task and established project
 Languages for data analysis and scripting:
 - **Python** for data analysis and scripting (prefer Python 3.10+)
 - Fall back to **R** when analyses require specific R libraries such as Seurat (use tidyverse conventions)
-- Use **conda** or **mamba** for environment management
+- Prefer **conda** or **mamba** when choosing Python environment management; preserve an established project mechanism.
 - Use **Jupyter notebooks** for exploratory work and **Quarto** for manuscripts. A retained notebook is acceptable when it runs from a clean kernel with explicit inputs and settings. Extract scripts or shared functions when reuse or execution needs warrant it; do not rewrite solely because work began in a notebook.
 
 Languages for performant critical code:
@@ -23,8 +23,8 @@ Languages for performant critical code:
 
 ### Python best practices
 - Follow PEP 8 style guidelines, using [`ruff`](https://docs.astral.sh/ruff/) for both formatting (`ruff format`) and linting (`ruff check`). Ruff replaces the older `black` + `flake8` + `isort` combination; configure it in `pyproject.toml`.
-- Use type hints and `mypy` for static type checking. Ruff does not type check.
-- Use `pydantic` for data validation and settings management.
+- Use type hints for maintained functions and interfaces; use `mypy` when static type checking helps protect them. Ruff does not type check.
+- Prefer `pydantic` when structured data or settings need schema validation. Do not add it or a type-checking setup solely for a small exploratory script or notebook.
 - Prefer the following libraries for common tasks:
   - Data manipulation: `pandas`
   - Scientific computing: `numpy`, `scipy`
@@ -52,9 +52,9 @@ Languages for performant critical code:
 
 ## Dependencies and environment management
 
-Always include idiomatic dependency management. For example, an `environment.yml` (for Python) or `renv.lock` (for R) to specify dependencies. For Rust, ensure `Cargo.toml` is up to date.
+Keep dependencies and runtime requirements reconstructable using the project's established mechanism. When choosing one, use the language preferences below. A standard-library-only analysis can record the actual runtime version and reconstruction command without a separate environment file; follow `dunnlab-workflow-design` for execution records.
 
-- Use `conda` or `mamba` for managing Python environments. Create an `environment.yml` file to specify dependencies.
+- Prefer `conda` or `mamba` with an `environment.yml` when choosing Python dependency management.
   - For complex workflows with multiple stages, consider using separate environment files in an `env/` folder at the project root (e.g., `env/environment_data.yml`, `env/environment_analysis.yml`).
   - This keeps environments organized, allows for more efficient dependency management, and prevents problems resolving complex dependencies.
   - Document environment setup before usage in the canonical setup guide; workflow documentation follows `dunnlab-workflow-design`.

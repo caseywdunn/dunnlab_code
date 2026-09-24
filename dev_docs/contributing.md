@@ -196,7 +196,7 @@ problem than a version number that means two different things.
 
 ## Pull request process
 
-1. Create a branch from `main`
+1. Create a feature branch from up-to-date `dev`
 2. Make changes and test locally
-3. Open a PR with a description of what changed and why
-4. After the merge, check the repo's Actions tab — the `pages-build-deployment` run tells you whether the site built
+3. Open a PR into `dev` with a description of what changed, why, and how it was verified
+4. Check the PR's structural and docs-build checks; the published Pages site updates when `dev` is released to `main`

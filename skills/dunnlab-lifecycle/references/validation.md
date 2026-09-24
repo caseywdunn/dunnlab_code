@@ -52,8 +52,10 @@ keeps the criterion open rather than waiving it.
 
 Check whether existing sensitivity analyses and controls address the claims'
 plausible failure modes, consequential choices, input dependencies, and relevant
-interactions. Assess instability, null findings, exclusions, and uncertainty, and
-verify that limitations are reported. Judge coverage in proportion to the claims;
+interactions. Verify that the spec's applicable design safeguards were actually
+applied and support the stated scope of inference. Assess instability, null
+findings, exclusions, and uncertainty, and verify that limitations are reported.
+Judge coverage in proportion to the claims;
 an inapplicable class of sensitivity analysis needs a rationale, not an automatic
 extra run. Missing investigations require an explicit scientific scope decision.
 
@@ -83,10 +85,16 @@ verified output or documented interpretation:
   where they affect interpretation.
 
 Reuse the spec's claim-to-output mapping where sufficient. Literature claims need
-citations, not entries in the project's output manifest. Confirm that readers can
+verified supporting citations, not entries in the project's output manifest;
+use `dunnlab-biblio` for citation handling. Confirm that readers can
 understand the analysis and its reproduction route using the workflow design
 guidance. Apply relevant `dunnlab-codereview` checks, reusing valid engineering
 evidence; review alone does not replace comparison or execution.
+
+For a manuscript or public code/data release handoff, apply the relevant
+[publication and release checks](publication.md). Keep the assessed scope explicit:
+scientific readiness, a prepared handoff, and a completed public deposit or
+submission are distinct statuses.
 
 ## Gate: ready for the intended deliverable
 
@@ -100,8 +108,11 @@ evidence; review alone does not replace comparison or execution.
   methods, uncertainty, and scientific choices.
 - [ ] Relevant code review is complete and reader documentation explains reproduction
   and access to preserved exploratory evidence.
+- [ ] Applicable handoff criteria for the intended deliverable are met; pending
+  deposits, submissions, or other external actions are identified accurately.
 
 Record executed checks, reused evidence, and scientific judgments. Unresolved
 required checks keep the gate open. When the assessed scope passes, record
-Validation as passed; publication, submission, or removal of exploratory evidence
-still requires authorization for that action.
+Validation as passed. Publication, submission, or removal of exploratory evidence
+requires authorization for that action. Do not infer it from a passed gate or
+request it again when the task already provides it.

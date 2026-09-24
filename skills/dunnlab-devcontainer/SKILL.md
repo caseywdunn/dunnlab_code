@@ -1,7 +1,7 @@
 ---
 name: dunnlab-devcontainer
 description: >
-  Add a .devcontainer configuration to a project for isolated, reproducible
+  Add a .devcontainer configuration to a project for isolated
   Claude Code development environments. Offers a standard setup using the
   official Claude Code dev container feature, and a hardened variant with an
   egress firewall. Use when setting up devcontainers, Docker-based dev
@@ -10,16 +10,18 @@ description: >
 
 # Devcontainer Setup
 
-Add a `.devcontainer/` directory to the current project so Claude Code runs in an isolated, reproducible environment. Based on the [official devcontainer guide](https://code.claude.com/docs/en/devcontainer).
+Add or adapt a `.devcontainer/` directory so Claude Code runs in an isolated development environment, preserving useful existing configuration. Based on the [official devcontainer guide](https://code.claude.com/docs/en/devcontainer).
+
+This skill owns the development container. Use `dunnlab-defaults` for project dependencies and `dunnlab-workflow-design` for scientific environment identity and reconstruction evidence. These templates include floating image tags and installers, so a successful container build alone does not establish a frozen or reproducible analysis environment. For scientific runs, use the project's specified analysis dependencies and record the environment actually used.
 
 ## Choose a path first
 
-There are two configurations, and they answer different needs. **Ask the user which they want** unless the argument makes it obvious.
+Use the requested path or an established project choice. Otherwise, default to standard; ask only when a missing requirement materially changes the configuration.
 
 | Path | Use when | Trade-off |
 |------|----------|-----------|
-| **Standard** (default) | You want isolation from the host and a reproducible toolchain | Simple, little to maintain, but no egress restriction |
-| **Hardened** | You are running with permissions bypassed, or working with code you don't fully trust | Default-deny firewall, but a custom Dockerfile you now own |
+| **Standard** (default) | You want isolation from the host and a configured development toolchain | Simple, little to maintain, but no egress restriction |
+| **Hardened** | You need restricted network access, including when running with permissions bypassed | Default-deny firewall, but a custom Dockerfile you now own |
 
 Invoke with `hardened` for the second path, `open` for the hardened layout with the firewall disabled, or `test` to validate a build (see [Test mode](#test-mode)). Default to standard.
 
@@ -78,10 +80,10 @@ A custom Dockerfile plus an egress firewall, adapted from the [Claude Code refer
 
 ### Firewall modes
 
-- **`locked-down` (default)** — Default-deny outbound policy with an allowlist for GitHub, npm, Anthropic APIs, conda, PyPI, and a few VS Code endpoints. Use for untrusted code or when egress should be restricted.
+- **`locked-down` (default)** — Default-deny outbound policy with an allowlist for GitHub, npm, Anthropic APIs, conda, PyPI, and a few VS Code endpoints. Use when egress should be restricted; the trusted-repository requirement still applies.
 - **`open`** — Flushes all rules and sets default-accept policies. The container can reach any host the host machine can. Use only for trusted projects where the firewall is more friction than protection (e.g., projects that need to reach many third-party APIs, package mirrors, or internal services).
 
-Ask the user which mode they want if they have not specified. If the skill is invoked with the argument `open`, scaffold the open variant; otherwise default to locked-down.
+For a new hardened configuration, default to locked-down. Use the open variant only when the user requests it, including by invoking the skill with `open`; preserve an existing project's chosen mode when adapting its configuration.
 
 Both modes still require `NET_ADMIN` and `NET_RAW` capabilities and run the same `postStartCommand` — only the contents of `init-firewall.sh` differ.
 
@@ -156,7 +158,7 @@ Create three files in `.devcontainer/` at the project root:
 #### 2. `.devcontainer/Dockerfile`
 
 ```dockerfile
-FROM node:20
+FROM node:22
 
 ARG TZ
 ENV TZ="$TZ"
@@ -246,7 +248,8 @@ ENV PATH=$PATH:/usr/local/share/npm-global/bin
 
 # Install Claude Code
 ARG CLAUDE_CODE_VERSION=latest
-RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
+# Fail the build if a newer Claude Code requires an unsupported Node version.
+RUN npm install --engine-strict -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
 # Copy and set up firewall script
 COPY init-firewall.sh /usr/local/bin/
@@ -453,7 +456,7 @@ After a successful build, run these checks with `docker run --rm` and report pas
 |-------|---------|----------------|
 | Claude Code installed | `docker run --rm dunnlab-devcontainer-test claude --version` | Exit code 0, output shows version |
 | Shell is zsh | `docker run --rm dunnlab-devcontainer-test bash -c 'echo $SHELL'` | Output is `/bin/zsh` |
-| Node.js available | `docker run --rm dunnlab-devcontainer-test node --version` | Output starts with `v20` |
+| Node.js available | `docker run --rm dunnlab-devcontainer-test node --version` | Output starts with `v22` |
 | Git delta installed | `docker run --rm dunnlab-devcontainer-test delta --version` | Exit code 0 |
 | Workspace writable | `docker run --rm dunnlab-devcontainer-test bash -c 'touch /workspace/t && rm /workspace/t && echo OK'` | Output is `OK` |
 | Conda installed | `docker run --rm dunnlab-devcontainer-test conda --version` | Exit code 0, output shows version |
@@ -486,7 +489,7 @@ Created by `/dunnlab-devcontainer test`. Safe to delete after validation.
 The following were validated during `docker build` + `docker run`:
 - Claude Code installed
 - Shell is zsh
-- Node.js v20.x available
+- Node.js v22.x available
 - Git delta installed
 - Workspace writable by node user
 - Firewall script present and executable
@@ -525,7 +528,7 @@ When adding the hardened files to a project, adapt as needed:
 
 - **Extensions**: Add project-relevant VS Code extensions to `devcontainer.json` (e.g., `ms-python.python` for Python projects, `ms-toolsai.jupyter` for notebooks).
 - **Firewall domains**: If the project needs additional services (Docker Hub, cloud APIs, an institutional mirror), add them to the `init-firewall.sh` domain list. Re-check the Anthropic domains against the [network access requirements](https://code.claude.com/docs/en/network-config#network-access-requirements) rather than trusting the list baked in here.
-- **Base image**: The Dockerfile starts from `node:20` because Claude Code ships as an npm package. For Python-heavy projects, either keep it and rely on the bundled Miniconda, or start from a Python image and install Node alongside. If you don't need the firewall, the standard path handles this more cleanly through features.
+- **Base image**: The Dockerfile starts from `node:22` to meet the installed Claude Code npm package's Node requirement. For Python-heavy projects, either keep it and rely on the bundled Miniconda, or start from a Python image and install a compatible Node version alongside. If you don't need the firewall, the standard path handles this more cleanly through features.
 - **Build args**: Adjust `TZ`, version pins, and other build args for the team's needs.
 - **Volumes**: Add additional volume mounts for caching (e.g., conda packages, pip cache) to speed up rebuilds.
 - **Multi-architecture support**: The container may run on x86_64 (Linux/Windows hosts) or arm64 (Apple Silicon Macs). When adding software downloads to the Dockerfile, always detect the architecture at build time rather than hardcoding it. Use `dpkg --print-architecture` for `.deb` packages (returns `amd64` or `arm64`) or `uname -m` for installers that use kernel arch names (returns `x86_64` or `aarch64`). For example, to add Miniconda:

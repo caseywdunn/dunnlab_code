@@ -17,8 +17,10 @@ Give the analysis README a clearly labeled run section containing:
 
 - The working directory, environment setup/activation, and required inputs or
   their acquisition command.
-- A copyable dry-run command and a separate execution command, with the actual
-  Snakefile, configuration, target, and cores or execution profile where relevant.
+- A copyable execution command, with the actual entry point, configuration,
+  target, and cores or execution profile where relevant. For Snakemake, also give
+  a separate dry-run command. For other tools, document a supported preview or
+  bounded check when useful; do not invent a dry-run mode for a script or notebook.
 - What the command runs and where its main outputs appear. Distinguish the full
   analysis from optional or bounded stages and explain required upstream work.
 
@@ -26,8 +28,9 @@ For a repository with several analyses, make the root README an obvious index
 to each analysis's canonical launch instructions. For a single analysis, those
 instructions can live directly in the root README. Do not leave the only launch
 command in an agent instruction file, a development note, or an unexplained batch
-script. Check the documented dry-run command against the actual project when the
-required environment and inputs are available; record unavailable checks honestly.
+script. Check the documented launch route with an appropriate dry run, small
+execution, or existing matching execution evidence when the environment and inputs
+are available; record unavailable checks honestly.
 
 Do not make readers derive execution commands by removing dry-run flags. A
 domain-specific Snakefile is not a repository-wide workflow. Identify restricted

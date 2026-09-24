@@ -15,6 +15,8 @@ auto-update is off by default for third-party marketplaces.
   documentation.
 - Snakemake project README guidance specifies launch/dry-run commands and generated
   rule graphs, with one regeneration command and a CI check for stale images.
+- Conditional publication handoff guidance connects verified analyses to durable
+  code/data access, citable releases, and checks of the rendered deliverable.
 
 ### Changed
 
@@ -28,6 +30,10 @@ auto-update is off by default for third-party marketplaces.
   the skill boundaries and updated implementation handoff.
 - Corrected MAFFT L-INS-i syntax and TransDecoder ORF/isoform guidance while
   retaining the preferred biological tools and settings.
+- Planning makes applicable study-design safeguards explicit; bibliography checks
+  claim support and covers software and dataset citations.
+- Harmonized lightweight dependency records, targeted review, supported dry runs,
+  and development-container defaults with the shared workflow principles.
 
 ### Fixed
 
@@ -35,6 +41,11 @@ auto-update is off by default for third-party marketplaces.
   and exclude local permission history from public-document regression checks.
 - Pin the documentation build to GitHub Pages 232 so stale local lockfiles
   cannot select Liquid 4.0.3, which fails with the preview's Ruby 3.3 runtime.
+- Corrected conflicting contribution branch instructions and premature cluster
+  retirement claims against YCRC's phased migration plan.
+- Updated the hardened devcontainer to Node 22 to meet the current Claude Code
+  package's declared runtime requirement, with matching validation checks and a
+  build failure on incompatible package engine requirements.
 
 ## 0.4.1
 

@@ -14,6 +14,8 @@ parts of the checklist. Scale review to the change and its consequences. Apply
 structure and execution evidence, and the relevant domain skill for scientific
 assumptions. Those skills own the standards; this checklist prompts assessment.
 Review does not itself authorize a rewrite, branch switch, or expensive analysis.
+Engineering review contributes evidence; `dunnlab-lifecycle` assesses scientific
+readiness when that assessment is requested.
 
 ## Review process
 
@@ -44,7 +46,8 @@ Review does not itself authorize a rewrite, branch switch, or expensive analysis
 - [ ] Do checks cover consequential changed behavior and relevant failure cases?
 - [ ] Is testing proportionate to the retained code and scientific consequences?
 - [ ] Are tests deterministic (no flaky tests depending on timing or randomness)?
-- [ ] Do all existing tests still pass?
+- [ ] Did the relevant tests and required project checks pass? Identify checks run,
+  valid evidence reused, and checks unavailable or outside the review's scope.
 
 ### Style and conventions
 
@@ -63,7 +66,8 @@ Review does not itself authorize a rewrite, branch switch, or expensive analysis
 
 - [ ] Is raw data left unmodified?
 - [ ] Are random seeds set where reproducibility matters?
-- [ ] Are dependencies pinned or specified in `environment.yml` / `renv.lock` / `Cargo.toml`?
+- [ ] Are dependencies and runtime requirements reconstructable through the
+  project's mechanism, following `dunnlab-defaults`?
 - [ ] Can someone else reproduce the results from a clean environment?
 
 ### Performance and resources
