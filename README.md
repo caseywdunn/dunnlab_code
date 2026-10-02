@@ -21,7 +21,7 @@ claude plugin marketplace add caseywdunn/dunnlab_code
 claude plugin install dunnlab-code@dunnlab
 ```
 
-This pulls the plugin from GitHub and caches it locally. It works anywhere Claude Code runs, including inside dev containers.
+This pulls the plugin from GitHub and caches it locally. It works anywhere Claude Code runs.
 
 The [Getting Started](https://dunnlab.org/dunnlab_code/getting-started.html) guide walks through the full setup, including the other plugins we recommend.
 
@@ -91,7 +91,6 @@ If you are loading a local copy with `--plugin-dir`, just `git pull`. Changes ar
 - **dunnlab-lifecycle** — Scientific planning, exploration, selection, validation, and publication handoff; distillation retains the working implementation and closes evidence gaps.
 - **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
-- **dunnlab-devcontainer** — Add an isolated Claude Code development container; workflow design handles preservation of the scientific runtime.
 - **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
 - **dunnlab-biblio** — Verified manuscript, data, and software citations, claim support, and BibTeX conventions.
 

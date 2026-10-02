@@ -39,7 +39,6 @@ Frontmatter `name` is optional for personal and project skills, where the direct
 - **dunnlab-lifecycle** — Scientific planning, exploration, selection, validation, and publication handoff; distillation retains the working implementation and closes evidence gaps.
 - **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
-- **dunnlab-devcontainer** — Add an isolated Claude Code development container; workflow design handles preservation of the scientific runtime.
 - **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
 - **dunnlab-biblio** — Verified manuscript, data, and software citations, claim support, and BibTeX conventions.
 
@@ -64,8 +63,7 @@ the retained scope, assess claims and reproduction, then prepare the applicable
 publication or release handoff. Code review supplies engineering evidence;
 bibliography supplies verified citations. Neither alone establishes scientific
 readiness. Publication handoff is conditional lifecycle guidance, not a fifth phase
-or a requirement for every notebook. A development container helps build and run
-the project; its existence does not establish preservation of the scientific runtime.
+or a requirement for every notebook.
 
 Keep substantial conditional details in references: Snakemake organization,
 execution provenance, reader documentation, and biological tool recipes. Preserve

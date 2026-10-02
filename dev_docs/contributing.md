@@ -62,7 +62,7 @@ Three kinds of branch, and the rule is simple: **`main` is always releasable, an
 ```
 feature/fix-scratch-purge ─┐
 feature/add-rules-section ─┼─→ dev ─→ main (release, tagged)
-feature/devcontainer-test ─┘
+feature/update-workflows ─┘
 ```
 
 Never commit directly to `main`. Never commit directly to `dev` for anything
@@ -80,7 +80,6 @@ git checkout -b feature/my-change
 # ... work ...
 
 ./scripts/check.sh                  # must pass
-./scripts/test-devcontainer.sh      # only if you touched dunnlab-devcontainer
 ./scripts/preview-docs.sh           # only if you touched docs/ — renders the site
 
 git push -u origin feature/my-change
@@ -149,7 +148,6 @@ From an up-to-date `dev`:
 
 # 2. Everything passes.
 ./scripts/check.sh
-./scripts/test-devcontainer.sh     # if the devcontainer skill changed
 
 # 3. Sanity-check the plugin as a user would receive it.
 claude --plugin-dir .
