@@ -133,10 +133,16 @@ What to bump:
 
 | Change | Bump |
 |--------|------|
-| Removing or renaming a skill or command, or anything that loosens the permission templates | **major** — `/dunnlab-code:<name>` invocations and settings people have copied will break |
+| Changes that materially break supported workflows, or anything that loosens the permission templates | **major** |
 | A new skill, a new command, or substantive new guidance in an existing one | **minor** |
 | Corrections, copy edits, link fixes, HPC number updates | **patch** |
 | Changes only under `docs/` | none needed — Pages does not read the version — but bumping is never wrong |
+
+Deleting or renaming a skill does not automatically require a major version
+bump. Assess the effect on supported workflows: retiring an unused or obsolete
+skill can be a minor release, while a removal that materially disrupts existing
+workflows warrants a major release. Document the removal and any replacement or
+migration guidance in the changelog.
 
 ### Release steps
 
