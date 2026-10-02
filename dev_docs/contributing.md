@@ -11,7 +11,7 @@ How to add or modify skills, commands, hooks, and documentation in this repo.
 1. Create a directory: `skills/<skill-name>/`
 2. Create `skills/<skill-name>/SKILL.md` with frontmatter (`name`, `description`) and instructions
 3. Keep the `description` to one concise sentence — it's always in context
-4. Reference `dunnlab-defaults` for shared conventions rather than duplicating them
+4. Use the ownership map in `dev_docs/plugin-architecture.md`; reference the skill that owns a convention rather than duplicating it
 5. Test locally: `claude --plugin-dir /path/to/dunnlab_code`, then invoke it as `/dunnlab-code:<skill-name>`
 6. Update `README.md` and `dev_docs/plugin-architecture.md` to list the new skill
 7. Run `claude plugin validate . --strict` before opening a PR
@@ -62,7 +62,7 @@ Three kinds of branch, and the rule is simple: **`main` is always releasable, an
 ```
 feature/fix-scratch-purge ─┐
 feature/add-rules-section ─┼─→ dev ─→ main (release, tagged)
-feature/devcontainer-test ─┘
+feature/update-workflows ─┘
 ```
 
 Never commit directly to `main`. Never commit directly to `dev` for anything
@@ -80,7 +80,6 @@ git checkout -b feature/my-change
 # ... work ...
 
 ./scripts/check.sh                  # must pass
-./scripts/test-devcontainer.sh      # only if you touched dunnlab-devcontainer
 ./scripts/preview-docs.sh           # only if you touched docs/ — renders the site
 
 git push -u origin feature/my-change
@@ -149,7 +148,6 @@ From an up-to-date `dev`:
 
 # 2. Everything passes.
 ./scripts/check.sh
-./scripts/test-devcontainer.sh     # if the devcontainer skill changed
 
 # 3. Sanity-check the plugin as a user would receive it.
 claude --plugin-dir .
@@ -196,7 +194,7 @@ problem than a version number that means two different things.
 
 ## Pull request process
 
-1. Create a branch from `main`
+1. Create a feature branch from up-to-date `dev`
 2. Make changes and test locally
-3. Open a PR with a description of what changed and why
-4. After the merge, check the repo's Actions tab — the `pages-build-deployment` run tells you whether the site built
+3. Open a PR into `dev` with a description of what changed, why, and how it was verified
+4. Check the PR's structural and docs-build checks; the published Pages site updates when `dev` is released to `main`

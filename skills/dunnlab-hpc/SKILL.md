@@ -11,6 +11,12 @@ description: >
 
 The Dunn Lab runs computationally intensive analyses on Yale Center for Research Computing (YCRC) clusters. Full documentation: <https://docs.ycrc.yale.edu/>
 
+This skill owns Yale platform details and scheduler configuration. Use
+`dunnlab-workflow-design` for the computational path and execution evidence,
+`dunnlab-defaults` for dependency conventions, and domain skills for tool choices.
+Verify current cluster access, limits, and migration notices before scheduling or
+moving data; the reference below is not a live inventory.
+
 **Bouchet is the lab's primary cluster.** McCleary is retained only for YCGA raw sequence data work.
 
 ## Cluster overview
@@ -18,10 +24,10 @@ The Dunn Lab runs computationally intensive analyses on Yale Center for Research
 | Cluster | Focus | Status | SSH | OOD Portal |
 |---------|-------|--------|-----|------------|
 | **Bouchet** | General HPC (successor to Grace & McCleary) | Active — primary cluster | `bouchet.ycrc.yale.edu` | `ood-bouchet.ycrc.yale.edu` |
-| **McCleary** | YCGA sequencing & CryoEM | **YCGA-only** — non-YCGA work has moved to Bouchet | `mccleary.ycrc.yale.edu` | `ood-mccleary.ycrc.yale.edu` |
+| **McCleary** | YCGA sequencing & CryoEM | Transitioning toward YCGA-only; follow the phased migration below | `mccleary.ycrc.yale.edu` | `ood-mccleary.ycrc.yale.edu` |
 | **Misha** | Wu Tsai Institute (neuroscience & data science) | Active | `misha.ycrc.yale.edu` | `ood-misha.ycrc.yale.edu` |
 | **Hopper** | Regulated/sensitive data (incl. NIH Controlled Access) | Active | — | — |
-| **Grace** | Former general HPC | **Retired** — decommissioned in the 2026 migration | — | — |
+| **Grace** | Legacy general HPC | Decommissioning; shutdown planned in Phase 3 | — | — |
 
 Request accounts at <https://research.computing.yale.edu/account-request>. New McCleary accounts are only approved for groups using YCGA resources, CryoEM resources, or dedicated nodes.
 
@@ -29,7 +35,9 @@ Transfer nodes: `transfer-bouchet.ycrc.yale.edu`, `transfer-mccleary.ycrc.yale.e
 
 ## Login node policy
 
-Run `/sandbox` once on the cluster to check whether Claude Code's Bash sandbox is available. It needs `bubblewrap` and `socat` and unprivileged user namespaces, which shared systems often restrict — and when it cannot start, Claude Code warns and runs commands unsandboxed rather than failing. Do not assume you are protected without checking.
+Check once on the cluster whether your harness's sandbox actually starts. Shared systems often restrict the kernel features these depend on, and the failure mode is quiet: the agent warns and then runs commands unsandboxed rather than refusing. Do not assume you are protected without checking.
+
+In Claude Code, run `/sandbox`; its Bash sandbox needs `bubblewrap`, `socat`, and unprivileged user namespaces. In Codex, confirm the sandbox mode in effect with `/permissions` — `workspace-write` also keeps network access off by default, which is worth knowing before a job tries to download a reference.
 
 **Never run heavy computation on login nodes.** The following lightweight tasks are acceptable on login nodes:
 
@@ -117,7 +125,7 @@ Docs: <https://docs.ycrc.yale.edu/clusters/mccleary/> · Decommission plan: <htt
 
 **McCleary is winding down to a YCGA-only cluster.** The lab retains access for YCGA raw sequence data work; run everything else on Bouchet.
 
-Migration status:
+Migration status, checked against the linked YCRC plan on 2026-09-24:
 
 - **Phase 1 (complete)** — groups without dedicated nodes, CryoEM, or YCGA affiliation lost Grace/McCleary access on **June 1, 2026**.
 - **Phase 2 (late 2026 / early 2027)** — non-YCGA workloads and data belonging to YCGA-affiliated groups move to Bouchet. Anything you want to keep off McCleary must be transferred by then.
@@ -216,7 +224,12 @@ conda activate myenv
 
 ### `batch.sh` conventions
 
-Every computationally intensive script or pipeline should include a companion `batch.sh` SLURM submission script in the same directory. This makes it clear how to run the code and with what resources.
+For directly submitted computationally intensive scripts, provide a companion
+`batch.sh` SLURM submission script so the launch command and resources are clear.
+For workflows dispatched by Snakemake's SLURM executor, document the executor or
+profile entry point instead of duplicating each rule in a separate batch script.
+`dunnlab-workflow-design` owns the dependency graph and shared computation; this
+skill owns how that computation is launched on Yale clusters.
 
 - Name the file `batch.sh` and place it alongside the script it runs. If there are multiple stages, use separate scripts (`batch_align.sh`, `batch_assemble.sh`, etc.).
 - Set `--job-name` to something descriptive (e.g., the analysis name or script name).
@@ -393,5 +406,5 @@ Store environments in your project directory or home — **never in scratch** (o
 - **Max interactive apps**: 4 concurrent OOD interactive instances per user.
 - **Job rate limits**: YCRC enforces submission rate limits — use job arrays or `dsq` instead of submission loops.
 - **Module system**: Use `module reset` then `module load` for software. Run `module avail` to see available packages.
-- **AI coding agents**: YCRC does not formally support coding agents on the clusters and warns about data exposure, credential leakage, and destructive actions taken with your permissions. See <https://docs.ycrc.yale.edu/ai/aicodingtools/> and use restrictive Claude Code permissions (`assets/settings.json` in this repo). YCRC also documents connecting Claude Science to a cluster by SSH tunnel to a **compute node, not a login node**.
+- **AI coding agents**: YCRC does not formally support coding agents on the clusters and warns about data exposure, credential leakage, and destructive actions taken with your permissions. See <https://docs.ycrc.yale.edu/ai/aicodingtools/> and use restrictive permissions — `assets/settings.json` in this repo for Claude Code, or a `workspace-write` sandbox with `on-request` approvals for Codex. YCRC also documents connecting Claude Science to a cluster by SSH tunnel to a **compute node, not a login node**.
 - **Paid storage**: YCRC cannot accept new or increased paid storage allocations on Bouchet, Grace, or McCleary; availability may return in late 2026.

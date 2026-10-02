@@ -1,14 +1,33 @@
 ---
 name: dunnlab-biblio
 description: >
-  Standards and workflow for managing bibliographic references in
-  manuscripts. Covers BibTeX formatting conventions, author lists,
-  title capitalization, and conservative editing rules.
+  Manage verified manuscript, data, and software citations with Dunn Lab
+  BibTeX conventions and conservative editing of existing references.
 ---
 
 # Bibliographic Reference Management
 
-Standards for managing `.bib` files and bibliographic references in Dunn Lab manuscripts.
+Standards for managing `.bib` files and bibliographic references in Dunn Lab
+manuscripts. This skill owns citation identity, attribution, and formatting;
+`dunnlab-lifecycle` owns the scientific assessment and publication handoff.
+
+## Connect claims and research objects to sources
+
+When adding citations to prose or reviewing their use, read the source and check
+that it supports the specific claim, population, method, and strength of inference.
+Distinguish primary findings from background, reviews, and the manuscript's own
+interpretation. Correct metadata alone does not establish support. Record an
+unavailable source or unresolved claim instead of implying it has been verified.
+A formatting-only request does not require a new literature review.
+
+Cite datasets, reference databases, and software that materially support the work,
+as well as method papers. Obtain preferred citation metadata from the actual
+release or its authoritative record; identify the version or accession used in
+the citation or associated methods. A methods paper alone may not identify the
+executed software or database release. Prefer a version-specific persistent
+identifier when available; retain a stable URL when it is the only locator.
+Keep execution detail in workflow records rather than duplicating logs in BibTeX.
+These practices follow the [Software Citation Principles](https://force11.org/info/software-citation-principles-published-2016/).
 
 ## Core principle: be conservative
 
@@ -88,6 +107,14 @@ For **incollection** (book chapters):
 For **unpublished/preprints**:
 - Required: `author`, `title`, `year`
 - Recommended: `doi`, `note` (e.g., "Preprint on bioRxiv")
+
+For **software and datasets**:
+- Preserve verified creators (including corporate or consortium authors), title,
+  release date/year, version or accession, repository/publisher, and DOI or other
+  locator where available. Do not invent absent fields.
+- Use the entry type supported by the project's citation renderer; `@misc` with
+  version/accession information in `note` is a portable BibTeX fallback. Check the
+  rendered citation before adopting richer software/data entry types or fields.
 
 ### Formatting conventions
 

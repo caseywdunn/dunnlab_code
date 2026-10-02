@@ -8,14 +8,21 @@ description: >
 
 # Dunn Lab Code Review
 
-When reviewing code in Dunn Lab projects, follow this process and checklist.
+When reviewing code in Dunn Lab projects, follow this process and use the relevant
+parts of the checklist. Scale review to the change and its consequences. Apply
+`dunnlab-defaults` for coding conventions, `dunnlab-workflow-design` for workflow
+structure and execution evidence, and the relevant domain skill for scientific
+assumptions. Those skills own the standards; this checklist prompts assessment.
+Review does not itself authorize a rewrite, branch switch, or expensive analysis.
+Engineering review contributes evidence; `dunnlab-lifecycle` assesses scientific
+readiness when that assessment is requested.
 
 ## Review process
 
 1. **Understand the goal** — Read the PR description, linked issue, or commit messages to understand what the change is trying to accomplish before reading the code.
 2. **Check the big picture first** — Does the approach make sense? Is it the right place for this change? Are there simpler alternatives?
 3. **Walk through the diff** — Review the code in logical order (not file order). Start with the entry point and follow the data flow.
-4. **Run the code** — Pull the branch locally. Run the tests. Try the new functionality. Check that outputs look correct.
+4. **Verify behavior** — Use the available checkout and relevant tests or small examples. Reuse valid execution evidence and state unverified coverage; run expensive analyses only within the authorized scope.
 5. **Leave constructive feedback** — Be specific, suggest alternatives, and distinguish between blocking issues and nits.
 
 ## Checklist
@@ -36,10 +43,11 @@ When reviewing code in Dunn Lab projects, follow this process and checklist.
 
 ### Testing
 
-- [ ] Are there tests for new or changed functionality?
-- [ ] Do tests cover both happy paths and edge cases?
+- [ ] Do checks cover consequential changed behavior and relevant failure cases?
+- [ ] Is testing proportionate to the retained code and scientific consequences?
 - [ ] Are tests deterministic (no flaky tests depending on timing or randomness)?
-- [ ] Do all existing tests still pass?
+- [ ] Did the relevant tests and required project checks pass? Identify checks run,
+  valid evidence reused, and checks unavailable or outside the review's scope.
 
 ### Style and conventions
 
@@ -58,7 +66,8 @@ When reviewing code in Dunn Lab projects, follow this process and checklist.
 
 - [ ] Is raw data left unmodified?
 - [ ] Are random seeds set where reproducibility matters?
-- [ ] Are dependencies pinned or specified in `environment.yml` / `renv.lock` / `Cargo.toml`?
+- [ ] Are dependencies and runtime requirements reconstructable through the
+  project's mechanism, following `dunnlab-defaults`?
 - [ ] Can someone else reproduce the results from a clean environment?
 
 ### Performance and resources

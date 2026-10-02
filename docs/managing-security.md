@@ -145,7 +145,7 @@ Note that the classifier is a per-action check rather than a boundary, so even i
 
 Even here, two things still hold: `deny` rules apply, and `rm` against a [critical path](#protected-and-critical-paths) still prompts.
 
-On Linux and macOS, Claude Code refuses to start `bypassPermissions` as `root` or under `sudo` outside a recognized sandbox. The [dev container](https://code.claude.com/docs/en/devcontainer) configuration runs as a non-root user, so it works there.
+On Linux and macOS, Claude Code refuses to start `bypassPermissions` as `root` or under `sudo` outside a recognized sandbox.
 
 To prevent this mode being used at all — on a shared system, say — set `permissions.disableBypassPermissionsMode` to `"disable"` in any settings file. It is most useful in managed settings, but you can also set it in your own to lock yourself out.
 
@@ -153,7 +153,7 @@ To prevent this mode being used at all — on a shared system, say — set `perm
 
 Two safety checks sit outside the permission rules entirely, so it is worth knowing they exist before you write a rule that appears not to work.
 
-**Protected paths** are never auto-approved for writes: `.git`, `.claude`, `.vscode`, `.devcontainer`, `.cargo`, and files like `.bashrc`, `.zshrc`, `.envrc`, `.npmrc`, `.mcp.json`, and `.gitconfig`. An `allow` rule does not pre-approve them — the check runs before allow rules are evaluated. In modes that prompt, the prompt offers to approve `.claude/` writes for the rest of the session.
+**Protected paths** that are never auto-approved for writes include: `.git`, `.claude`, `.vscode`, `.cargo`, and files like `.bashrc`, `.zshrc`, `.envrc`, `.npmrc`, `.mcp.json`, and `.gitconfig`. An `allow` rule does not pre-approve them — the check runs before allow rules are evaluated. In modes that prompt, the prompt offers to approve `.claude/` writes for the rest of the session.
 
 **Critical paths** are `rm`/`rmdir` targets that no `allow` rule and no `PreToolUse` hook can approve: the filesystem root and its top-level directories, your home directory, and your working directory and its parents. A glob under a shell variable (`rm -rf "$DIR"/*`) counts, because an empty variable turns it into a removal from `/`. Hiding it in `$(...)` does not evade the check. A matching `deny` rule still blocks the command outright.
 
@@ -242,7 +242,6 @@ The options below run from lightest to heaviest. Anthropic's [sandbox environmen
 | Approach | What it isolates | Effort |
 |----------|------------------|--------|
 | Bash sandbox | Bash commands and their children | Minimal on macOS, low on Linux |
-| Dev container | The whole environment, with an egress firewall | Medium; needs Docker |
 | Separate user account | Your own files from the agent's | Low |
 | Virtual machine | A full operating system | Medium to high |
 | Dedicated machine | Everything, physically | Low once you have the hardware |
@@ -278,23 +277,6 @@ A good pairing for local work: Manual mode plus sandbox auto-allow. You get few 
 
 {: .warning }
 **The Bash sandbox constrains Bash and nothing else.** Claude Code's own file tools, any MCP servers you have configured, and any hooks all run as separate processes on your host, outside the boundary. This is enough to make everyday work safer; it is *not* enough for an unattended session. To put every tool, hook, and MCP server behind one boundary without Docker, run the whole Claude Code process through the [sandbox runtime](https://github.com/anthropic-experimental/sandbox-runtime) — currently a research preview whose configuration format may still change.
-
-### Dev containers
-
-Running Claude Code inside a [development container](https://code.claude.com/docs/en/devcontainer) isolates the whole environment, not just Bash — file tools, hooks, and MCP servers included. Claude has full access inside the container but cannot touch your host filesystem, credentials, or network unless you explicitly mount or forward them. For most unattended work on code you trust, this is the right level.
-
-Docker Desktop (macOS/Windows) or Docker Engine (Linux) must be installed on the host.
-
-To get started:
-
-1. Install VS Code and the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
-2. Add a `.devcontainer/` directory to your project — ask Claude to set up a devcontainer and the `dunnlab-devcontainer` skill will scaffold it.
-3. Open the project in VS Code and click "Reopen in Container" when prompted (or use the Command Palette: `Dev Containers: Reopen in Container`).
-
-The simplest configuration adds the official [Claude Code Dev Container Feature](https://github.com/anthropics/devcontainer-features/tree/main/src/claude-code) to any base image. For a hardened setup with an egress firewall, see the [reference implementation](https://github.com/anthropics/claude-code/tree/main/.devcontainer).
-
-{: .warning }
-Only use devcontainers with trusted repositories. While the firewall restricts network access, it does not prevent a malicious project from exfiltrating anything accessible inside the container, including Claude Code credentials.
 
 ### Separate user accounts
 

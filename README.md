@@ -21,7 +21,7 @@ claude plugin marketplace add caseywdunn/dunnlab_code
 claude plugin install dunnlab-code@dunnlab
 ```
 
-This pulls the plugin from GitHub and caches it locally. It works anywhere Claude Code runs, including inside dev containers.
+This pulls the plugin from GitHub and caches it locally. It works anywhere Claude Code runs.
 
 The [Getting Started](https://dunnlab.org/dunnlab_code/getting-started.html) guide walks through the full setup, including the other plugins we recommend.
 
@@ -85,13 +85,14 @@ If you are loading a local copy with `--plugin-dir`, just `git pull`. Changes ar
 
 ### Skills
 
-- **dunnlab-defaults** — Lab-wide coding conventions: preferred languages, formatting, testing, project structure, and version control practices. The foundational skill the others build on.
-- **dunnlab-new-project** — Step-by-step workflow for scaffolding a new project from scratch, with progress that survives `/clear`.
+- **dunnlab-defaults** — Language, code style, dependency management, testing, and version-control conventions.
+- **dunnlab-workflow-design** — Computational workflow design from exploration onward: readable data flow, shared implementation, execution provenance, valid reuse, and reproduction instructions.
+- **dunnlab-bioinformatics** — Biological methods, preferred tools and usage details, sequence identifiers, and domain-specific checks.
+- **dunnlab-lifecycle** — Scientific planning, exploration, selection, validation, and publication handoff; distillation retains the working implementation and closes evidence gaps.
+- **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
-- **dunnlab-bioinformatics** — Sequence analysis conventions: data hygiene, input validation, gene ID handling, and default tools.
-- **dunnlab-devcontainer** — Add a `.devcontainer/` configuration for reproducible, isolated Claude Code environments.
-- **dunnlab-codereview** — Code review checklist and process.
-- **dunnlab-biblio** — BibTeX conventions for manuscripts: entry keys, author lists, title capitalization.
+- **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
+- **dunnlab-biblio** — Verified manuscript, data, and software citations, claim support, and BibTeX conventions.
 
 ### Commands
 
