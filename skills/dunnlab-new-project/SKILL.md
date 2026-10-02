@@ -16,20 +16,17 @@ Infer the goal, language, project type, and expected inputs and outputs from the
 
 Inspect existing source, documentation, environment specifications, git state, and agent instructions. Complete only the missing setup relevant to the task; an existing analysis does not need a new repository or a restart of its lifecycle. Do not replace established layouts or permissions because they differ from a template.
 
-A devcontainer is optional. Offer it when isolation would materially help and the preference is unknown; continue useful setup without one unless the user chooses it. Do not make container selection a universal pause.
-
 ## Repository and execution environment
 
 - Initialize git when creating a repository and it is not already initialized. Preserve existing git configuration and work.
 - Create or update `.gitignore` for the language and actual layout. Default ignores include `.DS_Store`, Python caches, notebook checkpoints, bulk data/results, and logs; preserve tracked fixtures and provenance records. Add `target/` for Rust and `.Rhistory`, `.RData`, `.Rproj.user/` for R where relevant.
 - Preserve the active harness's permissions and sandbox policy. Configure permissions only when the user requests it. For requested Claude Code permission setup, read [references/settings-permissions.md](references/settings-permissions.md); do not translate or apply those settings to another harness automatically.
-- If a devcontainer was chosen, use `dunnlab-devcontainer` for its configuration. If further work requires reopening in it, record the handoff and explain the needed action. Do not require a commit or context reset as part of scaffolding.
 
 ## Minimum documentation and directories
 
 Create useful initial documentation from known information, leaving unresolved scientific choices explicit rather than inventing a detailed plan:
 
-- **README.md**: project purpose, current setup and entry points, and links to developer checks. For scientific analyses, follow workflow-design's reader-facing documentation guidance. Add development-container instructions only when one is configured.
+- **README.md**: project purpose, current setup and entry points, and links to developer checks. For scientific analyses, follow workflow-design's reader-facing documentation guidance.
 - **AGENTS.md**: a brief project summary, working/test commands, and links to relevant documentation; follow the 100-line limit in `dunnlab-defaults`. Reference companion skills only when they apply.
 - **CLAUDE.md**: use the single line `@AGENTS.md` for a new shared-instructions setup. Preserve and reconcile existing instructions instead of overwriting them.
 - **`dev_docs/overview.md`** when a plan is useful: goal, known inputs and outputs, current approach, and unresolved choices. For research, lifecycle Planning extends this same document; do not create a competing scientific plan here.
@@ -62,8 +59,8 @@ These routes can combine: a research pipeline uses lifecycle for scientific deci
 
 ## Resume across sessions only when needed
 
-For setup that spans sessions, keep a compact checklist and handoff in `.agent/new-project-progress.yaml` if the project has no equivalent. Record completed setup, unresolved decisions, and any devcontainer transition. Keep this record limited to scaffolding; lifecycle and ongoing implementation own their own evidence and tasks.
+For setup that spans sessions, keep a compact checklist and handoff in `.agent/new-project-progress.yaml` if the project has no equivalent. Record completed setup and unresolved decisions. Keep this record limited to scaffolding; lifecycle and ongoing implementation own their own evidence and tasks.
 
-Read an existing `.agent/new-project-progress.yaml`, or legacy `.claude/new-project-progress.yaml` when that is the only record. Verify its notes against actual files and current scope; do not interpret old step numbers as commands to restart work or invoke the former build loop. No migration or new state file is required just to review or explain setup. Existing `devcontainer` and `in_devcontainer` fields can inform a pending handoff, but confirm the active environment before resuming dependent work.
+Read an existing `.agent/new-project-progress.yaml`, or legacy `.claude/new-project-progress.yaml` when that is the only record. Verify its notes against actual files and current scope; do not interpret old step numbers as commands to restart work or invoke the former build loop. No migration or new state file is required just to review or explain setup.
 
 Follow the user's scope and the project's version-control workflow. Scaffolding does not require automatic commits, repeated approval pauses, or a context reset after each step.

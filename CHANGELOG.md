@@ -6,9 +6,12 @@ release process in [`dev_docs/contributing.md`](dev_docs/contributing.md#releasi
 Lab members pick up a new version with `/plugin update dunnlab-code@dunnlab`;
 auto-update is off by default for third-party marketplaces.
 
-## 0.5.0 (unreleased)
+## 1.0.0 (unreleased)
 
 ### Added
+
+- `dunnlab-lifecycle` organizes scientific work through planning, exploration,
+  distillation, and validation, with conditional publication handoff guidance.
 
 - `dunnlab-workflow-design` owns computational design from exploration onward,
   with references for Snakemake organization, execution provenance, and reader
@@ -19,6 +22,9 @@ auto-update is off by default for third-party marketplaces.
   code/data access, citable releases, and checks of the rendered deliverable.
 
 ### Changed
+
+- Shared project instructions use `AGENTS.md` with a `CLAUDE.md` import so
+  projects can move between Claude Code and Codex.
 
 - Bioinformatics owns biological methods and tool recipes; defaults owns code
   conventions; new-project ends at scaffolding and handoff.
@@ -32,8 +38,8 @@ auto-update is off by default for third-party marketplaces.
   retaining the preferred biological tools and settings.
 - Planning makes applicable study-design safeguards explicit; bibliography checks
   claim support and covers software and dataset citations.
-- Harmonized lightweight dependency records, targeted review, supported dry runs,
-  and development-container defaults with the shared workflow principles.
+- Harmonized lightweight dependency records, targeted review, and supported dry
+  runs with the shared workflow principles.
 
 ### Fixed
 
@@ -43,9 +49,12 @@ auto-update is off by default for third-party marketplaces.
   cannot select Liquid 4.0.3, which fails with the preview's Ruby 3.3 runtime.
 - Corrected conflicting contribution branch instructions and premature cluster
   retirement claims against YCRC's phased migration plan.
-- Updated the hardened devcontainer to Node 22 to meet the current Claude Code
-  package's declared runtime requirement, with matching validation checks and a
-  build failure on incompatible package engine requirements.
+
+### Removed
+
+- **Breaking:** Removed `dunnlab-devcontainer`, its test script and CI job, and
+  the associated setup and security guidance. The
+  `/dunnlab-code:dunnlab-devcontainer` invocation is no longer available.
 
 ## 0.4.1
 

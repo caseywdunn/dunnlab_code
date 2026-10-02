@@ -34,7 +34,6 @@ Each has a markdown entry point, with references for substantial conditional det
 | **`dunnlab-lifecycle`** | Planning, exploration, distillation, and validation of scientific analyses. Tracks decisions and readiness for the selected scope, with publication handoff guidance when needed. |
 | **`dunnlab-new-project`** | Repository, environment, and documentation scaffolding, then a handoff. Resumable setup can use `.agent/new-project-progress.yaml`; ongoing scientific work belongs to lifecycle. |
 | **`dunnlab-hpc`** | YCRC cluster reference — partitions, storage quotas, SLURM batch templates, GPU inventory, Snakemake integration. Yale-specific; see [Computing at Yale](yale.md). |
-| **`dunnlab-devcontainer`** | Scaffolds an isolated container to work in: a standard configuration built on the official Claude Code dev container feature, or a hardened one that adds a default-deny egress firewall. |
 | **`dunnlab-codereview`** | Review and verification using the relevant skill's standards, with feedback that distinguishes blocking issues from suggestions. |
 | **`dunnlab-biblio`** | Verified manuscript, data, and software citations, claim support, and BibTeX conventions; never invents missing metadata. |
 
