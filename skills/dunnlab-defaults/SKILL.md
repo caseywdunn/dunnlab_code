@@ -16,7 +16,7 @@ Languages for data analysis and scripting:
 - **Python** for data analysis and scripting (prefer Python 3.10+)
 - Fall back to **R** when analyses require specific R libraries such as Seurat (use tidyverse conventions)
 - Prefer **conda** or **mamba** when choosing Python environment management; preserve an established project mechanism.
-- Use **Jupyter notebooks** for exploratory work and **Quarto** for manuscripts. A retained notebook is acceptable when it runs from a clean kernel with explicit inputs and settings. Extract scripts or shared functions when reuse or execution needs warrant it; do not rewrite solely because work began in a notebook.
+- Use **Jupyter notebooks** for exploratory work. A retained notebook is acceptable when it runs from a clean kernel with explicit inputs and settings. Extract scripts or shared functions when reuse or execution needs warrant it; do not rewrite solely because work began in a notebook.
 
 Languages for performant critical code:
 - Use **Rust** for performance-critical code.

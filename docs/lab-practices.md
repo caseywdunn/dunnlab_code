@@ -21,13 +21,19 @@ A few are more consequential than a style preference, and they are the ones most
 
 **Cross-species gene IDs are namespaced as `Genus_species@gene_id`.** Reserve `@` as the separator and check source identifiers for conflicts. Every renaming keeps a mapping file and is checked for collisions. Merging datasets with ambiguous identities is a class of silent error that can surface months later in a tree.
 
-**Never abbreviate an author list, and never guess a bibliographic field.** A missing DOI gets a `% TODO` comment, not a plausible-looking value. This sounds pedantic until an AI assistant fills one in for you.
-
-**Shared project instructions stay under 100 lines.** Keep the canonical instructions in `AGENTS.md`, with `CLAUDE.md` importing it. Put details in linked documents or supported directory-scoped instructions so standing context remains small — see [Managing Context](managing-context.md#rules).
-
-**Reuse depends on execution evidence.** An existing output is reusable when a completed run matches the required inputs, relevant code, environment, and settings, and the artifact still verifies. Use the workflow engine's dependency tracking and logs, adding records only for missing evidence. File existence alone cannot distinguish a valid result from an interrupted or obsolete run. Preserve baselines and use the orchestrator's rerun controls for affected stages.
-
 **Exploration and reporting share computation.** Apply workflow design from the first consequential experiment. Distillation selects configurations and outputs, prunes the maintained scope, and closes verification gaps while preserving scientific history. Retained code should need a specific reason to be rewritten.
+
+## Manuscripts
+
+**Each manuscript gets two repositories.** The analysis repository holds the code and workflow. It may start private but will eventually be public. The manuscript repository holds the text and will probably stay private. Keeping them separate means the analysis can be released without also releasing drafts, reviewer correspondence, and co-author comments.
+
+**Name them as a pair.** Use kebab case for the analysis repository and add `-ms` for the manuscript: `project-a` and `project-a-ms`. That way they sort next to each other in any listing.
+
+**Write in LaTeX, and render both PDF and Word.** The `.tex` source is the source of record. Render a PDF for reading and a `.docx` for co-authors who edit in Word. Neither rendered file is ever edited and committed back.
+
+**Co-authors edit the `.docx` with track changes on.** Track changes is not for approving or rejecting edits in Word. It lets them, you, and the agent see exactly what was changed.
+
+**Incorporate edits through a gitignored `tmp/` folder.** Each manuscript repository has a `tmp/` directory listed in `.gitignore`. Put each returned `.docx` there and ask the agent to carry its changes into the `.tex` file. Commit before and after every incorporation. The diff between the two commits is then the complete record of what one co-author's edits did to the source. That diff is what you review, and it is easy to revert if something went wrong.
 
 ## Data management
 
