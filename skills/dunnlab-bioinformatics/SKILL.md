@@ -13,7 +13,7 @@ Use this skill for biological methods, tool settings, identifiers, and scientifi
 
 For dependencies, configuration, provenance, output reuse, and reproduction, use [dunnlab-workflow-design](../dunnlab-workflow-design/SKILL.md). Scientific questions and readiness for reporting belong to [dunnlab-lifecycle](../dunnlab-lifecycle/SKILL.md); coding and environment conventions belong to [dunnlab-defaults](../dunnlab-defaults/SKILL.md). Repository scaffolding and HPC execution belong to their respective skills when needed.
 
-Read [Tool and analysis preferences](references/tools.md) when choosing or configuring alignment, tree inference, annotation, ORF prediction, completeness assessment, duplicate resolution, orientation, or contamination screening. Preserve a project's justified alternatives and record consequential departures from these defaults.
+Read [Tool and analysis preferences](references/tools.md) when choosing or configuring alignment, tree inference (including IQ-TREE replicate searches and constrained-tree AU tests), annotation, ORF prediction, completeness assessment, duplicate resolution, orientation, or contamination screening. Preserve a project's justified alternatives and record consequential departures from these defaults.
 
 ## Biological inputs and checks
 
