@@ -118,6 +118,7 @@ You start the agent in a terminal on your laptop, and it runs analyses there. Th
 ```mermaid
 flowchart LR
   subgraph laptop["Laptop"]
+    direction LR
     U["User plane<br/>terminal"]
     A["Agent plane<br/>harness session"]
     C["Compute plane<br/>local analyses"]
@@ -134,7 +135,7 @@ flowchart LR
   subgraph laptop["Laptop"]
     U["User plane<br/>terminal"]
   end
-  subgraph lab["Lab workstation<br/>headless Ubuntu, always on"]
+  subgraph lab["Lab workstation"]
     A["Agent plane<br/>harness in tmux"]
     C["Compute plane<br/>local analyses"]
   end
@@ -152,8 +153,8 @@ flowchart LR
     U["User plane<br/>terminal"]
   end
   subgraph cluster["Computing cluster"]
-    A["Agent plane<br/>agent partition instance<br/>1 CPU, 8 GB RAM, long time limit"]
-    subgraph jobs["SLURM jobs, allocated as needed"]
+    A["Agent plane<br/>agent partition instance<br/>1 CPU, 8 GB RAM<br/>long time limit"]
+    subgraph jobs["SLURM jobs"]
       C1["Compute plane<br/>job 1"]
       C2["Compute plane<br/>job 2"]
     end
