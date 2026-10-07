@@ -1,5 +1,5 @@
 ---
-name: dunnlab-lifecycle
+name: dunnlab-research-lifecycle
 description: >
   Plan, explore, distill, and validate scientific analyses, preserving the
   decisions and evidence behind reported results. Use when organizing research,

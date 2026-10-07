@@ -33,10 +33,11 @@ Frontmatter `name` is optional for personal and project skills, where the direct
 
 ### Current skills
 
-- **dunnlab-defaults** — Language, code style, dependency management, testing, and version-control conventions.
+- **dunnlab-coding-defaults** — Language, code style, dependency management, testing, and version-control conventions.
 - **dunnlab-workflow-design** — Computational workflow design from exploration onward: readable data flow, shared implementation, execution provenance, valid reuse, and reproduction instructions.
 - **dunnlab-bioinformatics** — Biological methods, preferred tools and usage details, sequence identifiers, and domain-specific checks.
-- **dunnlab-lifecycle** — Scientific planning, exploration, selection, validation, and publication handoff; distillation retains the working implementation and closes evidence gaps.
+- **dunnlab-release-cycle** — Branches, issues, `dev_docs/PLAN.md` with gates, changelog, and the release ritual for projects that outgrow working on `main`.
+- **dunnlab-research-lifecycle** — Scientific planning, exploration, selection, validation, and publication handoff; distillation retains the working implementation and closes evidence gaps.
 - **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
 - **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
@@ -46,7 +47,7 @@ Frontmatter `name` is optional for personal and project skills, where the direct
 
 - **Description budget**: Skill descriptions share a listing budget of **1% of the model's context window** by default (`skillListingBudgetFraction`). When the listing overflows, Claude Code shortens descriptions starting with the skills you invoke least — names always survive, descriptions may not. Each entry's `description` plus `when_to_use` is separately capped at 1,536 characters. Keep descriptions to one concise sentence with the key use case first, and check the cost with `/doctor`.
 - **Body size**: The full skill body loads on invocation and stays in context for the rest of the session. Longer skills consume more context. Aim for completeness without redundancy.
-- **Cross-references**: Skills can reference each other by name (e.g., "apply conventions from the `dunnlab-defaults` skill"). They don't need to duplicate shared content.
+- **Cross-references**: Skills can reference each other by name (e.g., "apply conventions from the `dunnlab-coding-defaults` skill"). They don't need to duplicate shared content.
 
 ### Ownership and composition
 
@@ -66,8 +67,9 @@ readiness. Publication handoff is conditional lifecycle guidance, not a fifth ph
 or a requirement for every notebook.
 
 Keep substantial conditional details in references: Snakemake organization,
-execution provenance, reader documentation, and biological tool recipes. Preserve
-existing skill names when narrowing scope so installed invocations remain useful.
+execution provenance, reader documentation, and biological tool recipes. Rename a skill
+when a new skill would otherwise blur the distinction between them, and record the
+rename in the changelog; otherwise keep names stable so installed invocations keep working.
 A reference to a companion is a routing instruction, not a requirement to load
 all companions for every task.
 
@@ -81,7 +83,10 @@ Use these scenarios when evaluating changes to skill boundaries:
 | Resume a scaffolded project to implement its plan | Relevant workflow/domain or software guidance | New-project checks unfinished setup only; it does not own the build loop |
 | Review a workflow change or propose a design | Review/design skills as relevant | Assess requested artifacts without launching a lifecycle or expensive computation |
 | Rename workflow rules or update documentation | Workflow design; targeted review | Verify scope and dependencies; reuse still-valid scientific execution evidence |
+| Set up releases or work through a planned release | Release cycle + coding defaults; research lifecycle if the tool serves a scientific plan | `PLAN.md` holds release steps and gates; the scientific plan stays in `dev_docs/overview.md` |
 | Prepare a manuscript or dataset release for handoff | Lifecycle publication reference + workflow design + bibliography as relevant | Match the final artifact to evidence, preserve a citable version and access route, identify pending deposits without repeating valid computation |
+
+Before each release, the repo-only `skill-audit` skill (`.claude/skills/skill-audit/`) reviews all skills, their summaries, and the manual for competing mandates and drift, and records the result in `dev_docs/skill-audits/<version>.md`. It is not shipped with the plugin.
 
 For substantial skill changes, exercise representative scenarios with an
 independent agent using small isolated artifacts. Inspect the resulting behavior,

@@ -15,7 +15,7 @@ authorize moving files or running analyses.
 
 This skill owns computational structure and execution evidence. Use
 `dunnlab-bioinformatics` for biological methods and tool settings,
-`dunnlab-lifecycle` for scientific scope and readiness, `dunnlab-defaults` for code
+`dunnlab-research-lifecycle` for scientific scope and readiness, `dunnlab-coding-defaults` for code
 conventions, and `dunnlab-hpc` for Yale execution details. Use `dunnlab-new-project`
 only when repository scaffolding is needed. Load companions for the actual task;
 ordinary workflow changes do not require running a research lifecycle.

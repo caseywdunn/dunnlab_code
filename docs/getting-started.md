@@ -11,7 +11,7 @@ The stack we recommend, and how to get Claude Code or Codex running on your own 
 
 **Prefer industry-standard tools over domain-specific ones.** This is the single principle behind most of the choices below. It lets you draw on the enormous investment industry makes in data tooling, it gives you skills that are portable outside academia, and it means that when something breaks, someone has already written about it.
 
-The optional [`dunnlab-defaults` skill](plugin.md#the-skills) encodes these preferences for Claude Code. With either agent, put durable conventions in `AGENTS.md` so they apply without being restated.
+The optional [`dunnlab-coding-defaults` skill](plugin.md#the-skills) encodes these preferences for Claude Code. With either agent, put durable conventions in `AGENTS.md` so they apply without being restated.
 
 ### Terminal-first and text-first
 

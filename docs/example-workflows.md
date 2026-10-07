@@ -38,7 +38,7 @@ With the DunnLab Claude Code plugin, invoke the scaffolding skill:
 
 Then provide the scope below. It explicitly requests a review before
 implementation; this is a choice for this example, not an automatic effect
-of invoking the skill. Use `dunnlab-lifecycle` for the scientific planning alongside
+of invoking the skill. Use `dunnlab-research-lifecycle` for the scientific planning alongside
 the scaffold. With Codex, or Claude Code without the plugin, provide the same scope
 directly:
 
@@ -90,13 +90,13 @@ With the planning documents already in place, ask the agent to implement
 milestones. For a scientific analysis with the DunnLab Claude Code plugin, use:
 
 ```
-/dunnlab-lifecycle
+/dunnlab-research-lifecycle
 ```
 
 Lifecycle selects the current scientific work; `dunnlab-workflow-design` guides
 its computational structure from exploration onward, and `dunnlab-bioinformatics`
 adds domain methods when relevant. For a software tool or package, ask for
-implementation directly using `dunnlab-defaults`. Invoke `dunnlab-new-project`
+implementation directly using `dunnlab-coding-defaults`. Invoke `dunnlab-new-project`
 again only if setup remains unfinished. Either agent can follow the same committed
 plan and evaluate routine gates without pausing for a new approval at each one.
 
@@ -107,7 +107,7 @@ The agent should:
 - **Update documentation** — keeping the README and docs in sync with the implementation
 - **Commit after each milestone** — so you have a clean git history
 
-Because the planning documents act as a specification, either agent can stay on track without constant guidance. `AGENTS.md` supplies the shared conventions; Claude Code can additionally use `dunnlab-defaults` through its plugin.
+Because the planning documents act as a specification, either agent can stay on track without constant guidance. `AGENTS.md` supplies the shared conventions; Claude Code can additionally use `dunnlab-coding-defaults` through its plugin.
 
 ### 6. Review and iterate
 

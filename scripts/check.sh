@@ -81,7 +81,7 @@ else
 fi
 
 # The README and the architecture doc both enumerate skills. They drift.
-for doc in README.md dev_docs/plugin-architecture.md; do
+for doc in README.md dev_docs/plugin-architecture.md docs/plugin.md; do
   missing=""
   for entry in skills/*/SKILL.md; do
     [[ -f "$entry" ]] || continue
@@ -90,6 +90,31 @@ for doc in README.md dev_docs/plugin-architecture.md; do
   done
   if [[ -z "$missing" ]]; then ok "$doc lists every skill"; else bad "$doc missing:$missing"; fi
 done
+
+# Every dunnlab-* name in the repo must be a skill or command that exists. A
+# stale name routes the reader, or the model, to a skill that is not there.
+res=$(python3 - <<'PY'
+import pathlib, re
+valid = {p.parent.name for p in pathlib.Path('skills').glob('*/SKILL.md')}
+valid |= {p.stem for p in pathlib.Path('commands').glob('*.md')}
+# Names that are not skills: the plugin, its tags, the eval workspace, and
+# Docker resources used by the docs preview.
+valid |= {'dunnlab-code', 'dunnlab-new-project-workspace',
+          'dunnlab-docs-preview', 'dunnlab-jekyll-bundle'}
+skip_dirs = {'.git', 'workshops', 'iteration-1'}
+skip_files = {'CHANGELOG.md', 'settings.local.json', 'check.sh'}
+for p in sorted(pathlib.Path('.').rglob('*')):
+    if not p.is_file() or p.suffix not in {'.md', '.json', '.sh', '.yml'}: continue
+    if skip_dirs & set(p.parts) or p.name in skip_files: continue
+    if p.parts[:2] == ('dev_docs', 'skill-audits'): continue
+    for i, line in enumerate(p.read_text().split('\n'), 1):
+        for name in re.findall(r'dunnlab-[a-z0-9-]*[a-z0-9]', line):
+            if name in valid or name.startswith('dunnlab-code--v'): continue
+            print(f"{p}:{i}: unknown skill or command '{name}'")
+PY
+)
+if [[ -z "$res" ]]; then ok "every dunnlab-* name is an existing skill or command"
+else while IFS= read -r l; do bad "$l"; done <<< "$res"; fi
 
 # ---------------------------------------------------------------- regressions
 head_ "Known-bad strings"
@@ -104,6 +129,8 @@ FORBIDDEN=(
   "example-skill|skill does not exist"
   "dunnlab-review|skill is named dunnlab-codereview"
   "data-analysis.md|page does not exist"
+  "dunnlab-lifecycle|renamed dunnlab-research-lifecycle"
+  "dunnlab-defaults|renamed dunnlab-coding-defaults"
 )
 # A line that mentions one of these on purpose — documentation explaining
 # what the old mistake was — opts out with a `check-ignore` marker.
@@ -112,7 +139,7 @@ for entry in "${FORBIDDEN[@]}"; do
   reason=${entry#*|}
   hits=$(grep -rn --fixed-strings "$s" \
         --include='*.md' --include='*.json' --include='*.sh' \
-        --exclude-dir=.git --exclude-dir=workshops \
+        --exclude-dir=.git --exclude-dir=workshops --exclude-dir=iteration-1 \
         --exclude='check.sh' --exclude='CHANGELOG.md' \
         --exclude='settings.local.json' . 2>/dev/null \
         | grep -v 'check-ignore' || true)
@@ -256,6 +283,37 @@ PYEOF
 )
 if [[ -z "$res" ]]; then ok "install commands match the manifests and remote"
 else while IFS= read -r l; do bad "$l"; done <<< "$res"; fi
+
+# ------------------------------------------------------------ skill audit
+head_ "Skill audit"
+
+# A release needs a skill-audit report for its version (see the skill-audit
+# project skill and the release steps in dev_docs/contributing.md). Versions
+# before AUDIT_SINCE predate the audit. The report's findings must all be
+# resolved: no row may still say "open".
+AUDIT_SINCE=1.1.0
+res=$(python3 - "$AUDIT_SINCE" <<'PY'
+import json, pathlib, re, sys
+v = json.load(open('.claude-plugin/plugin.json'))['version']
+key = lambda s: tuple(int(x) for x in s.split('.'))
+if key(v) < key(sys.argv[1]):
+    print(f"SKIP {v} predates the audit"); sys.exit()
+report = pathlib.Path(f'dev_docs/skill-audits/{v}.md')
+if not report.exists():
+    print(f"BAD no skill-audit report {report} for version {v}"); sys.exit()
+open_rows = [l for l in report.read_text().split('\n')
+             if l.startswith('|') and re.search(r'\|\s*open\s*\|', l, re.I)]
+if open_rows:
+    print(f"BAD {report} has {len(open_rows)} open finding(s)")
+else:
+    print(f"OK {report} exists with no open findings")
+PY
+)
+case "$res" in
+  SKIP*) skip_ "skill audit — ${res#SKIP }" ;;
+  OK*)   ok "${res#OK }" ;;
+  *)     bad "${res#BAD }" ;;
+esac
 
 # --------------------------------------------------- disclosure freshness
 head_ "AI use disclosure"

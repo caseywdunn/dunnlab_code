@@ -20,7 +20,7 @@ You do not need the plugin to use anything else in this manual, and the skills a
 | **Hooks** | Shell scripts bound to lifecycle events | On the event. None are defined here yet |
 | **Assets** | Files distributed alongside, for you to copy | You copy them |
 
-Plugin skills are namespaced, so the full name is `/dunnlab-code:dunnlab-defaults`. The bare `/dunnlab-defaults` also works unless something else has claimed that name.
+Plugin skills are namespaced, so the full name is `/dunnlab-code:dunnlab-coding-defaults`. The bare `/dunnlab-coding-defaults` also works unless something else has claimed that name.
 
 ## The skills
 
@@ -28,10 +28,11 @@ Each has a markdown entry point, with references for substantial conditional det
 
 | Skill | What it settles |
 |-------|-----------------|
-| **`dunnlab-defaults`** | Preferred languages, coding style, dependency management, focused tests, and version-control conventions. |
+| **`dunnlab-coding-defaults`** | Preferred languages, coding style, dependency management, focused tests, and version-control conventions. |
 | **`dunnlab-workflow-design`** | Computational structure from the first exploratory runs: readable commands, explicit dependencies, shared implementation, provenance, valid output reuse, and reproduction instructions. |
 | **`dunnlab-bioinformatics`** | Biological methods and tool recipes: identifiers, format checks, sequence orientation, annotation, paralog resolution, and quality assessment. |
-| **`dunnlab-lifecycle`** | Planning, exploration, distillation, and validation of scientific analyses. Tracks decisions and readiness for the selected scope, with publication handoff guidance when needed. |
+| **`dunnlab-release-cycle`** | When a project outgrows working directly on `main`: development and issue branches, a plan with gates an agent can work through, a changelog, and a repeatable release procedure. |
+| **`dunnlab-research-lifecycle`** | Planning, exploration, distillation, and validation of scientific analyses. Tracks decisions and readiness for the selected scope, with publication handoff guidance when needed. |
 | **`dunnlab-new-project`** | Repository, environment, and documentation scaffolding, then a handoff. Resumable setup can use `.agent/new-project-progress.yaml`; ongoing scientific work belongs to lifecycle. |
 | **`dunnlab-hpc`** | YCRC cluster reference — partitions, storage quotas, SLURM batch templates, GPU inventory, Snakemake integration. Yale-specific; see [Computing at Yale](yale.md). |
 | **`dunnlab-codereview`** | Review and verification using the relevant skill's standards, with feedback that distinguishes blocking issues from suggestions. |

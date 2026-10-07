@@ -1,5 +1,5 @@
 ---
-name: dunnlab-defaults
+name: dunnlab-coding-defaults
 description: >
   Dunn Lab language, coding, dependency, testing, and documentation conventions.
   Use when writing or reviewing code. Workflow architecture belongs to
@@ -8,7 +8,7 @@ description: >
 
 # Dunn Lab Defaults
 
-Apply these coding preferences within the requested task and established project conventions. Use `dunnlab-workflow-design` for computational workflow architecture and execution, `dunnlab-new-project` for repository scaffolding, and `dunnlab-lifecycle` for scientific analysis phases. These skills own their respective requirements; this skill does not define a second workflow or lifecycle.
+Apply these coding preferences within the requested task and established project conventions. Use `dunnlab-workflow-design` for computational workflow architecture and execution, `dunnlab-new-project` for repository scaffolding, `dunnlab-research-lifecycle` for scientific analysis phases, and `dunnlab-release-cycle` for branches, plans, and releases. These skills own their respective requirements; this skill does not define a second workflow or lifecycle.
 
 ## Preferred languages and tools
 
@@ -105,7 +105,7 @@ Use the idiomatic test framework for each language — do not introduce third-pa
 
 ### Unit tests
 
-- Test consequential behavior: branching logic, error handling, joins, and non-obvious transformations that could change a result or break an interface. Match test effort to the task and consequences; do not exhaustively harden disposable exploratory branches. Keep the scientific correctness checks required by `dunnlab-workflow-design` and `dunnlab-lifecycle`.
+- Test consequential behavior: branching logic, error handling, joins, and non-obvious transformations that could change a result or break an interface. Match test effort to the task and consequences; do not exhaustively harden disposable exploratory branches. Keep the scientific correctness checks required by `dunnlab-workflow-design` and `dunnlab-research-lifecycle`.
 - Keep tests focused — one behavior per test, with a clear name describing what is being verified (e.g., `test_parse_fasta_handles_empty_input`).
 - Use fixtures and parameterized tests to avoid duplication.
 
@@ -154,6 +154,8 @@ When project guidance outgrows that limit, move detailed instructions into linke
 CONTRIBUTING.md should include all details needed for formatting, linting, testing, and any other project-specific development practices.
 
 ## Version control best practices
+
+Simple projects commit directly to `main`. Projects with multiple contributors, users who depend on the code while it changes, distributed tools, or long unattended agent work use the release cycle in `dunnlab-release-cycle`. Follow whichever the project has adopted.
 
 Exclude bulk data, results, and logs from version control by default. Retain small fixtures and the provenance/specification records needed to interpret results; workflow-design defines their role. Respect files the user has chosen to track. For example:
 

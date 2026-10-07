@@ -6,6 +6,27 @@ release process in [`dev_docs/contributing.md`](dev_docs/contributing.md#releasi
 Lab members pick up a new version with `/plugin update dunnlab-code@dunnlab`;
 auto-update is off by default for third-party marketplaces.
 
+## Unreleased
+
+### Added
+
+- `dunnlab-release-cycle` sets up and runs a development cycle for projects that
+  outgrow working on `main`: `dev` and issue branches, `dev_docs/PLAN.md` with
+  agent-checkable and human gates, a changelog kept per change, and a release
+  ritual that includes returning to `dev`.
+- An IQ-TREE section in `dunnlab-bioinformatics`, with replicate searches and
+  constrained-tree AU tests.
+- README guidance assumes biologist readers and keeps development material in
+  `dev_docs/`.
+- The manual introduces user, agent, and compute planes, with diagrams.
+
+### Changed
+
+- Renamed `dunnlab-lifecycle` to `dunnlab-research-lifecycle` and
+  `dunnlab-defaults` to `dunnlab-coding-defaults`, to keep them distinct from
+  the release cycle. Invoke them by their new names, for example
+  `/dunnlab-code:dunnlab-research-lifecycle`.
+
 ## 1.0.0 (2026-10-02)
 
 ### Added

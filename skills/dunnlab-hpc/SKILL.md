@@ -13,7 +13,7 @@ The Dunn Lab runs computationally intensive analyses on Yale Center for Research
 
 This skill owns Yale platform details and scheduler configuration. Use
 `dunnlab-workflow-design` for the computational path and execution evidence,
-`dunnlab-defaults` for dependency conventions, and domain skills for tool choices.
+`dunnlab-coding-defaults` for dependency conventions, and domain skills for tool choices.
 Verify current cluster access, limits, and migration notices before scheduling or
 moving data; the reference below is not a live inventory.
 

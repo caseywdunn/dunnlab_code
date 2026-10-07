@@ -2,7 +2,7 @@
 
 Write root and analysis READMEs for people who need to understand and reproduce
 the work, assuming they are biologists rather than software engineers, as in the
-README guidance in `dunnlab-defaults`. Use plain language and define necessary
+README guidance in `dunnlab-coding-defaults`. Use plain language and define necessary
 technical terms. Describe its current scope, methods, inputs, outputs, software
 requirements, and usable entry points. Keep development history, implementation
 decisions, progress, review gates, and failed attempts in `dev_docs/` or linked

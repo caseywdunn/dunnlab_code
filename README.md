@@ -42,7 +42,7 @@ There is no `--plugin-dir` option for the Claude VS Code extension, but you can 
 
 Once the plugin is installed, everything is available automatically — there are no extra activation steps.
 
-- **Skills** load based on context. The `dunnlab-defaults` skill, for example, activates when you start a new analysis script or set up a project. You can also invoke any skill explicitly.
+- **Skills** load based on context. The `dunnlab-coding-defaults` skill, for example, activates when you start a new analysis script or set up a project. You can also invoke any skill explicitly.
 - **Hooks** run automatically in response to events (none are defined yet).
 
 Plugin skills are namespaced by the plugin, so the full name is `/dunnlab-code:<skill>`. The bare `/<skill>` form also works as long as nothing else has claimed that name.
@@ -85,10 +85,11 @@ If you are loading a local copy with `--plugin-dir`, just `git pull`. Changes ar
 
 ### Skills
 
-- **dunnlab-defaults** — Language, code style, dependency management, testing, and version-control conventions.
+- **dunnlab-coding-defaults** — Language, code style, dependency management, testing, and version-control conventions.
 - **dunnlab-workflow-design** — Computational workflow design from exploration onward: readable data flow, shared implementation, execution provenance, valid reuse, and reproduction instructions.
 - **dunnlab-bioinformatics** — Biological methods, preferred tools and usage details, sequence identifiers, and domain-specific checks.
-- **dunnlab-lifecycle** — Scientific planning, exploration, selection, validation, and publication handoff; distillation retains the working implementation and closes evidence gaps.
+- **dunnlab-release-cycle** — Development and release process for projects with several contributors or outside users: dev and issue branches, a plan with gates, changelog, and releases.
+- **dunnlab-research-lifecycle** — Scientific planning, exploration, selection, validation, and publication handoff; distillation retains the working implementation and closes evidence gaps.
 - **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
 - **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
