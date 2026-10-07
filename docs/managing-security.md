@@ -237,6 +237,13 @@ Everything above depends on Claude behaving as designed. This section does not: 
 
 That is the distinction to keep. Permission rules decide what Claude *chooses* to do. Isolation decides what a running command *can reach*. For unattended work you want both, and the more autonomy you grant at the Claude level, the more the system level has to carry.
 
+In the terms of [Agent Concepts](claude-intro.md#user-agent-and-compute-planes), these are boundaries for the **agent plane**: the machine or account where the harness runs. A boundary enforced there holds no matter what the harness or model does.
+
+{: .warning }
+> **Isolating the agent plane does not isolate the compute plane.**
+>
+> An agent can reach whatever its credentials reach. If it holds SSH keys for a cluster or can submit jobs, it can read, write, and spend resources there, however well its own machine is isolated. Give the agent plane only the credentials the project needs.
+
 The options below run from lightest to heaviest. Anthropic's [sandbox environments guide](https://code.claude.com/docs/en/sandbox-environments) compares them in more detail.
 
 | Approach | What it isolates | Effort |
@@ -298,7 +305,7 @@ This is the right level for genuinely untrusted code, and for any policy that re
 
 The most secure, simplest, and most straightforward boundary is a separate computer with nothing valuable on it. Some risk remains through the network — a machine sitting inside a trusted network can still reach internal services even when it holds nothing itself — but the strategy is clean and effective, and it is my preferred approach when practical.
 
-For long unsupervised coding sessions I use either a dedicated virtual machine in the cloud or an old computer set up with Ubuntu. Both are cheap — a spare laptop that is too slow for daily use is fine, and a small cloud instance costs little if you stop it when idle — and both mean I do not have to think carefully about what a bypassed session could reach. If it destroys itself, I reinstall.
+For long unsupervised coding sessions I use either a dedicated virtual machine in the cloud or an old computer set up with Ubuntu. Both are cheap — the agent plane needs very little compute, so a spare laptop that is too slow for daily use is fine, and a small cloud instance costs little if you stop it when idle — and both mean I do not have to think carefully about what a bypassed session could reach. If it destroys itself, I reinstall.
 
 The practical requirements are the same either way. Keep nothing on it you cannot lose, give it credentials scoped to the one project rather than your usual keys, and push work to git rather than trusting the machine to hold it.
 

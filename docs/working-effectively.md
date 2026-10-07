@@ -126,11 +126,11 @@ One caution. An agent asked *are we on the right track?* has a pull toward answe
 
 ## Keep the agent working for you
 
-The goal is not to spend all day supervising an agent. It is to make the agent as autonomous as the work safely allows. A run that is going well may need little or no input for hours or even days while it implements the plan, runs analyses, checks intermediate results, and interprets what it finds.
+The goal is not to spend all day supervising an agent. It is to make the agent as autonomous as the work safely allows. A run that is going well may need little or no input for hours or even days while it implements the plan, runs analyses, checks intermediate results, and interprets what it finds. Runs that long need a persistent [agent plane](claude-intro.md#user-agent-and-compute-planes): an agent on a laptop stops whenever the laptop sleeps.
 
 Your attention should be reserved for the things only you can contribute: information the agent cannot access, consequential design decisions, scientific judgment, and expertise it does not already have. Clicking through routine permission requests, fetching files for it, and repeatedly answering questions that could have been settled in advance are signs that the workflow needs attention.
 
-If many of your prompts merely grant permissions, revisit the [permission settings](managing-security.md). Allow the agent to do more where that is appropriate, but do not weaken protections that the environment genuinely needs. Change the environment instead: use a machine with fewer security concerns, work inside a sandbox or virtual machine, give the agent read-only access to raw data, or use the model's own sandboxing features. Design the workspace so that routine work is safe to authorize broadly and consequential actions remain constrained.
+If many of your prompts merely grant permissions, revisit the [permission settings](managing-security.md). Allow the agent to do more where that is appropriate, but do not weaken protections that the environment genuinely needs. Change the environment instead: move the agent plane to a machine with fewer security concerns, work inside a sandbox or virtual machine, give the agent read-only access to raw data, or use the model's own sandboxing features. Design the workspace so that routine work is safe to authorize broadly and consequential actions remain constrained.
 
 Frequent interruptions can also mean that the work was not planned far enough ahead. If the agent keeps asking you to make design decisions during implementation, return to the plan and make those decisions explicit. Before launching a large analysis, ask it to run a small end-to-end pilot. A pilot exposes missing inputs, ambiguous choices, permission problems, and unrealistic resource estimates while they are still cheap to fix.
 
@@ -161,7 +161,8 @@ For each project, record the context you will need when you return:
 | **Objective** | The question or outcome the project is meant to address. |
 | **Current step** | Where the project is in its plan and what is happening now. |
 | **Agent and session** | The agent being used and the session name, link, or identifier needed to reopen it. |
-| **Run location** | The computer, cluster, virtual machine, container, or terminal session where the agent or analysis is running. |
+| **Agent location** | The computer, virtual machine, container, or terminal session where the agent is running (its agent plane). |
+| **Compute location** | Where the analyses run (the compute plane), such as the same machine or a cluster, with any job IDs. |
 | **Working directory** | The exact path containing the files the agent is acting on. |
 | **Repository** | The associated GitHub repository, branch, pull request, or other version-control context. |
 | **Related context** | Relevant Slack channels, documents, data locations, issue trackers, or collaborators. |

@@ -9,7 +9,7 @@ Everything you need to get going, on one page. Each section links to the chapter
 
 ## Set up
 
-**Before you install, decide where this will run.** Your everyday machine, a separate user account on it, a container, a virtual machine, or a dedicated machine. This is much easier to choose now than to retrofit later, and the more autonomy you plan to give an agent, the more that choice has to carry. → [System-level control](managing-security.md#system-level-control)
+**Before you install, decide where the agent will run** — its [agent plane](claude-intro.md#user-agent-and-compute-planes). Your everyday machine, a separate user account on it, a container, a virtual machine, or a dedicated machine. This is much easier to choose now than to retrofit later, and the more autonomy you plan to give an agent, the more that choice has to carry. → [System-level control](managing-security.md#system-level-control)
 
 ```bash
 # Install Claude Code, Codex, or both (macOS and Linux)

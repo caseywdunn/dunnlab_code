@@ -49,7 +49,7 @@ Permission and approval rules constrain what a harness will run. A functioning s
 
 In Claude Code, run `/sandbox` and check whether a Dependencies tab appears. Its sandbox needs `bubblewrap`, `socat`, and unprivileged user namespaces, and shared systems commonly restrict the last of these. **When it cannot start, Claude Code warns and runs commands unsandboxed**, unless `sandbox.failIfUnavailable` is set to `true`.
 
-In Codex, use `/permissions` to inspect the active sandbox and writable roots. For either harness, test that a deliberately out-of-scope read or write is actually blocked before trusting the boundary. If the required isolation is unavailable, keep the agent off the cluster and use the [local-control, remote-compute](working-across-computers.md#let-a-local-agent-control-remote-computation) arrangement instead.
+In Codex, use `/permissions` to inspect the active sandbox and writable roots. For either harness, test that a deliberately out-of-scope read or write is actually blocked before trusting the boundary. If the required isolation is unavailable, keep the agent plane off the cluster: run the agent on a machine you can isolate, and use the cluster only as the compute plane, as in [Let a local agent control remote computation](working-across-computers.md#let-a-local-agent-control-remote-computation).
 
 ### Never run heavy work on a login node
 
