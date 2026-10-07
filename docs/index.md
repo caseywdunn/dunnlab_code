@@ -25,10 +25,10 @@ The manual uses Claude Code and Codex as its main examples, but most of it appli
 - [Using AI in Research](using-ai.md) — What changes and what does not: accountability, reviewing generated code, handling data, reporting AI use, and journal and funder policy. No terminal required.
 - [Quick Reference](quick-reference.md) — The whole thing on one page: setup, the working rhythm, permission modes, sessions, and tmux. Start here if you want the shape before the detail.
 - [Getting Started](getting-started.md) — The computational stack we recommend, and how to install and verify Claude Code or Codex.
-- [Agent Concepts](claude-intro.md) — A vendor-neutral guide to models, harnesses, agent loops, context, tools, permissions, and sessions.
+- [Agent Concepts](claude-intro.md) — A vendor-neutral guide to models, harnesses, agent loops, context, tools, permissions, sessions, and the user, agent, and compute planes.
 - [Coding Agents](other-agents.md) — How Claude Code and Codex map onto those concepts, where they differ, and what carries between them.
 - [Managing Security](managing-security.md) — Permissions, sandboxing, and containers. What can go wrong and what actually stops it.
-- [Working Across Computers](working-across-computers.md) — Remote agents, SSH and tmux, and separating the control plane from heavy computation.
+- [Working Across Computers](working-across-computers.md) — Remote agents, SSH and tmux, and separating the user, agent, and compute planes.
 - [Managing Context](managing-context.md) — Giving an agent the right information: project instructions, rules, memory, skills, and plugins.
 - [Working Effectively](working-effectively.md) — How to frame the work: asking broadly, separating planning from building, and committing the plan.
 - [DunnLab Plugin](plugin.md) — The skills, commands, and assets in this repository, and how to run them.

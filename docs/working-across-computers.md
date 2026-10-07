@@ -17,24 +17,17 @@ There are two main reasons to move work away from your everyday computer.
 
 These motivations often overlap, but they do not require the same architecture. A cheap remote machine may be an excellent isolated place for an agent and a poor place for computation; an HPC cluster may be an excellent compute resource and an inappropriate place to run an autonomous agent.
 
-## Control plane and compute plane
+## Placing the planes
 
-It helps to separate two kinds of work:
-
-| Plane | What happens there |
-|---|---|
-| **Control plane** | The agent reads the plan, edits code, commits changes, submits jobs, monitors progress, moves selected files, checks gates, and interprets results. |
-| **Compute plane** | CPUs, GPUs, memory, and storage execute the actual analysis, often through a batch scheduler. |
-
-Sometimes both planes live on one computer. They can also be separated:
+[Agent Concepts](claude-intro.md#user-agent-and-compute-planes) separates the work into three planes. The **user plane** is where you interact with the agent, the **agent plane** is where the harness runs the agent loop, and the **compute plane** is where the analyses run. The user plane stays with you. The arrangements below differ in where the agent and compute planes go:
 
 | Arrangement | Best for | Main caution |
 |---|---|---|
 | **Remote agent, remote compute** | A dedicated workstation or VM where the agent can code and run moderate analyses unattended. | The remote machine still needs narrowly scoped credentials and backups through Git. |
-| **Local agent, remote compute** | Keeping the agent on your own machine while using a cluster, GPU server, or cloud instance for heavy jobs. | SSH access gives the local agent reach into the remote system; constrain that reach deliberately. |
+| **Local agent, remote compute** | Keeping the agent on your own machine while using a cluster, GPU server, or cloud instance for heavy jobs. | SSH access gives the local agent reach into the remote system; constrain that reach deliberately. The agent stops whenever your computer sleeps, so submitted jobs continue unmonitored. |
 | **Agent on shared infrastructure** | Work whose code and data already live there, when policy explicitly permits agents. | Shared filesystems, login-node rules, and weak sandbox support raise the stakes. |
 
-The middle arrangement is especially useful: the agent remains in a familiar, controlled environment but can drive a much larger compute resource entirely through command-line tools.
+Keeping the agent local is a simple way to start: the agent remains in a familiar, controlled environment but can drive a much larger compute resource entirely through command-line tools. When sessions need to run for hours or days, move the agent plane to a persistent machine or allocation.
 
 ## Connect with SSH and transfer with SCP
 
@@ -130,7 +123,7 @@ A dedicated machine with no private data is a strong boundary, but “remote” 
 - Never run heavy work on a shared login node; submit it through the scheduler.
 
 {: .warning }
-> **Separating control and compute does not automatically separate the agent from the data.**
+> **Separating the agent and compute planes does not automatically separate the agent from the data.**
 >
 > If a local agent can run `ssh cluster cat sensitive-file`, it can read that file and potentially send its contents to the model. Enforce the boundary with accounts, filesystem permissions, restricted credentials, and approved data paths rather than relying on where the agent process happens to run.
 
@@ -140,6 +133,6 @@ A dedicated machine with no private data is a strong boundary, but “remote” 
 - **Local agent with remote compute:** choose this when the cluster or server is primarily a source of capacity and command-line access is sufficient.
 - **Agent on the cluster:** choose this only when policy permits it and the benefits outweigh the broader shared-system risk.
 
-Start with one control plane and one authoritative repository. Add file transfer and remote execution deliberately, pilot the complete path on a small job, and put a gate between submission, retrieval, and interpretation.
+Start with one agent plane and one authoritative repository. Add file transfer and remote execution deliberately, pilot the complete path on a small job, and put a gate between submission, retrieval, and interpretation.
 
 For institution-specific cluster policy and examples, see [Computing at Yale](yale.md). For the short session commands, see [Quick Reference](quick-reference.md#remote-work-with-tmux).

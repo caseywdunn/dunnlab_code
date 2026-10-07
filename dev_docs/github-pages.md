@@ -34,10 +34,10 @@ The chapters are ordered by how widely they apply, narrowing as they go. Keep ne
 | `using-ai.md` | 2 | anyone | Responsibility, reviewing generated code, data handling, disclosure, journal and funder policy |
 | `quick-reference.md` | 3 | anyone | One-page cheatsheet: setup, working rhythm, permission modes, sessions, tmux |
 | `getting-started.md` | 4 | anyone | Recommended stack, installing and verifying Claude Code or Codex |
-| `claude-intro.md` | 5 | anyone | Vendor-neutral agent concepts: models, harnesses, loops, context, tools, permissions, and sessions |
+| `claude-intro.md` | 5 | anyone | Vendor-neutral agent concepts: models, harnesses, loops, context, tools, permissions, sessions, and user/agent/compute planes |
 | `other-agents.md` | 6 | anyone | How Claude Code and Codex implement the concepts, and what carries between agents |
 | `managing-security.md` | 7 | anyone | Permissions, sandboxing, isolation |
-| `working-across-computers.md` | 8 | anyone | Remote agents, SSH, tmux, and separating control from compute |
+| `working-across-computers.md` | 8 | anyone | Remote agents, SSH, tmux, and separating the agent plane from compute |
 | `managing-context.md` | 9 | anyone | Context window, agent instructions, rules, auto memory, skills, plugins |
 | `working-effectively.md` | 10 | anyone | How to frame the work: broad requests, planning vs building, committing the plan |
 | `plugin.md` | 11 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
