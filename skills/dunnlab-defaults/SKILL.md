@@ -130,6 +130,8 @@ Use the idiomatic test framework for each language — do not introduce third-pa
 
 Prefer idiomatic source and test structures for the language, preserving established layouts. `dunnlab-new-project` creates the minimum project scaffold; `dunnlab-workflow-design` owns the organization of analyses, inputs, outputs, and execution guides. Do not create directories or documents solely to fill a template.
 
+Write README.md for the project's users, and assume they are biologists rather than software engineers. Explain what the project does and how to use it in plain language, minimizing computational jargon and defining any necessary technical term where it first appears. If a user does not need to know something, leave it out of the README. Roadmaps, specifications, design decisions, development history, and internal checks belong in `dev_docs/`; the README may give a brief, high-level summary of status or direction and link there.
+
 For software projects, README.md should include a project overview, setup instructions, usage examples, and a link to the development guide. For scientific analyses, follow `dunnlab-workflow-design` for reader-facing READMEs and canonical reproduction instructions; keep developer checks and construction history in linked developer documentation.
 
 Use `dev_docs/` for focused developer material such as the data model, implementation decisions, and internal verification instructions. Keep it readable by people and loadable as needed by coding agents; link to reader-facing methods and usage rather than duplicating them.
