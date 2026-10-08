@@ -111,7 +111,7 @@ A second computer should not create a second, disconnected history. For every su
 - Capture the environment definition and tool versions in tracked files.
 - Keep logs with enough context to connect outputs back to the run that produced them.
 
-That makes the compute plane replaceable. You should be able to move the same committed code and environment description to another machine and understand what differs.
+That makes the compute plane replaceable. [Reproducibility](reproducibility.md) covers the rest of what a result needs in order to be regenerated. You should be able to move the same committed code and environment description to another machine and understand what differs.
 
 ## Security and policy still apply
 

@@ -32,6 +32,8 @@ The manual uses Claude Code and Codex as its main examples, but most of it appli
 - [Working Across Computers](working-across-computers.md) — Remote agents, SSH and tmux, and separating the user, agent, and compute planes.
 - [Managing Context](managing-context.md) — Giving an agent the right information: project instructions, rules, memory, skills, and plugins.
 - [Working Effectively](working-effectively.md) — How to frame the work: asking broadly, separating planning from building, and committing the plan.
+- [Reproducibility](reproducibility.md) — What it takes for an analysis to work again: data, code, and runtime, how agents help and hurt, testing that results reproduce, and archiving.
+- [Correctness](correctness.md) — Whether a result is right: tasks that are hard to do or hard to check, with strategies and biological examples for each, plus tests, external validation, and code review.
 - [Software Engineering](software-engineering.md) — Building large projects with agents: architecture principles, testing and linting, idempotence and dry runs, workflow frameworks such as Snakemake, prototyping, increments and gates, issues, and release cycles.
 - [Writing with AI](writing-with-ai.md) — AI in manuscripts: where analysis and writing blur, the ways AI can contribute, discussing use openly with co-authors, and getting references right.
 - [DunnLab Plugin](plugin.md) — The skills, commands, and assets in this repository, and how to run them.

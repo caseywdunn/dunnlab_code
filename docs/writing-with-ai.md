@@ -1,6 +1,6 @@
 ---
 title: Writing with AI
-nav_order: 13
+nav_order: 15
 ---
 
 # Writing with AI
@@ -34,6 +34,8 @@ Beyond the products of the analysis, agents can help with the writing itself:
 - **Simulated reviews** that look for likely problems before submission: unsupported claims, missing controls, unclear figures, the objections an expert in the field would raise.
 
 These differ in an important way. Some put AI-generated text into the manuscript: drafts, abstracts, edited sentences. Others shape the manuscript without contributing any text: feedback, journal mock-ups, and simulated reviews inform your decisions, but every word that reaches the paper is yours. Both kinds are contributions, and both deserve to be discussed and reported, but they raise different questions about authorship and originality.
+
+**Choose the model carefully for prose.** The ability to write good prose varies widely from model to model, more than the ability to write working code. Weaker models produce text that is generic, padded, or subtly imprecise, which takes longer to fix than to write yourself. For drafting, editing, and feedback on writing, it is generally best to use the most capable model you have access to, even if you use a faster one for routine coding.
 
 ## The essentials still apply
 
@@ -70,13 +72,13 @@ The lab encodes its manuscript conventions in the [`dunnlab-manuscript` skill](p
 
 ## Getting references right
 
-References are where AI errors are most likely to reach print. Models fabricate convincing citations, with plausible authors, titles, and DOIs. A subtler problem is just as common: a real paper cited for a claim it does not make. Both look correct until someone checks.
+Early language models were notorious for fabricating references, with plausible authors, titles, and DOIs for papers that did not exist. Current models, especially agents that can search the literature, are much better at finding relevant work and citing it accurately. Errors still happen, though: a garbled author list, a DOI that points to a different paper, or a real paper cited for a claim it does not make. A citation error looks correct until someone checks, so check every reference against a source of truth outside the model.
 
-- **Treat AI literature searches as leads, not citations.** They are a way to find things to read.
-- **Take citation details from an authoritative source,** such as the publisher's page, PubMed, or Crossref, never from a model's memory. Check that each DOI resolves to the work cited, with the full, correct author list.
+- **Use AI literature searches to find things to read.** A search can surface relevant work you would have missed, but a paper becomes a citation only once you have checked and read it.
+- **Validate against an external source of truth.** Check every entry against an authoritative record, such as [Crossref](https://www.crossref.org/), PubMed, or the publisher's page, rather than trusting either a model or your own memory. Confirm that each DOI resolves to the work cited, with the correct title and full author list.
 - **Read the references.** At minimum, read the parts that support your claim, and confirm the paper supports that claim, for that system, at that strength. Correct citation details do not make a citation appropriate.
 - **Prefer primary sources** for findings, and cite reviews as reviews.
 - **Cite the software and data you used,** with versions or accession numbers, not only the papers describing them.
-- **Automate the mechanical checks.** An agent can write a script that resolves every DOI in the bibliography and compares the returned title and authors with your entries. That catches fabricated and garbled entries. It cannot tell you whether a paper supports your claim; only reading does that.
+- **Automate the validation.** An agent can write a script that looks up every DOI in the bibliography in Crossref and compares the returned title, authors, journal, and year with your entries. Run it whenever the bibliography changes. It catches fabricated and garbled entries; it cannot tell you whether a paper supports your claim. Only reading does that.
 
 The [`dunnlab-biblio` skill](plugin.md#the-skills) encodes these practices for agents, including never filling in a missing field by guessing.

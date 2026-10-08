@@ -41,12 +41,14 @@ The chapters are ordered by how widely they apply, narrowing as they go. Keep ne
 | `working-across-computers.md` | 9 | anyone | Remote agents, SSH, tmux, and separating the agent plane from compute |
 | `managing-context.md` | 10 | anyone | Context window, agent instructions, rules, auto memory, skills, plugins |
 | `working-effectively.md` | 11 | anyone | How to frame the work: broad requests, planning vs building, committing the plan |
-| `software-engineering.md` | 12 | anyone | Engineering for biologists directing agents: architecture principles, testing and linting, idempotence and dry runs, workflow frameworks (Snakemake), prototyping, increments, issues, release cycles, constraint |
-| `writing-with-ai.md` | 13 | anyone | AI in manuscript writing: where analysis and writing blur, ways AI contributes, essentials, open discussion, principles behind the manuscript conventions, accurate references |
-| `plugin.md` | 14 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
-| `example-workflows.md` | 15 | anyone | Step-by-step walkthrough of a project |
-| `yale.md` | 16 | Yale | YCRC clusters and running coding agents on shared hardware |
-| `lab-practices.md` | 17 | Dunn Lab | The reasoning behind our conventions, and data management |
+| `reproducibility.md` | 12 | anyone | Reproducibility framed as data, code, and runtime (the Patterns data-path paper); how agents help and hurt; testing reproduction; archiving |
+| `correctness.md` | 13 | anyone | Verification, validation, robustness; the do/check difficulty quadrants with biological examples; tests, external validation, code review |
+| `software-engineering.md` | 14 | anyone | Engineering for biologists directing agents: architecture principles, testing and linting, idempotence and dry runs, workflow frameworks (Snakemake), prototyping, increments, issues, release cycles, constraint |
+| `writing-with-ai.md` | 15 | anyone | AI in manuscript writing: where analysis and writing blur, ways AI contributes, essentials, open discussion, principles behind the manuscript conventions, accurate references |
+| `plugin.md` | 16 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
+| `example-workflows.md` | 17 | anyone | Step-by-step walkthrough of a project |
+| `yale.md` | 18 | Yale | YCRC clusters and running coding agents on shared hardware |
+| `lab-practices.md` | 19 | Dunn Lab | The reasoning behind our conventions, and data management |
 
 Quick Reference deliberately duplicates commands that appear in later chapters. Keep it to commands and one-line descriptions — the explanation belongs in the chapter it links to, so the two cannot drift far.
 

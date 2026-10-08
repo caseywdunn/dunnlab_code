@@ -26,6 +26,10 @@ auto-update is off by default for third-party marketplaces.
 - `dunnlab-manuscript` captures manuscript conventions: paired analysis and
   manuscript repositories, LaTeX with generated numbers, tables, and figures
   synced with their analysis commit, PDF and Word builds, and co-author edits.
+- Reproducibility and Correctness chapters precede Software Engineering. The
+  first frames reproducibility as preserving data, code, and runtime; the second
+  sorts tasks by how hard they are to do and to check, with strategies and
+  biological examples, and covers tests, external validation, and code review.
 - A Writing with AI chapter covers AI in manuscripts: where analysis and writing
   blur, ways AI can contribute, open discussion among co-authors, the principles
   behind the manuscript conventions, and checking references.

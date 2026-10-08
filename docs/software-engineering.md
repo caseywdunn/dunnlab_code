@@ -1,6 +1,6 @@
 ---
 title: Software Engineering
-nav_order: 12
+nav_order: 14
 ---
 
 # Software Engineering
@@ -9,7 +9,7 @@ For the past couple of decades there has been a lot of emphasis on the idea that
 
 Coding is writing instructions a computer can follow. Software engineering is deciding what to build, how its parts fit together, how you will know it works, and how it can change without breaking. When you direct an agent, you are the architect of the project, even if you never write a line yourself. The agent will make thousands of small decisions on your behalf, and the principles you set are what keep those decisions pointed the same way.
 
-Some of this is entirely new territory for most biologists. A short script that runs once on one dataset may need very little engineering. But agents make much larger projects possible, such as a pipeline across hundreds of species or a tool that other labs install, and those projects fall apart without engineering practices that professional software developers take for granted. This chapter introduces those practices. [Working Effectively](working-effectively.md) covers how to plan and direct the work; this chapter covers how to build something large that stays correct.
+Some of this is entirely new territory for most biologists. A short script that runs once on one dataset may need very little engineering. But agents make much larger projects possible, such as a pipeline across hundreds of species or a tool that other labs install, and those projects fall apart without engineering practices that professional software developers take for granted. This chapter introduces those practices. [Working Effectively](working-effectively.md) covers how to plan and direct the work, and [Reproducibility](reproducibility.md) and [Correctness](correctness.md) cover what a result must satisfy. This chapter covers how to build something large that meets those standards.
 
 ## Principles behind the architecture
 
