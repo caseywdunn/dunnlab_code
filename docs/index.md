@@ -18,12 +18,13 @@ The manual uses Claude Code and Codex as its main examples, but most of it appli
 >
 > Put each project in [Git](https://git-scm.com/) and [GitHub](https://github.com/) from the beginning. Let the agent make small, descriptive commits after verified steps, and install the [GitHub CLI](https://cli.github.com/) so it can work with repositories, issues, pull requests, and checks from the terminal.
 >
-> [Getting Started](getting-started.md#the-stack) explains these choices and then covers languages, environments, and agent setup. Ask your agent to explain or help configure anything unfamiliar.
+> [The Toolkit](toolkit.md) explains these choices tool by tool, and [Getting Started](getting-started.md) covers agent setup. Ask your agent to explain or help configure anything unfamiliar.
 
 ## Table of contents
 
 - [Using AI in Research](using-ai.md) — What changes and what does not: accountability, reviewing generated code, handling data, reporting AI use, and journal and funder policy. No terminal required.
 - [Quick Reference](quick-reference.md) — The whole thing on one page: setup, the working rhythm, permission modes, sessions, and tmux. Start here if you want the shape before the detail.
+- [The Toolkit](toolkit.md) — The non-AI tools agents work through: the shell, Git, GitHub, VS Code, Python, R, Rust, Markdown, LaTeX, and Quarto, what each does, and why we use it.
 - [Getting Started](getting-started.md) — The computational stack we recommend, and how to install and verify Claude Code or Codex.
 - [Agent Concepts](claude-intro.md) — A vendor-neutral guide to models, harnesses, agent loops, context, tools, permissions, sessions, and the user, agent, and compute planes.
 - [Coding Agents](other-agents.md) — How Claude Code and Codex map onto those concepts, where they differ, and what carries between them.

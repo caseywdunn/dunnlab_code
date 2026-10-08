@@ -33,18 +33,19 @@ The chapters are ordered by how widely they apply, narrowing as they go. Keep ne
 | `index.md` | 1 | — | Landing page; states the tier structure and where to start |
 | `using-ai.md` | 2 | anyone | Responsibility, reviewing generated code, data handling, disclosure, journal and funder policy |
 | `quick-reference.md` | 3 | anyone | One-page cheatsheet: setup, working rhythm, permission modes, sessions, tmux |
-| `getting-started.md` | 4 | anyone | Recommended stack, installing and verifying Claude Code or Codex |
-| `claude-intro.md` | 5 | anyone | Vendor-neutral agent concepts: models, harnesses, loops, context, tools, permissions, sessions, and user/agent/compute planes |
-| `other-agents.md` | 6 | anyone | How Claude Code and Codex implement the concepts, and what carries between agents |
-| `managing-security.md` | 7 | anyone | Permissions, sandboxing, isolation |
-| `working-across-computers.md` | 8 | anyone | Remote agents, SSH, tmux, and separating the agent plane from compute |
-| `managing-context.md` | 9 | anyone | Context window, agent instructions, rules, auto memory, skills, plugins |
-| `working-effectively.md` | 10 | anyone | How to frame the work: broad requests, planning vs building, committing the plan |
-| `software-engineering.md` | 11 | anyone | Engineering for biologists directing agents: architecture principles, testing and linting, idempotence and dry runs, workflow frameworks (Snakemake), prototyping, increments, issues, release cycles, constraint |
-| `plugin.md` | 12 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
-| `example-workflows.md` | 13 | anyone | Step-by-step walkthrough of a project |
-| `yale.md` | 14 | Yale | YCRC clusters and running coding agents on shared hardware |
-| `lab-practices.md` | 15 | Dunn Lab | The reasoning behind our conventions, and data management |
+| `toolkit.md` | 4 | anyone | Bill of materials for the non-AI toolset: shell, Git, GitHub, VS Code, Python, R, Rust, Markdown, LaTeX, Quarto; what each does, why, where to learn more |
+| `getting-started.md` | 5 | anyone | Installing and verifying Claude Code or Codex |
+| `claude-intro.md` | 6 | anyone | Vendor-neutral agent concepts: models, harnesses, loops, context, tools, permissions, sessions, and user/agent/compute planes |
+| `other-agents.md` | 7 | anyone | How Claude Code and Codex implement the concepts, and what carries between agents |
+| `managing-security.md` | 8 | anyone | Permissions, sandboxing, isolation |
+| `working-across-computers.md` | 9 | anyone | Remote agents, SSH, tmux, and separating the agent plane from compute |
+| `managing-context.md` | 10 | anyone | Context window, agent instructions, rules, auto memory, skills, plugins |
+| `working-effectively.md` | 11 | anyone | How to frame the work: broad requests, planning vs building, committing the plan |
+| `software-engineering.md` | 12 | anyone | Engineering for biologists directing agents: architecture principles, testing and linting, idempotence and dry runs, workflow frameworks (Snakemake), prototyping, increments, issues, release cycles, constraint |
+| `plugin.md` | 13 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
+| `example-workflows.md` | 14 | anyone | Step-by-step walkthrough of a project |
+| `yale.md` | 15 | Yale | YCRC clusters and running coding agents on shared hardware |
+| `lab-practices.md` | 16 | Dunn Lab | The reasoning behind our conventions, and data management |
 
 Quick Reference deliberately duplicates commands that appear in later chapters. Keep it to commands and one-line descriptions — the explanation belongs in the chapter it links to, so the two cannot drift far.
 

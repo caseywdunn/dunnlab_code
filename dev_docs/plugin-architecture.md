@@ -41,6 +41,7 @@ Frontmatter `name` is optional for personal and project skills, where the direct
 - **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
 - **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
+- **dunnlab-manuscript** — Manuscript repositories, LaTeX with generated results and figures, PDF and Word builds, and incorporating co-author edits.
 - **dunnlab-biblio** — Verified manuscript, data, and software citations, claim support, and BibTeX conventions.
 
 ### Design principles
@@ -84,7 +85,8 @@ Use these scenarios when evaluating changes to skill boundaries:
 | Review a workflow change or propose a design | Review/design skills as relevant | Assess requested artifacts without launching a lifecycle or expensive computation |
 | Rename workflow rules or update documentation | Workflow design; targeted review | Verify scope and dependencies; reuse still-valid scientific execution evidence |
 | Set up releases or work through a planned release | Release cycle + coding defaults; research lifecycle if the tool serves a scientific plan | `PLAN.md` holds release steps and gates; the scientific plan stays in `dev_docs/overview.md` |
-| Prepare a manuscript or dataset release for handoff | Lifecycle publication reference + workflow design + bibliography as relevant | Match the final artifact to evidence, preserve a citable version and access route, identify pending deposits without repeating valid computation |
+| Write or build a manuscript | Manuscript + bibliography; workflow design for the step that generates results | Results reach the text only as generated values, tables, and figures synced with their analysis commit |
+| Prepare a manuscript or dataset release for handoff | Lifecycle publication reference + manuscript + workflow design + bibliography as relevant | Match the final artifact to evidence, preserve a citable version and access route, identify pending deposits without repeating valid computation |
 
 Before each release, the repo-only `skill-audit` skill (`.claude/skills/skill-audit/`) reviews all skills, their summaries, and the manual for competing mandates and drift, and records the result in `dev_docs/skill-audits/<version>.md`. It is not shipped with the plugin.
 
