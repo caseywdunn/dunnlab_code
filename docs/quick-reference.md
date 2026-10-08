@@ -52,10 +52,11 @@ The rhythm matters more than the prompting. In rough order:
 
 1. **Start with planning, not edits.** Describe what you want and let the agent propose an approach before it writes anything. This is the cheapest place to catch a wrong direction.
 2. **Review the plan, then approve it.** For substantial work, have the agent write it to `PLAN.md` or `dev_docs/overview.md` in the repository and commit it before implementation.
-3. **Work in small, verifiable steps.** A change too large to read carefully was too large to ask for in one go.
-4. **Let the agent run the code.** Do not paste error messages—ask it to run the thing and read the error itself.
-5. **Commit after each verified step**, and let the agent write the message.
-6. **Start fresh before the next task.** A stale conversation makes everything worse.
+3. **State gates in the plan.** For each step, write down a check the agent can run itself to decide whether to proceed.
+4. **Work in small, verifiable steps.** A change too large to read carefully was too large to ask for in one go.
+5. **Let the agent run the code.** Do not paste error messages—ask it to run the thing and read the error itself.
+6. **Commit after each verified step**, and let the agent write the message.
+7. **Start fresh when the context stops helping.** Switch to a new session when the task changes or the conversation fills with dead ends.
 
 → [Working Effectively](working-effectively.md)
 
@@ -85,7 +86,7 @@ codex                           # new Codex session
 codex resume                    # choose a Codex session to resume
 ```
 
-→ [Managing Context](managing-context.md)
+→ [Resuming sessions](managing-context.md#resuming-sessions)
 
 ## Remote work with tmux
 

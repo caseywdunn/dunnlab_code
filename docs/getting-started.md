@@ -13,6 +13,8 @@ How to get Claude Code or Codex running on your own machine.
 
 ## Setting up a coding agent
 
+Before installing, decide where the agent will run: your everyday machine, a separate user account, a virtual machine, or a dedicated machine. The more autonomy you plan to give it, the more that choice matters; see [System-level control](managing-security.md#system-level-control).
+
 Install Claude Code, Codex, or both. They occupy the same place in this workflow: each can work locally from the terminal, integrate with an editor, and hand work to a cloud environment. The [Coding Agents](other-agents.md) chapter compares their implementation details.
 
 Both are available through several surfaces:
@@ -54,9 +56,7 @@ Note that methods for installing plugins differ when using the desktop app or ex
 
 For either agent, start in a Git repository and ask it to report its working directory, active instructions, permission boundary, and Git status. In Codex, `/status` and `/permissions` expose the session configuration. In Claude Code, `/context` and `/permissions` expose the corresponding information.
 
-If you installed the DunnLab plugin, run the following Claude Code slash command:
-
-Run the following slash command to confirm everything is wired up:
+If you installed the DunnLab plugin, run the following Claude Code slash command to confirm everything is wired up:
 
 ```
 /dunnlab-code:dunnlab-check
@@ -64,34 +64,4 @@ Run the following slash command to confirm everything is wired up:
 
 You should see a welcome message and a list of available skills. Plugin skills are namespaced by the plugin name; the bare `/dunnlab-check` also works as long as nothing else has claimed that name.
 
-### 4. Optional: know Claude Code's bundled skills
-
-Claude Code ships with a set of **bundled skills** that are available in every session with nothing to install. Several are worth knowing about:
-
-| Skill | What it does |
-|-------|-------------|
-| `/code-review` | Reviews the current diff, a branch, or a PR for correctness bugs and cleanups |
-| `/simplify` | Reviews changed code for reuse, quality, and efficiency, then applies the fixes |
-| `/security-review` | Security review of pending changes |
-| `/claude-api` | Reference for the Claude API and Anthropic SDKs — model IDs, pricing, tool use, caching |
-| `/run`, `/verify` | Launch your project and confirm a change works against the running app, not just the tests |
-| `/doctor` | Setup checkup, including what your skills and plugins are costing you in context |
-| `/loop` | Repeat a prompt on an interval |
-
-Type `/` to see everything available in the current session.
-
-### 5. Optional: install additional Claude Code plugins
-
-These are actual plugins and do need installing, from Anthropic's official marketplace:
-
-```bash
-claude plugin install <plugin-name>@claude-plugins-official
-```
-
-| Plugin | What it does |
-|--------|-------------|
-| **skill-creator** | Structured workflow for building skills, running evals against them, and tuning descriptions. Worth having if you plan to write skills of your own — see [Creating and evaluating skills](managing-context.md#creating-and-evaluating-skills). |
-| **pyright-lsp** | Gives Claude a language server for Python: type errors reported immediately after each edit, plus jump-to-definition and find-references. Requires `pyright-langserver` on your PATH. There are equivalents for [most languages](https://code.claude.com/docs/en/discover-plugins#code-intelligence), including `rust-analyzer-lsp`. |
-| **security-guidance** | Reviews each change Claude makes for common vulnerabilities and fixes what it finds in the same session. |
-
-Browse everything available by running `/plugin` and opening the **Discover** tab, which shows a context-cost estimate for each plugin before you install it. The **Installed** tab flags plugins you have not used recently — worth checking now and then, since an unused plugin still costs context every turn.
+Once the agent is running, [Managing Context](managing-context.md#skills) describes Claude Code's bundled skills and some additional plugins worth knowing about.

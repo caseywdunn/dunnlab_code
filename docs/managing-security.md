@@ -38,57 +38,6 @@ The [Coding Agents permission comparison](other-agents.md#permissions) gives the
 
 They share one limit worth holding onto: they govern the agent. A command that does run is not constrained by them, and neither is a process that command spawns. That is what [System-level control](#system-level-control) is for.
 
-### Claude Code: configuring permissions with settings.json
-
-Claude Code uses `settings.json` files to control what actions Claude can take. This is how you restrict dangerous commands, protect sensitive files, and tailor permissions per project or environment.
-
-### Settings file locations
-
-There are three places you can put a `settings.json`:
-
-| Scope | Location | Purpose |
-|-------|----------|---------|
-| **User** | `~/.claude/settings.json` | Personal defaults, applied to all projects |
-| **Project (shared)** | `.claude/settings.json` | Team settings, committed to git |
-| **Project (local)** | `.claude/settings.local.json` | Personal project overrides, gitignored |
-
-An organization can also deploy **managed settings** (e.g. `/etc/claude-code/managed-settings.json` on Linux), which outrank everything below.
-
-### Priority order
-
-When the same setting appears at multiple levels, higher-priority scopes win:
-
-1. **Managed settings** — highest; not even command-line flags override these
-2. **Local project** (`.claude/settings.local.json`)
-3. **Shared project** (`.claude/settings.json`)
-4. **User** (`~/.claude/settings.json`) — lowest
-
-Permission arrays (`allow`, `ask`, `deny`) merge across scopes rather than replacing each other, so restrictions accumulate. If a tool is denied at any level, no other level can allow it.
-
-{: .warning }
-One exception worth knowing: `"defaultMode": "auto"` in a project's `.claude/settings.json` or `.claude/settings.local.json` has no effect. Auto mode can only be set from user settings, managed settings, or the `--permission-mode` flag.
-
-### The permissions object
-
-Permissions are defined in three arrays inside `settings.json`:
-
-```json
-{
-  "permissions": {
-    "defaultMode": "acceptEdits",
-    "allow": [ ... ],
-    "ask": [ ... ],
-    "deny": [ ... ]
-  }
-}
-```
-
-- **`allow`** — Claude can use these tools without asking
-- **`ask`** — Claude will prompt you for confirmation each time
-- **`deny`** — Claude is blocked from these entirely
-
-Rules are evaluated in order: **deny > ask > allow**. A deny rule always wins over an allow rule at the same scope.
-
 ### Permission modes
 
 A permission mode sets Claude's baseline behavior — how often it pauses to ask before editing a file, running a command, or making a network request. You can cycle modes mid-session with `Shift+Tab` in the CLI (or the mode selector in VS Code, JetBrains, Desktop, and claude.ai), start in a mode with `claude --permission-mode <mode>`, or set a persistent `defaultMode` in `settings.json`. For the full reference, see the official [permission modes documentation](https://code.claude.com/docs/en/permission-modes).
@@ -156,6 +105,57 @@ Two safety checks sit outside the permission rules entirely, so it is worth know
 **Protected paths** that are never auto-approved for writes include: `.git`, `.claude`, `.vscode`, `.cargo`, and files like `.bashrc`, `.zshrc`, `.envrc`, `.npmrc`, `.mcp.json`, and `.gitconfig`. An `allow` rule does not pre-approve them — the check runs before allow rules are evaluated. In modes that prompt, the prompt offers to approve `.claude/` writes for the rest of the session.
 
 **Critical paths** are `rm`/`rmdir` targets that no `allow` rule and no `PreToolUse` hook can approve: the filesystem root and its top-level directories, your home directory, and your working directory and its parents. A glob under a shell variable (`rm -rf "$DIR"/*`) counts, because an empty variable turns it into a removal from `/`. Hiding it in `$(...)` does not evade the check. A matching `deny` rule still blocks the command outright.
+
+### Settings files
+
+Claude Code uses `settings.json` files to control what actions Claude can take, including a persistent `defaultMode` for the permission modes above. This is how you restrict dangerous commands, protect sensitive files, and tailor permissions per project or environment.
+
+#### Settings file locations
+
+There are three places you can put a `settings.json`:
+
+| Scope | Location | Purpose |
+|-------|----------|---------|
+| **User** | `~/.claude/settings.json` | Personal defaults, applied to all projects |
+| **Project (shared)** | `.claude/settings.json` | Team settings, committed to git |
+| **Project (local)** | `.claude/settings.local.json` | Personal project overrides, gitignored |
+
+An organization can also deploy **managed settings** (e.g. `/etc/claude-code/managed-settings.json` on Linux), which outrank everything below.
+
+#### Priority order
+
+When the same setting appears at multiple levels, higher-priority scopes win:
+
+1. **Managed settings** — highest; not even command-line flags override these
+2. **Local project** (`.claude/settings.local.json`)
+3. **Shared project** (`.claude/settings.json`)
+4. **User** (`~/.claude/settings.json`) — lowest
+
+Permission arrays (`allow`, `ask`, `deny`) merge across scopes rather than replacing each other, so restrictions accumulate. If a tool is denied at any level, no other level can allow it.
+
+{: .warning }
+One exception worth knowing: `"defaultMode": "auto"` in a project's `.claude/settings.json` or `.claude/settings.local.json` has no effect. Auto mode can only be set from user settings, managed settings, or the `--permission-mode` flag.
+
+#### The permissions object
+
+Permissions are defined in three arrays inside `settings.json`:
+
+```json
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [ ... ],
+    "ask": [ ... ],
+    "deny": [ ... ]
+  }
+}
+```
+
+- **`allow`** — Claude can use these tools without asking
+- **`ask`** — Claude will prompt you for confirmation each time
+- **`deny`** — Claude is blocked from these entirely
+
+Rules are evaluated in order: **deny > ask > allow**. A deny rule always wins over an allow rule at the same scope.
 
 ### Permission rule syntax
 
@@ -278,7 +278,7 @@ Selecting a mode in the panel writes to that project's `.claude/settings.local.j
 {: .warning }
 **If the sandbox cannot start, Claude Code warns and runs your commands unsandboxed.** Bubblewrap needs unprivileged user namespaces, which shared and managed systems commonly restrict, so this is a real possibility rather than an edge case. Run `/sandbox` and check whether a Dependencies tab appears rather than assuming you are protected. Set `sandbox.failIfUnavailable` to `true` to make an unavailable sandbox a hard error instead of a silent fallback.
 
-If you work on an HPC cluster, see [Computing at Yale](yale.md#coding-agents-and-the-clusters)—the stakes are higher there and the sandbox is less likely to be available.
+If you work on a shared cluster, see [Agents on shared clusters](working-across-computers.md#agents-on-shared-clusters): the stakes are higher there and the sandbox is less likely to be available.
 
 A good pairing for local work: Manual mode plus sandbox auto-allow. You get few prompts, and what you get in exchange is a real kernel-enforced boundary rather than a model's judgment.
 

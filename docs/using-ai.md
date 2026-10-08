@@ -34,26 +34,13 @@ And for prose in particular:
 
 ## Reproducibility and the data path
 
-A reproducible computational analysis preserves its data, code, and runtime. When an analysis invokes an LLM as it runs, that model and the software around it become part of the runtime. This is a fragile dependency: hosted models can change, disappear, or produce different outputs when given the same inputs. The tutorial [*Designing reproducible large-language-model-assisted scientific analyses*](https://doi.org/10.1016/j.patter.2026.101644) by Dunn, Schultz, and Musser (2026) organizes this problem around the **data path**: the sequence of operations that transforms the declared inputs into the outputs evaluated in the paper.
-
-- **Off the data path:** the LLM helps produce a durable artifact, such as code, but the published analysis runs without calling an LLM. The artifact sits on the data path; the LLM does not. For example, an assistant writes a Python script, you review and test it, and the committed script transforms the data.
-- **On the data path:** data pass through an LLM at run time, or the LLM makes a decision required to produce the reported result. For example, the model directly classifies records, standardizes values, or decides which analysis step to run. Reproducing the result then depends on access to the model and its surrounding harness as well as the data and code.
-
-The operational test is simple: **can the published analysis be rerun from inputs to results without invoking an LLM?** If yes, the LLM is off the data path. If no, it is on the data path. Keep it off the path when ordinary code can do the same job; on-path use can be appropriate when the required capability cannot readily be reduced to a fixed, inspectable pipeline.
-
-{: .recommendations }
-> - **Place the LLM off the data path where possible.** Prefer durable, inspectable code to a live model call when either can perform the task.
-> - **Preserve LLM-related artifacts in a versioned, archived repository.** For on-path use, this includes prompts, skills, schemas, invocation records, and relevant intermediate outputs.
-> - **Verify LLM results, and document how.** Test off-path code with standard software-engineering methods; assess on-path outputs with several task-appropriate checks, such as held-out benchmarks, known-answer fixtures, random spot-checks, cross-method agreement, and sensitivity tests.
-> - **Consider open-weight models.** Published weights make the model more archivable, though exact reproduction can still depend on the tokenizer, inference software, hardware, and sampling settings.
-> - **Record the model and its version at the time of analysis.** For on-path calls, also record the harness version when available, sampling parameters, and timestamp.
-> - **Measure determinism within a model and agreement across models.** Repeat the same call and compare results across models, especially when the LLM step is central to the analysis.
+An analysis that calls a language model while it runs depends on that model to be reproduced, and hosted models can change, disappear, or give different outputs for the same input. Where possible, keep the model off the **data path**, the sequence of operations that turns the analysis's inputs into its reported results, by having it write code you review and run instead. [Reproducibility](reproducibility.md#when-a-model-is-on-the-data-path) explains the distinction and what to do when a model must be on the path.
 
 ## Working with data
 
 Adopt these two practices when an assistant has access to your files.
 
-**Raw data is immutable.** Transformations produce new files in a separate processed directory. If a script would modify something in your raw data directory, that is a bug regardless of what it was asked to do. Raw data is often irreplaceable and frequently the most expensive thing you own.
+**Raw data is immutable.** Transformations produce new files, never changes to the originals. If an agent would modify your raw data, that is a bug regardless of what it was asked to do. Raw data is often irreplaceable; [Reproducibility](reproducibility.md#data) covers how to protect it.
 
 **Prefer a script over a direct transformation.** When you need data reshaped — a table reformatted, files restructured, columns renamed — have the assistant write a script you can read and re-run, rather than letting it edit the data in place. A script is reviewable, reproducible, and reversible. A direct edit is none of those, and you will not be able to reconstruct what happened six months later.
 

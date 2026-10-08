@@ -1,6 +1,6 @@
 ---
 title: Dunn Lab Practices
-nav_order: 19
+nav_order: 18
 ---
 
 # Dunn Lab Practices
@@ -17,9 +17,11 @@ A few are more consequential than a style preference, and they are the ones most
 
 **Python by default, R when a library requires it.** We prefer industry-standard tools over domain-specific ones, as [The Toolkit](toolkit.md#python) argues. R remains the right answer when the analysis needs a package that only exists there, when it is what you know and it works, or when a collaboration has already chosen it.
 
-**Raw data is immutable, enforced structurally.** Preserve acquired inputs unchanged, commonly under `data/raw/`, and write derivatives separately using rerunnable transformations. This is a general principle — [Using AI in Research](using-ai.md#working-with-data) makes the case — owned by workflow design. Bioinformatics adds biological checks and identifier conventions.
+**Raw data is immutable, enforced structurally.** Preserve acquired inputs unchanged, commonly under `data/raw/`, and write derivatives separately using rerunnable transformations. This is a general principle, explained in [Reproducibility](reproducibility.md#data) and owned by workflow design. Bioinformatics adds biological checks and identifier conventions.
 
 **Cross-species gene IDs are namespaced as `Genus_species@gene_id`.** Reserve `@` as the separator and check source identifiers for conflicts. Every renaming keeps a mapping file and is checked for collisions. Merging datasets with ambiguous identities is a class of silent error that can surface months later in a tree.
+
+**`AGENTS.md` stays under 100 lines.** General guidance allows up to about 200, but everything in it loads into every session, and a shorter file is followed more reliably. Detail goes in linked documents under `dev_docs/`, which the agent reads when it needs them. See [Managing Context](managing-context.md#keep-it-short).
 
 **Exploration and reporting share computation.** Apply workflow design from the first consequential experiment. Distillation selects configurations and outputs, prunes the maintained scope, and closes verification gaps while preserving scientific history. Retained code should need a specific reason to be rewritten.
 
@@ -31,7 +33,7 @@ A few are more consequential than a style preference, and they are the ones most
 
 **Write in LaTeX, and render both PDF and Word.** The `.tex` source is the source of record. Render a PDF for reading and a `.docx` for co-authors who edit in Word. Neither rendered file is ever edited and committed back.
 
-**Results are generated, never typed.** Every number, table, and figure that reports a result is produced by code in the analysis repository. Numbers reach the text as LaTeX commands, such as `\nSpecies`, defined in a generated file; tables and figures are generated files included by the manuscript. One script copies them into the manuscript repository and records the analysis commit they came from. Neither a person nor an agent types a result into the text. A value copied by hand is right only until the analysis is rerun, and nothing flags it when it goes stale. The agent's job is to write the prose and the code that generates results, not to carry numbers between them.
+**Results are generated, never typed.** We follow the principle in [Writing with AI](writing-with-ai.md#principles-behind-our-approach): every reported number, table, and figure comes from code. In practice, numbers reach the text as LaTeX commands, such as `\nSpecies`, defined in a file the analysis generates; tables and figures are generated files the manuscript includes. One script copies them into the manuscript repository and records the analysis commit they came from.
 
 **Figures are generated at final size, twice.** The analysis code saves each figure as a PDF for the PDF build and a PNG for the Word build, and the manuscript includes it without a file extension, so each build picks the right one. A figure that needs hand assembly, such as photographs combined with plots, keeps its editable source in the manuscript repository and is re-exported whenever the results change.
 

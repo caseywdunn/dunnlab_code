@@ -1,6 +1,6 @@
 ---
 title: Working Across Computers
-nav_order: 9
+nav_order: 11
 ---
 
 # Working Across Computers
@@ -98,7 +98,13 @@ The user plane stays with you. The arrangements differ in where the agent and co
 | **Local agent, remote compute** | Keeping the agent on your own machine while using a cluster, GPU server, or cloud instance for heavy jobs. | SSH access gives the local agent reach into the remote system; constrain that reach deliberately. The agent stops whenever your computer sleeps, so submitted jobs continue unmonitored. |
 | **Agent on shared infrastructure** | Work whose code and data already live there, when policy explicitly permits agents. | Shared filesystems, login-node rules, and weak sandbox support raise the stakes. |
 
-Keeping the agent local is a simple way to start: the agent remains in a familiar, controlled environment but can drive a much larger compute resource entirely through command-line tools. When sessions need to run for hours or days, move the agent plane to a persistent machine or allocation.
+Choose the simplest arrangement that fits:
+
+- **A dedicated remote machine** when isolation and long autonomous sessions matter most.
+- **A local agent with remote compute** when the remote system is mainly a source of capacity and command-line access is enough. Keeping the agent local is a simple way to start: it stays in a familiar, controlled environment while driving a much larger compute resource. When sessions need to run for hours or days, move the agent plane to a persistent machine or allocation.
+- **An agent on the cluster** only when policy permits it and the benefits outweigh the broader risks of a shared system; see [Agents on shared clusters](#agents-on-shared-clusters).
+
+Start with one agent plane and one authoritative repository. Add file transfer and remote execution deliberately, pilot the complete path on a small job, and put a gate between submission, retrieval, and interpretation.
 
 ## Connect with SSH and transfer with SCP
 
@@ -184,6 +190,24 @@ A second computer should not create a second, disconnected history. For every su
 
 That makes the compute plane replaceable. [Reproducibility](reproducibility.md) covers the rest of what a result needs in order to be regenerated. You should be able to move the same committed code and environment description to another machine and understand what differs.
 
+## Agents on shared clusters
+
+A high-performance computing cluster is a shared, powerful, and largely irreversible environment. The stakes are different from your laptop: you can create work for the cluster's maintainers and deny other people access, you can delete or leak a colleague's data, and you can silently modify your own in ways you will not notice until much later. The safest arrangement uses the cluster only as the compute plane. If you do run an agent on a cluster, take these precautions.
+
+**Follow your institution's policy first.** Many computing centres publish guidance on AI agents, and some do not support them at all. Read it before installing anything; where it disagrees with this manual, it wins.
+
+**Start with restrictive permissions.** Begin with read-only access and explicit approvals, then broaden access only for actions the environment and policy permit. For Codex, a conservative starting command is:
+
+```bash
+codex --sandbox read-only --ask-for-approval on-request
+```
+
+For Claude Code, start in plan mode with a settings file that allows inspection and job monitoring, requires confirmation for file changes and network access, and denies destructive operations. [Managing Security](managing-security.md) explains how these rules work. Put the cluster's details, such as partitions, storage paths, and job templates, in `AGENTS.md`, so every agent receives them.
+
+**Check that the sandbox works before trusting it.** Permission rules constrain what a harness chooses to run; a working sandbox constrains what a running command *can reach*, which is the guarantee you want on shared storage. Shared systems often disable the kernel features sandboxes depend on. In Claude Code, run `/sandbox` and check whether a Dependencies tab appears; its sandbox needs `bubblewrap`, `socat`, and unprivileged user namespaces. **When it cannot start, Claude Code warns and runs commands unsandboxed**, unless `sandbox.failIfUnavailable` is set to `true`. In Codex, use `/permissions` to inspect the active sandbox and writable directories. With either, test that a deliberately out-of-scope read or write is actually blocked. If the isolation you need is unavailable, keep the agent plane off the cluster, as in [Let a local agent control remote computation](#let-a-local-agent-control-remote-computation).
+
+**Never run heavy work on a login node.** This rule predates AI, but agents break it easily, because an agent will run whatever gets the answer fastest. Lightweight orchestration is fine on a login node: submitting jobs, Git operations, managing environments, inspecting files. Everything else belongs in a submitted job. A long-running orchestrator such as Snakemake on a login node should run inside `tmux` so a dropped connection does not kill it.
+
 ## Security and policy still apply
 
 A dedicated machine with no private data is a strong boundary, but “remote” does not mean “safe.” The machine may still hold SSH keys, cloud tokens, unpublished results, or network access to other systems.
@@ -191,19 +215,10 @@ A dedicated machine with no private data is a strong boundary, but “remote” 
 - Give it credentials scoped to one project and only the remote actions it needs.
 - Check institutional and provider policies before installing an agent or exposing data to one.
 - Keep raw and sensitive data outside the agent's readable paths unless its use is explicitly approved.
-- Never run heavy work on a shared login node; submit it through the scheduler.
 
 {: .warning }
 > **Separating the agent and compute planes does not automatically separate the agent from the data.**
 >
 > If a local agent can run `ssh cluster cat sensitive-file`, it can read that file and potentially send its contents to the model. Enforce the boundary with accounts, filesystem permissions, restricted credentials, and approved data paths rather than relying on where the agent process happens to run.
-
-## Choose the simplest arrangement that fits
-
-- **Dedicated remote machine:** choose this when isolation and long autonomous sessions matter most.
-- **Local agent with remote compute:** choose this when the cluster or server is primarily a source of capacity and command-line access is sufficient.
-- **Agent on the cluster:** choose this only when policy permits it and the benefits outweigh the broader shared-system risk.
-
-Start with one agent plane and one authoritative repository. Add file transfer and remote execution deliberately, pilot the complete path on a small job, and put a gate between submission, retrieval, and interpretation.
 
 For institution-specific cluster policy and examples, see [Computing at Yale](yale.md). For the short session commands, see [Quick Reference](quick-reference.md#remote-work-with-tmux).

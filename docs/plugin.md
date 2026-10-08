@@ -1,6 +1,6 @@
 ---
 title: DunnLab Plugin
-nav_order: 16
+nav_order: 19
 ---
 
 # The DunnLab Plugin
@@ -45,6 +45,8 @@ selects the analysis set, preserves its history, and completes the verification 
 documentation needed for reporting. Bioinformatics adds biological choices to this
 shared foundation; it does not prescribe a separate workflow architecture.
 
+Several skills work with the plan documents described in [Working Effectively](working-effectively.md#commit-the-plan-for-anything-large). `dunnlab-new-project` can create `dev_docs/overview.md` during setup, and `dunnlab-research-lifecycle` develops the scientific plan in that same document. `dunnlab-release-cycle` keeps a separate release plan in `dev_docs/PLAN.md`, sequencing issues into releases with a gate on each step. Invoking a skill does not by itself add an approval step: an already actionable, authorized plan proceeds without a new review. Ask for a review before implementation when you want that decision point.
+
 Skills are loaded on demand, so the body of one costs you nothing until it is used. What is always in context is the one-line description of each, which is how Claude decides whether a skill applies — see [Managing Context](managing-context.md#skills) for the budget that governs this.
 
 ## Commands
@@ -57,7 +59,7 @@ Skills are loaded on demand, so the body of one costs you nothing until it is us
 
 Files in [`assets/`](https://github.com/caseywdunn/dunnlab_code/tree/main/assets) are not loaded by Claude. They are there for you to copy.
 
-- **`settings.json`** — A restrictive Claude Code configuration built for the Bouchet cluster, with a cluster quick reference in its comments. See [Computing at Yale](yale.md#use-restrictive-permissions).
+- **`settings.json`** — A restrictive Claude Code configuration built for the Bouchet cluster, with a cluster quick reference in its comments. See [Computing at Yale](yale.md#a-settings-file-for-bouchet).
 - **`tmux/`** — A shared tmux configuration and cheat sheet for working over SSH, including clipboard support that works without X11 forwarding.
 
 ## Installing and keeping it current

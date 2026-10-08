@@ -21,7 +21,7 @@ We frame reproducibility as in our tutorial [*Designing reproducible large-langu
 - **Code:** the instructions that transform the data into results.
 - **Runtime:** everything the code needs in order to run, such as the language, the libraries and tools with their versions, and any services it calls.
 
-The paper also defines the **data path**: the sequence of operations that transforms the declared inputs into the outputs reported in the paper. Reproducing a result requires the data, code, and runtime of everything on that path, and nothing off it. The framing is especially useful with AI, because it makes clear what role a model plays in an analysis. A model that helped write a script is off the data path; the script is code, and the model is not needed to rerun it. A model that classifies records while the analysis runs is on the data path, and becomes part of the runtime. [Using AI in Research](using-ai.md#reproducibility-and-the-data-path) explains the consequences.
+The paper also defines the **data path**: the sequence of operations that transforms the declared inputs into the outputs reported in the paper. Reproducing a result requires the data, code, and runtime of everything on that path, and nothing off it. The framing is especially useful with AI, because it makes clear what role a model plays in an analysis. A model that helped write a script is off the data path; the script is code, and the model is not needed to rerun it. A model that classifies records while the analysis runs is on the data path, and becomes part of the runtime. [When a model is on the data path](#when-a-model-is-on-the-data-path) covers the consequences.
 
 ### Data
 
@@ -51,6 +51,23 @@ Preserve what the code needs in order to run. The runtime is the easiest of the 
 - **Record what actually ran:** tool versions as reported by the tools themselves, and the commit and environment behind each run. See [Preserve provenance across machines](working-across-computers.md#preserve-provenance-across-machines).
 - **Count external services as runtime.** An analysis that queries an online database or calls a hosted model depends on that service still existing and behaving the same way. Record the release or version used, and where possible save the responses so the analysis does not have to query again.
 - **Keep models off the data path** when ordinary code can do the same job. A hosted model is the most fragile runtime dependency of all: it can change or disappear without notice.
+
+## When a model is on the data path
+
+Hosted language models are a fragile runtime dependency: they can change, disappear, or produce different outputs when given the same inputs. Whether that matters depends on where the model sits:
+
+- **Off the data path:** the LLM helps produce a durable artifact, such as code, but the published analysis runs without calling an LLM. The artifact sits on the data path; the LLM does not. For example, an assistant writes a Python script, you review and test it, and the committed script transforms the data.
+- **On the data path:** data pass through an LLM at run time, or the LLM makes a decision required to produce the reported result. For example, the model directly classifies records, standardizes values, or decides which analysis step to run. Reproducing the result then depends on access to the model and its surrounding harness as well as the data and code.
+
+The operational test is simple: **can the published analysis be rerun from inputs to results without invoking an LLM?** If yes, the LLM is off the data path. If no, it is on the data path. Keep it off the path when ordinary code can do the same job; on-path use can be appropriate when the required capability cannot readily be reduced to a fixed, inspectable pipeline.
+
+{: .recommendations }
+> - **Place the LLM off the data path where possible.** Prefer durable, inspectable code to a live model call when either can perform the task.
+> - **Preserve LLM-related artifacts in a versioned, archived repository.** For on-path use, this includes prompts, skills, schemas, invocation records, and relevant intermediate outputs.
+> - **Verify LLM results, and document how.** Test off-path code with standard software-engineering methods; assess on-path outputs with several task-appropriate checks, such as held-out benchmarks, known-answer fixtures, random spot-checks, cross-method agreement, and sensitivity tests.
+> - **Consider open-weight models.** Published weights make the model more archivable, though exact reproduction can still depend on the tokenizer, inference software, hardware, and sampling settings.
+> - **Record the model and its version at the time of analysis.** For on-path calls, also record the harness version when available, sampling parameters, and timestamp.
+> - **Measure determinism within a model and agreement across models.** Repeat the same call and compare results across models, especially when the LLM step is central to the analysis.
 
 ## How agents change the picture
 

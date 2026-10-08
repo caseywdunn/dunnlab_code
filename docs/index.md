@@ -25,23 +25,23 @@ The manual uses Claude Code and Codex as its main examples, but most of it appli
 - [Using AI in Research](using-ai.md) — What changes and what does not: accountability, reviewing generated code, handling data, reporting AI use, and journal and funder policy. No terminal required.
 - [Quick Reference](quick-reference.md) — The whole thing on one page: setup, the working rhythm, permission modes, sessions, and tmux. Start here if you want the shape before the detail.
 - [The Toolkit](toolkit.md) — The non-AI tools agents work through: the shell, Git, GitHub, VS Code, Python, R, Rust, Markdown, LaTeX, and Quarto, what each does, and why we use it.
-- [Getting Started](getting-started.md) — The computational stack we recommend, and how to install and verify Claude Code or Codex.
+- [Getting Started](getting-started.md) — How to install and verify Claude Code or Codex.
 - [Agent Concepts](claude-intro.md) — A vendor-neutral guide to models, harnesses, agent loops, context, tools, permissions, sessions, and the user, agent, and compute planes.
 - [Coding Agents](other-agents.md) — How Claude Code and Codex map onto those concepts, where they differ, and what carries between them.
 - [Managing Security](managing-security.md) — Permissions, sandboxing, and containers. What can go wrong and what actually stops it.
-- [Working Across Computers](working-across-computers.md) — Remote agents, SSH and tmux, and separating the user, agent, and compute planes.
 - [Managing Context](managing-context.md) — Giving an agent the right information: project instructions, rules, memory, skills, and plugins.
 - [Working Effectively](working-effectively.md) — How to frame the work: asking broadly, separating planning from building, and committing the plan.
+- [Working Across Computers](working-across-computers.md) — The user, agent, and compute planes and how to arrange them, SSH and tmux, moving files, and running agents on shared clusters.
 - [Reproducibility](reproducibility.md) — What it takes for an analysis to work again: data, code, and runtime, how agents help and hurt, testing that results reproduce, and archiving.
 - [Correctness](correctness.md) — Whether a result is right: tasks that are hard to do or hard to check, with strategies and biological examples for each, plus tests, orthogonal validation, and code review.
 - [Software Engineering](software-engineering.md) — Building large projects with agents: architecture principles, testing and linting, idempotence and dry runs, workflow frameworks such as Snakemake, prototyping, increments and gates, issues, and release cycles.
 - [Writing with AI](writing-with-ai.md) — AI in manuscripts: where analysis and writing blur, the ways AI can contribute, discussing use openly with co-authors, and getting references right.
-- [DunnLab Plugin](plugin.md) — The skills, commands, and assets in this repository, and how to run them.
 - [Example Workflows](example-workflows.md) — A project from empty directory to working code, start to finish.
-- [Computing at Yale](yale.md) — YCRC clusters, and running coding agents on shared hardware.
+- [Computing at Yale](yale.md) — YCRC clusters, YCRC policy on coding agents, and a settings file for Bouchet.
 - [Dunn Lab Practices](lab-practices.md) — Lab-specific practices, and the reasoning behind the conventions the plugin encodes.
+- [DunnLab Plugin](plugin.md) — The skills, commands, and assets in this repository, and how to run them.
 
-The last two chapters contain information specific to our institution and lab.
+The last three chapters are specific to our institution and lab: computing at Yale, our lab's practices, and the plugin that encodes them.
 
 ## For contributors
 

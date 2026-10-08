@@ -1,6 +1,6 @@
 ---
 title: Working Effectively
-nav_order: 11
+nav_order: 10
 ---
 
 # Working Effectively
@@ -63,7 +63,7 @@ And it does more besides:
 
 Revise it as you learn — a plan is a working document, not a contract. What matters is that changing direction becomes an explicit edit rather than something that happens by accident across three sessions.
 
-This is a different thing from the standing instructions in [Managing Context](managing-context.md). `AGENTS.md` says how work is done here, always. A plan document says what we are doing now, and gets archived when it is done. The `dunnlab-new-project` skill can create `dev_docs/overview.md` during setup; `dunnlab-research-lifecycle` develops the scientific plan in that same document. Software that other people use or contribute to gets a release plan instead: `dunnlab-release-cycle` keeps it in `dev_docs/PLAN.md`, sequencing issues into releases with a gate on each step. [Software Engineering](software-engineering.md) explains these practices. Request a review before implementation when you want that decision point. An already actionable, authorized plan does not require another approval merely because a skill is invoked.
+This is a different thing from the standing instructions in [Managing Context](managing-context.md). `AGENTS.md` says how work is done here, always. A plan document says what we are doing now, and gets archived when it is done. Software that other people use or contribute to usually needs a release plan as well, sequencing work into releases; [Software Engineering](software-engineering.md) explains these practices.
 
 <a id="set-gates-you-can-check"></a>
 ## Set gates the agent can check

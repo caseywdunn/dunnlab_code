@@ -38,17 +38,17 @@ The chapters are ordered by how widely they apply, narrowing as they go. Keep ne
 | `claude-intro.md` | 6 | anyone | Vendor-neutral agent concepts: models, harnesses, loops, context, tools, permissions, sessions, and user/agent/compute planes |
 | `other-agents.md` | 7 | anyone | How Claude Code and Codex implement the concepts, and what carries between agents |
 | `managing-security.md` | 8 | anyone | Permissions, sandboxing, isolation |
-| `working-across-computers.md` | 9 | anyone | Remote agents, SSH, tmux, and separating the agent plane from compute |
-| `managing-context.md` | 10 | anyone | Context window, agent instructions, rules, auto memory, skills, plugins |
-| `working-effectively.md` | 11 | anyone | How to frame the work: broad requests, planning vs building, committing the plan |
+| `managing-context.md` | 9 | anyone | Context window, agent instructions, rules, auto memory, skills, plugins |
+| `working-effectively.md` | 10 | anyone | How to frame the work: broad requests, planning vs building, committing the plan |
+| `working-across-computers.md` | 11 | anyone | Planes and arrangements, SSH, tmux, file movement, provenance, agents on shared clusters |
 | `reproducibility.md` | 12 | anyone | Reproducibility framed as data, code, and runtime (the Patterns data-path paper); how agents help and hurt; testing reproduction; archiving |
 | `correctness.md` | 13 | anyone | Verification, validation, robustness; the do/check difficulty quadrants with biological examples; tests, external validation, code review |
 | `software-engineering.md` | 14 | anyone | Engineering for biologists directing agents: architecture principles, testing and linting, idempotence and dry runs, workflow frameworks (Snakemake), prototyping, increments, issues, release cycles, constraint |
 | `writing-with-ai.md` | 15 | anyone | AI in manuscript writing: where analysis and writing blur, ways AI contributes, essentials, open discussion, principles behind the manuscript conventions, accurate references |
-| `plugin.md` | 16 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
-| `example-workflows.md` | 17 | anyone | Step-by-step walkthrough of a project |
-| `yale.md` | 18 | Yale | YCRC clusters and running coding agents on shared hardware |
-| `lab-practices.md` | 19 | Dunn Lab | The reasoning behind our conventions, and data management |
+| `example-workflows.md` | 16 | anyone | Step-by-step walkthrough of a project |
+| `yale.md` | 17 | Yale | YCRC clusters, YCRC agent policy, and the Bouchet settings file |
+| `lab-practices.md` | 18 | Dunn Lab | The reasoning behind our conventions, and data management |
+| `plugin.md` | 19 | Dunn Lab | The plugin as an artifact: skills, commands, assets, install and update |
 
 Quick Reference deliberately duplicates commands that appear in later chapters. Keep it to commands and one-line descriptions — the explanation belongs in the chapter it links to, so the two cannot drift far.
 

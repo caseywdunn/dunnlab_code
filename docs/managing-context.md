@@ -1,6 +1,6 @@
 ---
 title: Managing Context
-nav_order: 10
+nav_order: 9
 ---
 
 # Managing Context
@@ -17,8 +17,8 @@ Managing context well means giving the agent the right information at the right 
 
 | Mechanism | Claude Code | Codex |
 |---|---|---|
-| **Project instructions** | `CLAUDE.md` and `.claude/rules/` | Layered `AGENTS.md` files |
-| **Personal instructions** | `~/.claude/CLAUDE.md` | `~/.codex/AGENTS.md` |
+| **Project instructions** | `AGENTS.md`, through a one-line `CLAUDE.md` import; `.claude/rules/` | Layered `AGENTS.md` files |
+| **Personal instructions** | `~/.claude/CLAUDE.md`, which can import a personal `AGENTS.md` | `~/.codex/AGENTS.md` |
 | **Remembered session context** | Auto memory and session history | Session history and memories |
 | **Task-specific guidance** | Skills and plugins | Skills and plugins |
 
@@ -28,41 +28,41 @@ Claude Code's `/context` shows what loaded and what it cost. Codex's `/status` s
 
 When a conversation gets long or you switch tasks, start a new session or use the harness's context-reset command. In Claude Code, `/clear` drops the conversation and reloads the standing instructions. The important habit is product-independent: do not carry an old task's dead ends into a new one.
 
+### Resuming sessions
+
+The opposite need also arises: returning to a conversation after closing the terminal or losing a connection. Both agents save local sessions and can resume them:
+
+```bash
+claude -c        # continue the most recent Claude Code session
+claude -r        # choose a Claude Code session to resume
+codex resume     # choose a Codex session to resume
+```
+
+A resumed session carries its full history, including whatever cluttered it. Resume to continue the same task; start fresh for a new one.
+
 ## Agent instructions
 
-Coding agents read a file of standing instructions at the start of every session — build commands, coding conventions, architectural decisions, project-specific rules — so you don't have to repeat yourself.
+Coding agents read a file of standing instructions at the start of every session: build and test commands, coding conventions, architectural decisions, and project-specific rules. You write them once instead of repeating them in every conversation.
 
-There are two filenames for the same idea. Codex and many other agents read `AGENTS.md`; Claude Code reads `CLAUDE.md`.
-
-**Create both, from the start.** Put the actual content in `AGENTS.md`, and make `CLAUDE.md` a single line:
+**Write them in `AGENTS.md`**, a plain Markdown file at the root of the repository. Codex and many other agents read [`AGENTS.md`](https://agents.md/) directly. Claude Code reads a file called `CLAUDE.md` instead, so give it a `CLAUDE.md` containing a single line that imports `AGENTS.md`:
 
 ```markdown
 @AGENTS.md
 ```
 
-That is the whole file. Claude Code expands the import at session start, so it loads exactly what every other agent loads, and you maintain one file rather than two that drift apart.
-
-{: .note }
-The two-file convention makes neither harness primary: `AGENTS.md` is the shared source of truth and `CLAUDE.md` is the compatibility import Claude Code requires. [Coding Agents](other-agents.md#serving-both-from-one-file) explains the implementation.
-
-The product-specific details below use Claude Code's filenames because its import is the extra compatibility layer. The general rules—keep instructions short, version them, and point to deeper documentation—apply equally to Codex's `AGENTS.md` hierarchy.
+That is the whole file. Claude Code expands the import at session start, so it loads exactly what every other agent loads. Create both files from the start. Two files maintained by hand drift apart, and a reader cannot tell which is current; one file with an import gives every agent the same version-controlled instructions.
 
 ### Where to put them
 
-| Location | Scope |
-|----------|-------|
-| Managed policy (e.g. `/etc/claude-code/CLAUDE.md`) | Organization-wide; cannot be excluded |
-| `~/.claude/CLAUDE.md` | Personal preferences, applied to all projects |
-| `./CLAUDE.md` or `./.claude/CLAUDE.md` | Project-level, committed to git |
-| `./CLAUDE.local.md` | Personal, project-specific; add to `.gitignore` |
+- **The project root:** `AGENTS.md`, committed to Git, with the `CLAUDE.md` import beside it.
+- **Subdirectories:** an `AGENTS.md` in a subdirectory adds instructions for work in that part of the project. Codex layers these automatically, with the file closest to the working directory taking precedence. Claude Code needs a one-line `CLAUDE.md` import beside each one.
+- **Your home directory,** for personal preferences that apply to every project: `~/.codex/AGENTS.md` for Codex, and for Claude Code a `~/.claude/CLAUDE.md` that imports the same file with `@~/.codex/AGENTS.md`.
 
-Claude also discovers CLAUDE.md files in parent directories (loaded at startup) and subdirectories (loaded on demand when you work in those directories). Everything discovered is concatenated rather than overriding, ordered from the filesystem root down, so the file closest to where you launched Claude is read last.
-
-A CLAUDE.md can pull in other files with `@path/to/file` syntax. Imports are expanded at launch, so this helps organization but does not save context — the imported text is loaded either way. To reference a path without importing it, wrap it in backticks.
+Each harness has further options, such as organization-wide policy files; see the documentation for [Claude Code](https://code.claude.com/docs/en/memory) and [Codex](https://developers.openai.com/codex/guides/agents-md).
 
 ### Keep it short
 
-CLAUDE.md content is loaded into the context window at session start. Longer files consume more of your context budget and reduce Claude's adherence to instructions. The [official guidance](https://code.claude.com/docs/en/memory) targets under 200 lines, and a stricter house limit is worth considering — this lab holds to 100. If you need more detail, put it in a [rule](#rules) or point Claude to where it can find the information rather than including it inline:
+Everything in `AGENTS.md` is loaded into the context window at the start of every session. A longer file costs more of that budget and is followed less reliably. Anthropic's [guidance](https://code.claude.com/docs/en/memory) suggests staying under 200 lines, and shorter is better. When you need more detail, point to where it lives rather than including it:
 
 ```markdown
 ## Architecture
@@ -72,7 +72,7 @@ See `docs/architecture.md` for the full system design.
 See `src/api/README.md` for endpoint patterns and error handling.
 ```
 
-This way Claude loads the detailed context only when it's relevant to the current task.
+The agent then reads the detailed document only when it is relevant to the task.
 
 ### What to include
 
@@ -82,26 +82,21 @@ This way Claude loads the detailed context only when it's relevant to the curren
 - Pointers to files with additional context (as shown above)
 - Common workflows and gotchas
 
-Use `/context` to see which CLAUDE.md files actually loaded in the current session — `/memory` lists the locations and lets you open them, but `/context` is what shows you what Claude received.
-
-In a large monorepo, `claudeMdExcludes` in your settings skips ancestor CLAUDE.md files from other teams.
-
-For full documentation, see the [official CLAUDE.md reference](https://code.claude.com/docs/en/memory).
+To see what actually loaded in a session, use `/context` in Claude Code or `/status` in Codex.
 
 ## Rules
 
-When project guidance outgrows a 100-line CLAUDE.md, the answer is usually `.claude/rules/` rather than a longer CLAUDE.md. Rules are markdown files, one topic each, discovered recursively:
+When project guidance outgrows a short `AGENTS.md`, Claude Code offers `.claude/rules/`: Markdown files, one topic each, discovered recursively. Codex has no equivalent; there, use `AGENTS.md` files in subdirectories, or linked documents.
 
 ```
 .claude/
-├── CLAUDE.md
 └── rules/
     ├── snakemake.md
     ├── plotting.md
     └── hpc.md
 ```
 
-A rule with no frontmatter loads at launch, at the same priority as `.claude/CLAUDE.md`. **A rule with a `paths:` field loads only when Claude touches a matching file** — which is what makes this worth doing:
+A rule with no frontmatter loads at launch, like the project instructions. **A rule with a `paths:` field loads only when Claude touches a matching file** — which is what makes this worth doing:
 
 ```markdown
 ---
@@ -134,11 +129,11 @@ It is on by default. Browse and edit what it has saved with `/memory`, which als
 
 Or set `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` for all of them.
 
-**Auto memory is machine-local and is not in version control.** It is not a substitute for CLAUDE.md, rules, or `dev_docs/` for anything a collaborator — or you on a different machine — needs to know. Treat it as convenience, not documentation.
+**Auto memory is machine-local and is not in version control.** It is not a substitute for `AGENTS.md`, rules, or `dev_docs/` for anything a collaborator — or you on a different machine — needs to know. Treat it as convenience, not documentation.
 
 ## Skills
 
-Skills are markdown files that extend Claude with reusable, task-specific instructions. Unlike CLAUDE.md (which is always loaded), skill content is injected into context only when the skill is invoked — either by you or by Claude when it determines a skill is relevant.
+Skills are markdown files that extend Claude with reusable, task-specific instructions. Unlike `AGENTS.md` (which is always loaded), skill content is injected into context only when the skill is invoked — either by you or by Claude when it determines a skill is relevant.
 
 ### How they work
 
@@ -156,6 +151,22 @@ Use `/context` to see the size of the skill listing, and `/doctor` for an estima
 Skill descriptions share a listing budget of **1% of the model's context window** by default. When the listing overflows that budget, Claude Code does not drop skills — every skill name stays available. It **shortens descriptions**, starting with the skills you invoke least, which can strip the keywords Claude needs to match a request to the right skill. Each entry's `description` is separately capped at 1,536 characters.
 
 If you have enough skills to hit this, raise the budget with `skillListingBudgetFraction` (e.g. `0.02` for 2%), or trim the descriptions themselves, putting the key use case first.
+
+### Bundled skills
+
+Claude Code ships with a set of **bundled skills** that are available in every session with nothing to install. Several are worth knowing about:
+
+| Skill | What it does |
+|-------|-------------|
+| `/code-review` | Reviews the current diff, a branch, or a PR for correctness bugs and cleanups |
+| `/simplify` | Reviews changed code for reuse, quality, and efficiency, then applies the fixes |
+| `/security-review` | Security review of pending changes |
+| `/claude-api` | Reference for the Claude API and Anthropic SDKs — model IDs, pricing, tool use, caching |
+| `/run`, `/verify` | Launch your project and confirm a change works against the running app, not just the tests |
+| `/doctor` | Setup checkup, including what your skills and plugins are costing you in context |
+| `/loop` | Repeat a prompt on an interval |
+
+Type `/` to see everything available in the current session.
 
 ### Adding skills
 
@@ -217,7 +228,7 @@ The core idea, whatever the interface details: each test prompt is run **twice**
 
 The benchmark highlights three things:
 
-- **Discriminating checks** — pass with the skill and fail without it. These are the ones that measure what the skill adds. A project scaffolding skill might reliably produce `CLAUDE.md` and `dev_docs/overview.md` while the baseline never does.
+- **Discriminating checks** — pass with the skill and fail without it. These are the ones that measure what the skill adds. A project scaffolding skill might reliably produce `AGENTS.md` and `dev_docs/overview.md` while the baseline never does.
 - **Non-discriminating checks** — pass in both conditions. They validate correctness but don't justify the skill's existence. If *every* check is non-discriminating, the skill is not earning its context cost.
 - **Cost** — skills increase token usage and runtime. Weigh that against what they add.
 
@@ -242,43 +253,7 @@ To add a third-party marketplace:
 
 This works with GitHub, GitLab, Bitbucket, or any git URL. You can also add a local path for development.
 
-### Hosting your own marketplace on GitHub
-
-Any GitHub repository can serve as a marketplace. The minimum structure is:
-
-```
-my-marketplace/
-├── .claude-plugin/
-│   └── marketplace.json
-└── plugins/
-    └── my-plugin/
-        ├── .claude-plugin/
-        │   └── plugin.json
-        └── skills/
-            └── my-skill/
-                └── SKILL.md
-```
-
-The `marketplace.json` lists each plugin with a name and source:
-
-```json
-{
-  "name": "my-marketplace",
-  "owner": { "name": "Your Name" },
-  "plugins": [
-    {
-      "name": "my-plugin",
-      "source": "./plugins/my-plugin",
-      "description": "What this plugin does",
-      "version": "1.0.0"
-    }
-  ]
-}
-```
-
-Plugin sources can be relative paths (for monorepos), GitHub repos, git URLs, or npm packages. See the [official marketplace documentation](https://code.claude.com/docs/en/plugin-marketplaces) for the full `marketplace.json` schema and source types.
-
-Run `claude plugin validate <path>` before publishing; add `--strict` to treat warnings as errors.
+Anyone can publish a marketplace; the [official marketplace documentation](https://code.claude.com/docs/en/plugin-marketplaces) covers how. [The DunnLab Plugin](plugin.md) is an example.
 
 ### Installing plugins
 
@@ -294,32 +269,31 @@ claude plugin install plugin-name@marketplace-name
 
 For team projects, you can pre-configure marketplaces and plugins in `.claude/settings.json` so they're available to all contributors.
 
-### Auto-updates
+### Updates
 
-Auto-update behavior depends on the marketplace type:
-
-| Marketplace | Auto-update default |
-| -------- | -------- |
-| Official Anthropic | Enabled |
-| Third-party | Disabled |
-
-When auto-update is enabled, Claude Code checks for new versions at startup and updates installed plugins automatically. If updates are found, you'll be prompted to run `/reload-plugins` to apply them.
-
-The `version` field in a plugin's `plugin.json` determines whether an update is needed — if code changes but the version isn't bumped, the cached copy won't update.
-
-You can toggle auto-update per marketplace via `/plugin` → Marketplaces, or control it globally with environment variables:
-
-| Method | Effect |
-| -------- | -------- |
-| `/plugin` → Marketplaces → toggle | Enable or disable auto-update per marketplace |
-| `export DISABLE_AUTOUPDATER=true` | Disable all auto-updates (including Claude Code itself) |
-| Both `DISABLE_AUTOUPDATER=true` and `FORCE_AUTOUPDATE_PLUGINS=true` | Disable CLI updates but keep plugin updates |
-
-To manually update a specific plugin:
+Plugins from the official Anthropic marketplace update automatically. **Third-party marketplaces do not, by default**, so a plugin from one stays at the version you installed until you update it:
 
 ```bash
 claude plugin update plugin-name@marketplace-name
 ```
+
+You can turn on auto-update per marketplace under `/plugin` → **Marketplaces**. The [plugin documentation](https://code.claude.com/docs/en/discover-plugins) covers the other update settings.
+
+### Plugins worth knowing about
+
+These come from Anthropic's official marketplace:
+
+```bash
+claude plugin install <plugin-name>@claude-plugins-official
+```
+
+| Plugin | What it does |
+|--------|-------------|
+| **skill-creator** | Structured workflow for building skills, running evals against them, and tuning descriptions. Worth having if you plan to write skills of your own — see [Creating and evaluating skills](#creating-and-evaluating-skills). |
+| **pyright-lsp** | Gives Claude a language server for Python: type errors reported immediately after each edit, plus jump-to-definition and find-references. Requires `pyright-langserver` on your PATH. There are equivalents for [most languages](https://code.claude.com/docs/en/discover-plugins#code-intelligence), including `rust-analyzer-lsp`. |
+| **security-guidance** | Reviews each change Claude makes for common vulnerabilities and fixes what it finds in the same session. |
+
+Browse everything available by running `/plugin` and opening the **Discover** tab.
 
 ### Context impact
 
