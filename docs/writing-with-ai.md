@@ -7,7 +7,9 @@ nav_order: 15
 
 Most of this manual is about using agents for analysis. But analyses end up in papers, and agents can help with the writing too. This chapter covers the many ways AI can contribute to a manuscript, the obligations that come with each, and the principles behind how we approach it.
 
-How these tools are used in writing, if at all, will vary widely across labs and investigators, and it depends heavily on the project. A methods paper, a review, a dataset description, and a long collaborative study raise different questions. What follows is a map of the options and the reasoning we find useful, not a prescription.
+This chapter is not a statement of what should or should not be written with AI. That is a decision for each investigator to make, in the context of their particular project and goals. How these tools are used in writing, if at all, will vary widely across labs and investigators, and it depends heavily on the project: a methods paper, a review, a dataset description, and a long collaborative study raise different questions.
+
+What we describe instead is what we have learned about what is possible, and how to get the best results. Knowing how the tools work and what they can do matters whatever your position: if you have decided to use them for a project, if you are deciding whether to, if you are mentoring someone who is considering it, or if you definitely do not want to use them and are working out why.
 
 ## Where analysis ends and writing begins
 
