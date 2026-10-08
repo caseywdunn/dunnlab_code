@@ -98,6 +98,30 @@ External validation compares results with evidence from outside the analysis. It
 - **Simulation:** generate data from a known process, including the complications you expect in real data, and measure how well the analysis recovers the truth.
 - **Experiments:** for a central claim, the most convincing validation may be at the bench or in the field, not in the computer.
 
+### Orthogonal validation
+
+A check is only as useful as its independence from what it checks. A validation is **orthogonal** when it shares as little as possible with the original analysis: different data, a different measurement, different methods, different assumptions, and different sources of error. An error shared by the analysis and its check cannot be caught by that check. Two read aligners that both map to the same flawed reference genome will agree with each other, and both be wrong.
+
+To judge how orthogonal a check is, list what it shares with the analysis it is checking:
+
+- **Data:** the same samples, the same sequencing run, the same preprocessing?
+- **References:** the same genome assembly, annotation, or database release?
+- **Methods and assumptions:** the same software, the same statistical model, the same filters?
+- **Authorship:** the same person or the same agent session? A check written by the agent that wrote the analysis can share its misunderstanding of the problem. Have the expected answer come from you, the literature, or a separate session or model.
+
+The fewer shared elements, the more a passing check means.
+
+**Use multiple orthogonal validations where possible.** Each check catches some kinds of error and is blind to others, and each has weaknesses of its own. Several checks that fail in different ways cover each other's blind spots, and when they converge on the same answer, the result rests on more than one foundation. For example, a claim that a gene is expressed more strongly in tentacles than in the body can draw on:
+
+- the differential expression analysis of RNA-seq data that suggested it;
+- qPCR on independent samples, a different measurement technique;
+- in situ hybridization, which shows where in the animal the gene is expressed rather than how much; and
+- reanalysis of an independent published dataset from another lab.
+
+Each of these can be wrong, but it is unlikely that all of them are wrong in the same direction. Similarly, a phylogenetic result is more convincing when it holds across different gene sets, different substitution models, and different kinds of data, than when it holds across several programs analyzing the same alignment.
+
+Be wary of agreement among checks that are not orthogonal. Five analyses of the same alignment that agree tell you less than two that share nothing, because a problem in the alignment would affect all five.
+
 ## Code review
 
 Review catches what automated checks miss: logic that runs without error but does the wrong thing, assumptions nobody wrote down, and checks that should exist but do not.
