@@ -30,6 +30,8 @@ And for prose in particular:
 
 1. **Citation standards.** LLMs fabricate references convincingly: plausible authors, plausible titles, DOIs that either resolve to something else or to nothing. Every citation needs to be checked against the actual source, and you should review what you cite. This is the failure mode most likely to reach print, because a fabricated reference looks exactly like a real one until someone follows it.
 
+[Writing with AI](writing-with-ai.md) discusses the ways AI can contribute to a manuscript and how to approach them.
+
 ## Reproducibility and the data path
 
 A reproducible computational analysis preserves its data, code, and runtime. When an analysis invokes an LLM as it runs, that model and the software around it become part of the runtime. This is a fragile dependency: hosted models can change, disappear, or produce different outputs when given the same inputs. The tutorial [*Designing reproducible large-language-model-assisted scientific analyses*](https://doi.org/10.1016/j.patter.2026.101644) by Dunn, Schultz, and Musser (2026) organizes this problem around the **data path**: the sequence of operations that transforms the declared inputs into the outputs evaluated in the paper.
