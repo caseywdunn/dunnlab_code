@@ -237,7 +237,7 @@ Everything above depends on Claude behaving as designed. This section does not: 
 
 That is the distinction to keep. Permission rules decide what Claude *chooses* to do. Isolation decides what a running command *can reach*. For unattended work you want both, and the more autonomy you grant at the Claude level, the more the system level has to carry.
 
-In the terms of [Agent Concepts](claude-intro.md#user-agent-and-compute-planes), these are boundaries for the **agent plane**: the machine or account where the harness runs. A boundary enforced there holds no matter what the harness or model does.
+In the terms of [Working Across Computers](working-across-computers.md#user-agent-and-compute-planes), these are boundaries for the **agent plane**: the machine or account where the harness runs. A boundary enforced there holds no matter what the harness or model does.
 
 {: .warning }
 > **Isolating the agent plane does not isolate the compute plane.**

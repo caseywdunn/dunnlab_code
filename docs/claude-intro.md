@@ -95,75 +95,12 @@ Local and cloud agents can implement the same loop while running in very differe
 
 ## User, agent, and compute planes
 
-When an agent runs analyses, three kinds of activity are involved. We call each one a **plane**:
+When an agent runs analyses, three kinds of activity are involved, and each can run on a different computer. We call them **planes**:
 
-| Plane | What happens there | What it needs |
-|---|---|---|
-| **User plane** | You read the agent's output, answer its questions, approve actions, and review results. | To be with you. This is typically your laptop, which you may turn on and off many times a day. |
-| **Agent plane** | The harness runs the agent loop: reading files, editing code, calling the model, submitting and monitoring jobs, and checking results. | Long, uninterrupted persistence so a session can run for hours or days. Very little compute; 1 CPU and 8 GB of RAM are usually sufficient. Restrictions on what the agent can do, enforced by the plane itself, such as which files it can read and write. |
-| **Compute plane** | The analyses themselves run. | Enough resources for the analysis, which may mean hundreds of gigabytes of disk, dozens of CPUs, and large amounts of RAM. |
+- The **user plane** is where you interact with the agent: read its output, answer its questions, and approve its actions.
+- The **agent plane** is where the harness runs the agent loop.
+- The **compute plane** is where the analyses themselves run.
 
-The model itself runs on the provider's servers in every arrangement below. The planes describe where your side of the work happens.
-
-If you run an agent on your laptop to do some analyses locally, all three planes are on the same machine. That is the simplest arrangement and often the right one. For more complex analyses it is often better to put the planes on different machines, because each plane is optimized differently:
-
-- The user plane has to be where you are, but your laptop is a poor host for a long-running agent. If it sleeps or loses its network connection, the agent stops.
-- The agent plane should be persistent and tightly bounded, but it barely uses resources. A small, always-on machine or a long-lived, low-resource allocation suits it well. Because it is dedicated to the agent, restrictions can be enforced at the level of the machine or account rather than relying on the harness alone (see [Permissions and sandboxing](#permissions-and-sandboxing)).
-- The compute plane needs large resources, but often only for part of the time. These are frequently shared resources that you want to use only while you need them and then return immediately to the pool. Compute planes are therefore often ephemeral: the agent allocates them as needed, for example by submitting a job to a scheduler, and releases them when the job ends.
-
-### Example: all planes on a laptop
-
-You start the agent in a terminal on your laptop, and it runs analyses there. This suits work that fits on the laptop and finishes while you are present. Closing the laptop stops the agent and the analysis.
-
-```mermaid
-flowchart LR
-  subgraph laptop["Laptop"]
-    direction LR
-    U["User plane<br/>terminal"]
-    A["Agent plane<br/>harness session"]
-    C["Compute plane<br/>local analyses"]
-  end
-  U --> A --> C
-```
-
-### Example: laptop and a lab workstation
-
-You connect over SSH from your laptop to a headless Ubuntu computer that is always running in the lab. The agent runs on the workstation inside a persistent terminal session, such as `tmux`, and runs analyses on the same machine. The workstation is both the agent plane and the compute plane. You can close your laptop, reconnect later, and find the agent still working. The workstation's account and file permissions bound what the agent can reach.
-
-```mermaid
-flowchart LR
-  subgraph laptop["Laptop"]
-    U["User plane<br/>terminal"]
-  end
-  subgraph lab["Lab workstation"]
-    A["Agent plane<br/>harness in tmux"]
-    C["Compute plane<br/>local analyses"]
-  end
-  U -- "SSH" --> A
-  A --> C
-```
-
-### Example: laptop, agent allocation, and cluster jobs
-
-You connect over SSH from your laptop to an agent running in a small, long-lived allocation on a computing cluster, such as an instance on a partition set aside for agents. That allocation is the agent plane. The agent then creates compute planes as needed by submitting SLURM jobs with the CPUs, memory, and disk each step requires. It monitors those jobs, and each job releases its resources when it finishes. The agent plane stays small and persistent, and each compute plane is large and ephemeral.
-
-```mermaid
-flowchart LR
-  subgraph laptop["Laptop"]
-    U["User plane<br/>terminal"]
-  end
-  subgraph cluster["Computing cluster"]
-    A["Agent plane<br/>agent partition instance<br/>1 CPU, 8 GB RAM<br/>long time limit"]
-    subgraph jobs["SLURM jobs"]
-      C1["Compute plane<br/>job 1"]
-      C2["Compute plane<br/>job 2"]
-    end
-  end
-  U -- "SSH" --> A
-  A -- "sbatch" --> C1
-  A -- "sbatch" --> C2
-```
-
-[Working Across Computers](working-across-computers.md) covers the practical tools for these arrangements: SSH, `tmux`, file transfer, and provenance across machines.
+On a laptop, all three are on one machine. For larger or longer work it often pays to separate them, because each plane needs something different. [Working Across Computers](working-across-computers.md#user-agent-and-compute-planes) explains why and shows common arrangements.
 
 With this template in place, the meaningful questions about a coding agent become concrete: which model and context does its harness use, which tools can it call, where do its planes run, how is it constrained, and how does it preserve state? The next chapter answers those questions for Claude Code and Codex.

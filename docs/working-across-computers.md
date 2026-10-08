@@ -7,19 +7,90 @@ nav_order: 9
 
 Once your work is organized around a terminal, text files, and Git, it becomes natural to split it across computers. The agent does not have to run on the same machine as you, and the machine running the agent does not have to perform the heavy computation.
 
-## Why use more than one computer
+## User, agent, and compute planes
 
-There are two main reasons to move work away from your everyday computer.
+When an agent runs analyses, three kinds of activity are involved. We call each one a **plane**:
+
+| Plane | What happens there | What it needs |
+|---|---|---|
+| **User plane** | You read the agent's output, answer its questions, approve actions, and review results. | To be with you. This is typically your laptop, which you may turn on and off many times a day. |
+| **Agent plane** | The harness runs the agent loop: reading files, editing code, calling the model, submitting and monitoring jobs, and checking results. | Long, uninterrupted persistence so a session can run for hours or days. Very little compute; 1 CPU and 8 GB of RAM are usually sufficient. Restrictions on what the agent can do, enforced by the plane itself, such as which files it can read and write. |
+| **Compute plane** | The analyses themselves run. | Enough resources for the analysis, which may mean hundreds of gigabytes of disk, dozens of CPUs, and large amounts of RAM. |
+
+The model itself runs on the provider's servers in every arrangement below. The planes describe where your side of the work happens.
+
+### Why separate them
+
+If you run an agent on your laptop to do some analyses locally, all three planes are on the same machine. That is the simplest arrangement and often the right one. Two needs push the planes apart as work grows:
 
 **Isolation.** A dedicated computer, cloud virtual machine, or separate account can hold only one project and narrowly scoped credentials. The agent can work autonomously there without being able to reach your email, browser profile, private files, or unrelated repositories. This is a practical extension of the boundaries in [Managing Security](managing-security.md#system-level-control).
 
 **Compute.** Some analyses need more memory, CPUs, GPUs, storage, or runtime than a laptop can provide. A workstation, cloud instance, or high-performance computing cluster can run the analysis while your local computer remains available for ordinary work.
 
-These motivations often overlap, but they do not require the same architecture. A cheap remote machine may be an excellent isolated place for an agent and a poor place for computation; an HPC cluster may be an excellent compute resource and an inappropriate place to run an autonomous agent.
+More generally, each plane is optimized differently:
 
-## Placing the planes
+- The user plane has to be where you are, but your laptop is a poor host for a long-running agent. If it sleeps or loses its network connection, the agent stops.
+- The agent plane should be persistent and tightly bounded, but it barely uses resources. A small, always-on machine or a long-lived, low-resource allocation suits it well. Because it is dedicated to the agent, restrictions can be enforced at the level of the machine or account rather than relying on the harness alone.
+- The compute plane needs large resources, but often only for part of the time. These are frequently shared resources that you want to use only while you need them and then return immediately to the pool. Compute planes are therefore often ephemeral: the agent allocates them as needed, for example by submitting a job to a scheduler, and releases them when the job ends.
 
-[Agent Concepts](claude-intro.md#user-agent-and-compute-planes) separates the work into three planes. The **user plane** is where you interact with the agent, the **agent plane** is where the harness runs the agent loop, and the **compute plane** is where the analyses run. The user plane stays with you. The arrangements below differ in where the agent and compute planes go:
+These needs do not call for the same machine. A cheap remote machine may be an excellent agent plane and a poor compute plane; an HPC cluster may be an excellent compute plane and an inappropriate place to run an autonomous agent.
+
+### Example: all planes on a laptop
+
+You start the agent in a terminal on your laptop, and it runs analyses there. This suits work that fits on the laptop and finishes while you are present. Closing the laptop stops the agent and the analysis.
+
+```mermaid
+flowchart LR
+  subgraph laptop["Laptop"]
+    direction LR
+    U["User plane<br/>terminal"]
+    A["Agent plane<br/>harness session"]
+    C["Compute plane<br/>local analyses"]
+  end
+  U --> A --> C
+```
+
+### Example: laptop and a lab workstation
+
+You connect over SSH from your laptop to a headless Ubuntu computer that is always running in the lab. The agent runs on the workstation inside a persistent terminal session, such as `tmux`, and runs analyses on the same machine. The workstation is both the agent plane and the compute plane. You can close your laptop, reconnect later, and find the agent still working. The workstation's account and file permissions bound what the agent can reach.
+
+```mermaid
+flowchart LR
+  subgraph laptop["Laptop"]
+    U["User plane<br/>terminal"]
+  end
+  subgraph lab["Lab workstation"]
+    A["Agent plane<br/>harness in tmux"]
+    C["Compute plane<br/>local analyses"]
+  end
+  U -- "SSH" --> A
+  A --> C
+```
+
+### Example: laptop, agent allocation, and cluster jobs
+
+You connect over SSH from your laptop to an agent running in a small, long-lived allocation on a computing cluster, such as an instance on a partition set aside for agents. That allocation is the agent plane. The agent then creates compute planes as needed by submitting SLURM jobs with the CPUs, memory, and disk each step requires. It monitors those jobs, and each job releases its resources when it finishes. The agent plane stays small and persistent, and each compute plane is large and ephemeral.
+
+```mermaid
+flowchart LR
+  subgraph laptop["Laptop"]
+    U["User plane<br/>terminal"]
+  end
+  subgraph cluster["Computing cluster"]
+    A["Agent plane<br/>agent partition instance<br/>1 CPU, 8 GB RAM<br/>long time limit"]
+    subgraph jobs["SLURM jobs"]
+      C1["Compute plane<br/>job 1"]
+      C2["Compute plane<br/>job 2"]
+    end
+  end
+  U -- "SSH" --> A
+  A -- "sbatch" --> C1
+  A -- "sbatch" --> C2
+```
+
+## Choosing an arrangement
+
+The user plane stays with you. The arrangements differ in where the agent and compute planes go:
 
 | Arrangement | Best for | Main caution |
 |---|---|---|

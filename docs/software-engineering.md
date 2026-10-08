@@ -113,7 +113,7 @@ This design gives you the properties above without writing them yourself:
 - **Idempotence is built in.** Snakemake runs a step only if its output is missing or out of date, for example because the input or the rule's code changed. Run the workflow twice and the second run does nothing. Interrupt it and the next run picks up where it stopped. If a step fails, Snakemake deletes its partial output, so a half-written file is never mistaken for a finished one.
 - **Dry runs are built in.** `snakemake -n` lists every job it would run, and why, without running anything. Then `snakemake --cores 4` runs them.
 - **The data flow is visible.** `snakemake --rulegraph` draws the steps and how they connect, which is often the clearest overview of an analysis.
-- **The same workflow runs anywhere.** It can run on a laptop, or on a cluster as the [compute plane](claude-intro.md#user-agent-and-compute-planes) with each rule submitted as its own job, without changing the rules.
+- **The same workflow runs anywhere.** It can run on a laptop, or on a cluster as the [compute plane](working-across-computers.md#user-agent-and-compute-planes) with each rule submitted as its own job, without changing the rules.
 
 Agents write Snakemake well, and the rules are short enough that you can read them to check what an analysis actually does. The [`dunnlab-workflow-design` skill](plugin.md#the-skills) describes how we organize Snakemake workflows.
 

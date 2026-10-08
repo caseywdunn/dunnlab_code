@@ -126,7 +126,7 @@ One caution. An agent asked *are we on the right track?* has a pull toward answe
 
 ## Keep the agent working for you
 
-The goal is not to spend all day supervising an agent. It is to make the agent as autonomous as the work safely allows. A run that is going well may need little or no input for hours or even days while it implements the plan, runs analyses, checks intermediate results, and interprets what it finds. Runs that long need a persistent [agent plane](claude-intro.md#user-agent-and-compute-planes): an agent on a laptop stops whenever the laptop sleeps.
+The goal is not to spend all day supervising an agent. It is to make the agent as autonomous as the work safely allows. A run that is going well may need little or no input for hours or even days while it implements the plan, runs analyses, checks intermediate results, and interprets what it finds. Runs that long need a persistent [agent plane](working-across-computers.md#user-agent-and-compute-planes): an agent on a laptop stops whenever the laptop sleeps.
 
 Your attention should be reserved for the things only you can contribute: information the agent cannot access, consequential design decisions, scientific judgment, and expertise it does not already have. Clicking through routine permission requests, fetching files for it, and repeatedly answering questions that could have been settled in advance are signs that the workflow needs attention.
 
