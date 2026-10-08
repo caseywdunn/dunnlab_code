@@ -1,6 +1,8 @@
 # Publication and release handoff
 
 Use this reference when preparing a manuscript or public code/data release.
+For how a manuscript is organized, written, and built, including generated
+results and figures, use `dunnlab-manuscript`.
 Apply the checks that fit the intended deliverable and known recipient
 requirements. Record the outcome in the existing spec or assessment; no new phase,
 checklist file, manuscript format, or archive layout is required.

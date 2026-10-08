@@ -1,6 +1,6 @@
 ---
 title: Dunn Lab Practices
-nav_order: 15
+nav_order: 16
 ---
 
 # Dunn Lab Practices
@@ -15,7 +15,7 @@ These conventions are encoded as skills in [the plugin](plugin.md), so Claude ap
 
 A few are more consequential than a style preference, and they are the ones most likely to surprise someone joining:
 
-**Python by default, R when a library requires it.** We prefer industry-standard tools over domain-specific ones, as [Getting Started](getting-started.md#languages) argues. R remains the right answer when the analysis needs a package that only exists there, when it is what you know and it works, or when a collaboration has already chosen it.
+**Python by default, R when a library requires it.** We prefer industry-standard tools over domain-specific ones, as [The Toolkit](toolkit.md#python) argues. R remains the right answer when the analysis needs a package that only exists there, when it is what you know and it works, or when a collaboration has already chosen it.
 
 **Raw data is immutable, enforced structurally.** Preserve acquired inputs unchanged, commonly under `data/raw/`, and write derivatives separately using rerunnable transformations. This is a general principle — [Using AI in Research](using-ai.md#working-with-data) makes the case — owned by workflow design. Bioinformatics adds biological checks and identifier conventions.
 
@@ -31,9 +31,17 @@ A few are more consequential than a style preference, and they are the ones most
 
 **Write in LaTeX, and render both PDF and Word.** The `.tex` source is the source of record. Render a PDF for reading and a `.docx` for co-authors who edit in Word. Neither rendered file is ever edited and committed back.
 
+**Results are generated, never typed.** Every number, table, and figure that reports a result is produced by code in the analysis repository. Numbers reach the text as LaTeX commands, such as `\nSpecies`, defined in a generated file; tables and figures are generated files included by the manuscript. One script copies them into the manuscript repository and records the analysis commit they came from. Neither a person nor an agent types a result into the text. A value copied by hand is right only until the analysis is rerun, and nothing flags it when it goes stale. The agent's job is to write the prose and the code that generates results, not to carry numbers between them.
+
+**Figures are generated at final size, twice.** The analysis code saves each figure as a PDF for the PDF build and a PNG for the Word build, and the manuscript includes it without a file extension, so each build picks the right one. A figure that needs hand assembly, such as photographs combined with plots, keeps its editable source in the manuscript repository and is re-exported whenever the results change.
+
+**Quarto is for reports, not manuscripts.** Where the analysis is the document, as in an analysis report or a supplement, Quarto's executable documents work well. Manuscripts get LaTeX's typesetting and journal templates. In both, results come from code.
+
 **Co-authors edit the `.docx` with track changes on.** Track changes is not for approving or rejecting edits in Word. It lets them, you, and the agent see exactly what was changed.
 
-**Incorporate edits through a gitignored `tmp/` folder.** Each manuscript repository has a `tmp/` directory listed in `.gitignore`. Put each returned `.docx` there and ask the agent to carry its changes into the `.tex` file. Commit before and after every incorporation. The diff between the two commits is then the complete record of what one co-author's edits did to the source. That diff is what you review, and it is easy to revert if something went wrong.
+**Incorporate edits through a gitignored `tmp/` folder.** Each manuscript repository has a `tmp/` directory listed in `.gitignore`. Put each returned `.docx` there and ask the agent to carry its changes into the `.tex` file. Commit before and after every incorporation. The diff between the two commits is then the complete record of what one co-author's edits did to the source. That diff is what you review, and it is easy to revert if something went wrong. If a co-author edits a generated number or figure, the change goes back to the analysis rather than being typed in.
+
+The [`dunnlab-manuscript` skill](plugin.md#the-skills) encodes these conventions, including the repository layout, the sync script, and figure settings.
 
 ## Data management
 
