@@ -5,11 +5,11 @@ nav_order: 11
 
 # Software Engineering
 
-For the past couple of decades there has been a lot of emphasis on the idea that everyone can code. Learning to program is still valuable, even now that agents write code. You get the best results when you know what you are going for, and you need to be able to read and review the code an agent produces. But when agents write most of the code, a different skill becomes more important: **software engineering**.
+For the past couple of decades there has been a lot of emphasis on the idea that everyone should code. Learning to program is still valuable, even now that agents write code. You get the best results when you know what you are going for, and you need to be able to read and review the code an agent produces. But when agents write most of the code, a different skill becomes more important: **software engineering**.
 
 Coding is writing instructions a computer can follow. Software engineering is deciding what to build, how its parts fit together, how you will know it works, and how it can change without breaking. When you direct an agent, you are the architect of the project, even if you never write a line yourself. The agent will make thousands of small decisions on your behalf, and the principles you set are what keep those decisions pointed the same way.
 
-Some of this is entirely new territory for most biologists. A short script that runs once on one dataset needs very little engineering. But agents make much larger projects possible, such as a pipeline across hundreds of species or a tool that other labs install, and those projects fall apart without engineering practices that professional software developers take for granted. This chapter introduces those practices. [Working Effectively](working-effectively.md) covers how to plan and direct the work; this chapter covers how to build something large that stays correct.
+Some of this is entirely new territory for most biologists. A short script that runs once on one dataset may need very little engineering. But agents make much larger projects possible, such as a pipeline across hundreds of species or a tool that other labs install, and those projects fall apart without engineering practices that professional software developers take for granted. This chapter introduces those practices. [Working Effectively](working-effectively.md) covers how to plan and direct the work; this chapter covers how to build something large that stays correct.
 
 ## Principles behind the architecture
 
@@ -44,6 +44,78 @@ Your role in testing is to decide what must be true, not to write the tests:
 - Ask the agent what is *not* tested, and whether that matters.
 - Watch for tests that were changed to make them pass. An agent under pressure to finish may loosen a test instead of fixing the code. Changes to tests deserve a closer look than changes to the code they check.
 - Remember that passing tests mean the code does what the tests say, not that the science is right. Keep the [scientific checks](working-effectively.md#set-gates-the-agent-can-check) too.
+
+## Linting and formatting
+
+Two more tools check code automatically, and they work differently from tests.
+
+A **linter** reads code without running it and flags likely mistakes: a variable used before it is defined, an imported library that is never used, a comparison that is always true, a function that silently returns nothing on one path. A **formatter** rewrites the layout of code, such as indentation, line breaks, spacing, and quotation marks, into one consistent style without changing what it does. For Python, [Ruff](https://docs.astral.sh/ruff/) does both.
+
+Linting and testing catch different problems:
+
+- **A linter** inspects every line, including code no test ever runs, and finds whole classes of mistakes in seconds. But it cannot tell whether the code computes the right answer.
+- **A test** runs the code and checks the answer. But it only checks the cases someone thought to write.
+
+A project needs both, and both should run on every change.
+
+It is worth having strong opinions about formatting, enforced by a tool rather than by taste. Without a formatter, every person and every agent session lays out code slightly differently. A change that should touch three lines then shows up as fifty, because the editor also reflowed the rest of the file, and the three lines that matter are hard to find among them. With a formatter run on every change, the code always looks the same, a reviewer sees only the lines that changed in meaning, and no one spends time debating style. The particular style matters much less than having one and applying it everywhere.
+
+## Design for the person running it
+
+Software has users, even when the only user is you in six months, or an agent in the next session. A few properties make the difference between a tool that is safe to run and one that has to be handled carefully.
+
+**Make it idempotent.** An operation is idempotent if running it twice has the same effect as running it once. Analyses get interrupted, rerun, and resumed all the time, and a non-idempotent step turns each of those into a problem. A script that appends results to a file doubles them when run again. A script that writes a complete new file does not. A download step that fetches only files that are missing or incomplete can be rerun safely after a dropped connection. Idempotent steps let you, or an agent, simply run the analysis again after anything goes wrong.
+
+**Provide a dry run.** A dry run reports what a command would do without doing it: which files it would create, which jobs it would launch, what it would delete. It is the cheapest possible check before anything slow, expensive, or destructive. It is especially valuable with agents, because you can ask to see the dry run before approving the real one.
+
+A few more properties are worth asking for:
+
+- **Fail early and clearly.** Check inputs at the start and stop with a message naming the file and the record that is wrong, rather than failing an hour later with an obscure error.
+- **Never overwrite silently.** Write outputs to predictable places, and refuse to overwrite inputs or completed results unless asked.
+- **Keep failures from leaving half-finished files**, which later steps might mistake for complete results.
+
+## Workflow frameworks
+
+An analysis with many steps, samples, or species quickly outgrows a single script. A **workflow framework** is a tool for exactly this. You describe each step in terms of the files it reads and the files it writes. The framework then works out the order, runs independent steps in parallel, sends jobs to a cluster when asked, and reruns only what needs rerunning. [Snakemake](https://snakemake.readthedocs.io/) and [Nextflow](https://www.nextflow.io/) are the two most widely used in biology. Both descend from `make`, a tool for building software that has worked this way since the 1970s.
+
+### Snakemake rules
+
+Snakemake is written in Python and is easy to read. A workflow is a set of **rules**. Each rule names its inputs, its outputs, and the command that turns one into the other:
+
+```python
+SAMPLES = ["liver", "brain"]
+
+rule all:
+    input:
+        expand("results/{sample}.stats.tsv", sample=SAMPLES)
+
+rule filter_reads:
+    input:
+        "data/{sample}.fastq.gz"
+    output:
+        "filtered/{sample}.fastq.gz"
+    shell:
+        "seqkit seq --min-len 50 {input} -o {output}"
+
+rule summarize_reads:
+    input:
+        "filtered/{sample}.fastq.gz"
+    output:
+        "results/{sample}.stats.tsv"
+    shell:
+        "seqkit stats --tabular {input} > {output}"
+```
+
+`{sample}` is a **wildcard**: one rule covers every sample. The `all` rule lists the final results you want. Snakemake works backwards from them: to make `results/liver.stats.tsv` it needs `filtered/liver.fastq.gz`, and to make that it needs `data/liver.fastq.gz`. You never state the order; it follows from the files.
+
+This design gives you the properties above without writing them yourself:
+
+- **Idempotence is built in.** Snakemake runs a step only if its output is missing or out of date, for example because the input or the rule's code changed. Run the workflow twice and the second run does nothing. Interrupt it and the next run picks up where it stopped. If a step fails, Snakemake deletes its partial output, so a half-written file is never mistaken for a finished one.
+- **Dry runs are built in.** `snakemake -n` lists every job it would run, and why, without running anything. Then `snakemake --cores 4` runs them.
+- **The data flow is visible.** `snakemake --rulegraph` draws the steps and how they connect, which is often the clearest overview of an analysis.
+- **The same workflow runs anywhere.** It can run on a laptop, or on a cluster as the [compute plane](claude-intro.md#user-agent-and-compute-planes) with each rule submitted as its own job, without changing the rules.
+
+Agents write Snakemake well, and the rules are short enough that you can read them to check what an analysis actually does. The [`dunnlab-workflow-design` skill](plugin.md#the-skills) describes how we organize Snakemake workflows.
 
 ## Prototyping: get something working end to end
 

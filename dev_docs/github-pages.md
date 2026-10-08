@@ -40,7 +40,7 @@ The chapters are ordered by how widely they apply, narrowing as they go. Keep ne
 | `working-across-computers.md` | 8 | anyone | Remote agents, SSH, tmux, and separating the agent plane from compute |
 | `managing-context.md` | 9 | anyone | Context window, agent instructions, rules, auto memory, skills, plugins |
 | `working-effectively.md` | 10 | anyone | How to frame the work: broad requests, planning vs building, committing the plan |
-| `software-engineering.md` | 11 | anyone | Engineering for biologists directing agents: architecture principles, testing, prototyping, increments, issues, release cycles, constraint |
+| `software-engineering.md` | 11 | anyone | Engineering for biologists directing agents: architecture principles, testing and linting, idempotence and dry runs, workflow frameworks (Snakemake), prototyping, increments, issues, release cycles, constraint |
 | `plugin.md` | 12 | anyone | The plugin as an artifact: skills, commands, assets, install and update |
 | `example-workflows.md` | 13 | anyone | Step-by-step walkthrough of a project |
 | `yale.md` | 14 | Yale | YCRC clusters and running coding agents on shared hardware |

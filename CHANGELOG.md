@@ -19,8 +19,8 @@ auto-update is off by default for third-party marketplaces.
 - README guidance assumes biologist readers and keeps development material in
   `dev_docs/`.
 - The manual introduces user, agent, and compute planes, with diagrams.
-- A Software Engineering chapter introduces architecture principles, testing,
-  prototyping, increments and gates, GitHub issues, and release cycles for
+- A Software Engineering chapter introduces architecture principles, testing and
+  linting, idempotence and dry runs, workflow frameworks with Snakemake, prototyping, increments and gates, GitHub issues, and release cycles for
   biologists directing agents.
 
 ### Changed

@@ -31,7 +31,7 @@ The manual uses Claude Code and Codex as its main examples, but most of it appli
 - [Working Across Computers](working-across-computers.md) — Remote agents, SSH and tmux, and separating the user, agent, and compute planes.
 - [Managing Context](managing-context.md) — Giving an agent the right information: project instructions, rules, memory, skills, and plugins.
 - [Working Effectively](working-effectively.md) — How to frame the work: asking broadly, separating planning from building, and committing the plan.
-- [Software Engineering](software-engineering.md) — Building large projects with agents: architecture principles, testing, prototyping, increments and gates, issues, and release cycles.
+- [Software Engineering](software-engineering.md) — Building large projects with agents: architecture principles, testing and linting, idempotence and dry runs, workflow frameworks such as Snakemake, prototyping, increments and gates, issues, and release cycles.
 - [DunnLab Plugin](plugin.md) — The skills, commands, and assets in this repository, and how to run them.
 - [Example Workflows](example-workflows.md) — A project from empty directory to working code, start to finish.
 - [Computing at Yale](yale.md) — YCRC clusters, and running coding agents on shared hardware.
