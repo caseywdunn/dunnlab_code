@@ -1,0 +1,17 @@
+project:
+  type: default
+  render:
+    - manuscript.qmd
+  pre-render: scripts/check_results.py  # fails the render if a value, table, or figure is missing
+
+metadata-files:
+  - _results/values.json  # analysis metadata and reported values, synced from the analysis repository
+
+bibliography: references.bib
+
+format:
+  pdf:
+    default-image-extension: pdf  # figures referenced without an extension use the PDF
+    keep-tex: true                # also keep the LaTeX source, for journals that want it
+  docx:
+    default-image-extension: png  # Word cannot display PDF images

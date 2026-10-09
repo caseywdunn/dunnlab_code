@@ -1,13 +1,13 @@
 ---
 title: Computing at Yale
-nav_order: 13
+nav_order: 17
 ---
 
 # Computing at Yale
 
 Everything up to this point applies anywhere. This chapter does not: it covers Yale's research computing environment and how to use Claude Code or Codex with it safely.
 
-Start with [Working Across Computers](working-across-computers.md) for the general pattern: SSH, persistent sessions, file movement, and keeping the control plane separate from scheduled computation.
+Start with [Working Across Computers](working-across-computers.md) for the general pattern: SSH, persistent sessions, file movement, and keeping the agent plane separate from scheduled computation.
 
 If you are reading this from another institution, the useful part is the shape rather than the specifics — most universities have an equivalent of the policies and constraints below, and the reasoning transfers even though the hostnames do not.
 
@@ -19,40 +19,71 @@ Most interaction with the clusters happens through [Open OnDemand](https://docs.
 
 ## Coding agents and the clusters
 
-A cluster is a shared, powerful, and largely irreversible environment. The stakes are different from your laptop: you can create work for cluster maintainers and deny other people access, you can delete or leak a colleague's data, and you can silently modify your own in ways you will not notice until much later.
+[Agents on shared clusters](working-across-computers.md#agents-on-shared-clusters) covers the general precautions: start with restrictive permissions, check that the sandbox works, and keep heavy work off login nodes. This section adds what is specific to Yale.
 
-### Follow YCRC policy first
+### Follow YCRC guidance first
 
-YCRC **does not formally support** AI coding agents on the clusters, and publishes [guidance on the risks](https://docs.ycrc.yale.edu/ai/aicodingtools/) — data exposure, credential leakage, unauthorized actions taken with your permissions, and execution of code the agent generated or downloaded. Read it. These tools are new and the policy may change faster than this page does; where the two disagree, YCRC wins.
+YCRC publishes [guidance on AI coding agents](https://docs.ycrc.yale.edu/ai/aicodingtools/). Read it before using an agent on the clusters. These tools are new and the guidance may change faster than this page does; where the two disagree, YCRC wins. At the time of writing, YCRC offers two approaches:
 
-YCRC also documents connecting Claude Science to a cluster over an SSH tunnel to a **compute node, not a login node**. That product-specific example does not make Claude Code the default; the same policy and data-exposure questions apply when Codex reaches the cluster locally or through SSH.
+- **[Local coding agents](https://docs.ycrc.yale.edu/ai/local-coding-agents/)** on Bouchet use a model hosted by YCRC, so prompts and data do not leave Yale. They provide several interfaces, including Claude Code and Codex, through `module load local-coding-agents/1.0`, and need no commercial account.
+- **[Commercial coding agents](https://docs.ycrc.yale.edu/ai/commercial-coding-agents/)** use models hosted by external providers, so prompts, code, and data leave YCRC. YCRC is testing a sandbox module for Claude Code, `module load claude`. It checks where Claude starts, removes sensitive environment variables, runs Claude in a container that limits which files it can see, and enforces YCRC's permission policies through managed settings.
 
-### Use restrictive permissions
+Two rules apply to both:
 
-Because of the stakes above, run with tighter permissions on a cluster than you would locally.
+- **Run agents on a compute node,** never on a login node, started from a non-hidden subdirectory of your home, project, scratch, or PI storage.
+- **Respect the data restrictions.** With commercial agents, use only low-risk data for now; YCRC expects to allow medium-risk data once Claude Enterprise is available. Never use PHI or other high-risk data with a commercial agent.
 
-Start either harness with read-only access and explicit approvals, then broaden access only for actions the environment and policy permit. For Codex, a conservative starting command is:
+### A long-running agent on Bouchet
 
-```bash
-codex --sandbox read-only --ask-for-approval on-request
+Bouchet has an `agent` partition for exactly the arrangement described in [Working Across Computers](working-across-computers.md#user-agent-and-compute-planes): a small allocation, 1 CPU and up to 8 GB of memory, that can run for up to 7 days. The agent runs there with an uninterrupted session and launches the real analyses as separate Slurm jobs. McCleary has no equivalent partition at the time of writing.
+
+```mermaid
+flowchart LR
+  subgraph laptop["Laptop"]
+    U["User plane<br/>Open OnDemand<br/>in a browser"]
+  end
+  subgraph bouchet["Bouchet"]
+    L["Login node<br/>tmux session"]
+    A["Agent plane<br/>agent partition<br/>Claude sandbox module<br/>1 CPU, 5 GB, up to 7 days"]
+    subgraph jobs["Slurm jobs"]
+      C1["Compute plane<br/>job 1"]
+      C2["Compute plane<br/>job 2"]
+    end
+  end
+  U -- "shell" --> L
+  L -- "salloc" --> A
+  A -- "sbatch" --> C1
+  A -- "sbatch" --> C2
 ```
 
-For Claude Code, [`assets/settings.json`](https://github.com/caseywdunn/dunnlab_code/blob/main/assets/settings.json) is a full working example built for Bouchet. Place it in `~/.claude/` on the cluster. It starts in plan mode, allows read-only inspection and job monitoring freely, requires confirmation for file modifications and network access, and denies destructive system operations outright.
+1. **Sign in to Bouchet through [Open OnDemand](https://docs.ycrc.yale.edu/clusters-at-yale/access/ood/)** and open a shell. This puts you on a login node.
+2. **Start a tmux session,** so the agent keeps running when you close the browser:
 
-The same cluster quick reference—partitions, storage paths, SLURM templates, and conda workflow—belongs in shared `AGENTS.md` instructions so both agents receive it. The Claude settings example also includes a copy in its comment blocks.
+   ```bash
+   tmux new -s claude
+   ```
 
-See [Managing Security](managing-security.md) for what the permission rules mean and how they are evaluated.
+3. **Within it, request a 7-day allocation on the `agent` partition:**
 
-### Check whether the sandbox works before trusting it
+   ```bash
+   salloc -p agent -t 7-00:00:00 --cpus-per-task=1 --mem=5G
+   ```
 
-Permission and approval rules constrain what a harness will run. A functioning sandbox constrains what a running command *can reach*, which is the guarantee you actually want on shared storage—a Python script the agent runs is inside it too.
+   When the allocation starts, your shell is on a compute node.
+4. **Start Claude in the sandbox,** from your project directory:
 
-In Claude Code, run `/sandbox` and check whether a Dependencies tab appears. Its sandbox needs `bubblewrap`, `socat`, and unprivileged user namespaces, and shared systems commonly restrict the last of these. **When it cannot start, Claude Code warns and runs commands unsandboxed**, unless `sandbox.failIfUnavailable` is set to `true`.
+   ```bash
+   cd ~/project_pi_<netid>/my-analysis
+   module load claude
+   claude
+   ```
 
-In Codex, use `/permissions` to inspect the active sandbox and writable roots. For either harness, test that a deliberately out-of-scope read or write is actually blocked before trusting the boundary. If the required isolation is unavailable, keep the agent off the cluster and use the [local-control, remote-compute](working-across-computers.md#let-a-local-agent-control-remote-computation) arrangement instead.
+5. **Detach and come back later.** Press `Ctrl-b`, then `d`, to leave the session running. To return, open a shell again and run `tmux a -t claude`. A tmux session lives on one login node, so note the node's name with `hostname` when you start. If a later shell lands on a different login node, `ssh` to the original one first.
 
-### Never run heavy work on a login node
+From there, the agent submits analyses with `sbatch`, monitors them with `squeue` and `sacct`, and checks their results, each job requesting the resources its step needs and releasing them when it finishes. The agent's own allocation stays small. When the 7 days run out, the agent stops; start a new allocation the same way and resume the conversation with `claude -c`. Jobs it submitted keep running regardless.
 
-This predates AI tooling but is easier to violate with it, because an agent will happily run whatever gets the answer fastest. Lightweight orchestration is fine on a login node — dispatching SLURM jobs, git operations, conda environment management, inspecting files. Everything else belongs in a submitted job.
+### Cluster reference for agents
 
-If you are running a long orchestration such as Snakemake on a login node, wrap it in `tmux` so a dropped connection does not kill it. This repository ships a [shared tmux configuration and cheat sheet](https://github.com/caseywdunn/dunnlab_code/tree/main/assets/tmux) set up for exactly that, including clipboard support that works over SSH.
+Give agents the cluster's details (partitions, storage paths, Slurm templates, and the conda workflow) in a document such as `dev_docs/cluster.md`, with a one-line pointer to it in `AGENTS.md`, so every agent can find it without filling the always-loaded instructions. The `dunnlab-hpc` skill carries the same reference for Claude Code.
+
+This repository's [tmux configuration and cheat sheet](https://github.com/caseywdunn/dunnlab_code/tree/main/assets/tmux) includes clipboard support that works over SSH.

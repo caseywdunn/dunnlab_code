@@ -1,6 +1,6 @@
 ---
 title: Dunn Lab Practices
-nav_order: 14
+nav_order: 18
 ---
 
 # Dunn Lab Practices
@@ -15,19 +15,35 @@ These conventions are encoded as skills in [the plugin](plugin.md), so Claude ap
 
 A few are more consequential than a style preference, and they are the ones most likely to surprise someone joining:
 
-**Python by default, R when a library requires it.** We prefer industry-standard tools over domain-specific ones, as [Getting Started](getting-started.md#languages) argues. R remains the right answer when the analysis needs a package that only exists there, when it is what you know and it works, or when a collaboration has already chosen it.
+**Python by default, R when a library requires it.** We prefer industry-standard tools over domain-specific ones, as [The Toolkit](toolkit.md#python) argues. R remains the right answer when the analysis needs a package that only exists there, when it is what you know and it works, or when a collaboration has already chosen it.
 
-**Raw data is immutable, enforced structurally.** Preserve acquired inputs unchanged, commonly under `data/raw/`, and write derivatives separately using rerunnable transformations. This is a general principle — [Using AI in Research](using-ai.md#working-with-data) makes the case — owned by workflow design. Bioinformatics adds biological checks and identifier conventions.
+**Raw data is immutable, enforced structurally.** Preserve acquired inputs unchanged, commonly under `data/raw/`, and write derivatives separately using rerunnable transformations. This is a general principle, explained in [Reproducibility](reproducibility.md#data) and owned by workflow design. Bioinformatics adds biological checks and identifier conventions.
 
 **Cross-species gene IDs are namespaced as `Genus_species@gene_id`.** Reserve `@` as the separator and check source identifiers for conflicts. Every renaming keeps a mapping file and is checked for collisions. Merging datasets with ambiguous identities is a class of silent error that can surface months later in a tree.
 
-**Never abbreviate an author list, and never guess a bibliographic field.** A missing DOI gets a `% TODO` comment, not a plausible-looking value. This sounds pedantic until an AI assistant fills one in for you.
+**Every agent commit names its model and version.** A `Co-Authored-By:` trailer such as `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` ends every commit an agent writes, and new repositories install a `commit-msg` hook, from `dunnlab-coding-defaults`, that rejects agent commits without one and records the agent software's version. The history then records which work was delegated to which model, which is what statements of AI use are written from.
 
-**Shared project instructions stay under 100 lines.** Keep the canonical instructions in `AGENTS.md`, with `CLAUDE.md` importing it. Put details in linked documents or supported directory-scoped instructions so standing context remains small — see [Managing Context](managing-context.md#rules).
-
-**Reuse depends on execution evidence.** An existing output is reusable when a completed run matches the required inputs, relevant code, environment, and settings, and the artifact still verifies. Use the workflow engine's dependency tracking and logs, adding records only for missing evidence. File existence alone cannot distinguish a valid result from an interrupted or obsolete run. Preserve baselines and use the orchestrator's rerun controls for affected stages.
+**`AGENTS.md` stays under 100 lines.** General guidance allows up to about 200, but everything in it loads into every session, and a shorter file is followed more reliably. Detail goes in linked documents under `dev_docs/`, which the agent reads when it needs them. See [Managing Context](managing-context.md#keep-it-short).
 
 **Exploration and reporting share computation.** Apply workflow design from the first consequential experiment. Distillation selects configurations and outputs, prunes the maintained scope, and closes verification gaps while preserving scientific history. Retained code should need a specific reason to be rewritten.
+
+## Manuscripts
+
+**Each manuscript gets two repositories.** The analysis repository holds the code and workflow. It may start private but will eventually be public. The manuscript repository holds the text and will probably stay private. Keeping them separate means the analysis can be released without also releasing drafts, reviewer correspondence, and co-author comments.
+
+**Name them as a pair.** Use kebab case for the analysis repository and add `-ms` for the manuscript: `project-a` and `project-a-ms`. That way they sort next to each other in any listing.
+
+**Write in Quarto, and render both PDF and Word.** The `.qmd` source is the source of record. Render a PDF for reading, through LaTeX and with the `.tex` source kept for journals that want it, and a `.docx` for co-authors who edit in Word. Neither rendered file is ever edited and committed back.
+
+**Results are generated, never typed.** We follow the principle in [Writing with AI](writing-with-ai.md#principles-behind-our-approach): every reported number, table, and figure comes from code. In practice, the analysis repository stages everything the paper reports in a committed `manuscript/` directory: a `values.json` file of formatted values, together with the analysis's repository, commit, version, and DOI, plus tables and figures. A script in the manuscript repository copies that bundle into `_results/`, pinned to the analysis commit, and the sync is committed on its own so its diff shows what changed. Quarto then inserts values with shortcodes such as `{{< meta results.n_species >}}`, with no code running in the manuscript. A check before every render fails if the text refers to a value or figure the bundle lacks, and warns when the analysis has moved on since the last sync.
+
+**Figures are vector, generated at final size, twice.** The analysis code saves each figure as a vector PDF for the PDF build, rasterizing only very dense layers such as huge scatter plots, and as a PNG for the Word build. The manuscript includes it without a file extension, so each build picks the right one. A figure that needs hand assembly, such as photographs combined with plots, keeps its editable source in the manuscript repository and is re-exported whenever the results change.
+
+**Co-authors edit the `.docx` with track changes on.** Track changes is not for approving or rejecting edits in Word. It lets them, you, and the agent see exactly what was changed.
+
+**Incorporate edits through a gitignored `tmp/` folder.** Each manuscript repository has a `tmp/` directory listed in `.gitignore`. Put each returned `.docx` there and ask the agent to carry its changes into the `.qmd` file. Commit before and after every incorporation. The diff between the two commits is then the complete record of what one co-author's edits did to the source. That diff is what you review, and it is easy to revert if something went wrong. If a co-author edits a generated number or figure, the change goes back to the analysis rather than being typed in.
+
+The [`dunnlab-manuscript` skill](plugin.md#the-skills) encodes these conventions, including the repository layout, the sync and check scripts, and figure settings.
 
 ## Data management
 

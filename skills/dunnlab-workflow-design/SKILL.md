@@ -15,7 +15,7 @@ authorize moving files or running analyses.
 
 This skill owns computational structure and execution evidence. Use
 `dunnlab-bioinformatics` for biological methods and tool settings,
-`dunnlab-lifecycle` for scientific scope and readiness, `dunnlab-defaults` for code
+`dunnlab-research-lifecycle` for scientific scope and readiness, `dunnlab-coding-defaults` for code
 conventions, and `dunnlab-hpc` for Yale execution details. Use `dunnlab-new-project`
 only when repository scaffolding is needed. Load companions for the actual task;
 ordinary workflow changes do not require running a research lifecycle.
@@ -37,6 +37,10 @@ Selection for a report should normally retain the same implementation and choose
 its inputs, configurations, and targets. Keep provisional and selected outputs
 distinguishable without requiring parallel source trees or relocation. Archive
 unselected investigations without erasing decisions, negative results, or evidence.
+
+When selected results feed a manuscript, stage them with a workflow step such as
+`report_manuscript_results` in a committed `manuscript/` bundle of values, tables,
+and figures; `dunnlab-manuscript` defines the bundle and how the manuscript reads it.
 
 ## Make the computation readable
 

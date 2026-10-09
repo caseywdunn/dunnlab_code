@@ -1,6 +1,6 @@
 ---
 title: DunnLab Plugin
-nav_order: 11
+nav_order: 19
 ---
 
 # The DunnLab Plugin
@@ -20,7 +20,7 @@ You do not need the plugin to use anything else in this manual, and the skills a
 | **Hooks** | Shell scripts bound to lifecycle events | On the event. None are defined here yet |
 | **Assets** | Files distributed alongside, for you to copy | You copy them |
 
-Plugin skills are namespaced, so the full name is `/dunnlab-code:dunnlab-defaults`. The bare `/dunnlab-defaults` also works unless something else has claimed that name.
+Plugin skills are namespaced, so the full name is `/dunnlab-code:dunnlab-coding-defaults`. The bare `/dunnlab-coding-defaults` also works unless something else has claimed that name.
 
 ## The skills
 
@@ -28,13 +28,15 @@ Each has a markdown entry point, with references for substantial conditional det
 
 | Skill | What it settles |
 |-------|-----------------|
-| **`dunnlab-defaults`** | Preferred languages, coding style, dependency management, focused tests, and version-control conventions. |
+| **`dunnlab-coding-defaults`** | Preferred languages, coding style, dependency management, focused tests, and version-control conventions. |
 | **`dunnlab-workflow-design`** | Computational structure from the first exploratory runs: readable commands, explicit dependencies, shared implementation, provenance, valid output reuse, and reproduction instructions. |
-| **`dunnlab-bioinformatics`** | Biological methods and tool recipes: identifiers, format checks, sequence orientation, annotation, paralog resolution, and quality assessment. |
-| **`dunnlab-lifecycle`** | Planning, exploration, distillation, and validation of scientific analyses. Tracks decisions and readiness for the selected scope, with publication handoff guidance when needed. |
+| **`dunnlab-bioinformatics`** | Biological methods and tool recipes: identifiers, format checks, phylogenetic inference with IQ-TREE (including replicate searches and constrained-tree AU tests), sequence orientation, annotation, paralog resolution, and quality assessment. |
+| **`dunnlab-release-cycle`** | When a project outgrows working directly on `main`: development and issue branches, a plan with gates an agent can work through, a changelog, and a repeatable release procedure. |
+| **`dunnlab-research-lifecycle`** | Planning, exploration, distillation, and validation of scientific analyses. Tracks decisions and readiness for the selected scope, with publication handoff guidance when needed. |
 | **`dunnlab-new-project`** | Repository, environment, and documentation scaffolding, then a handoff. Resumable setup can use `.agent/new-project-progress.yaml`; ongoing scientific work belongs to lifecycle. |
-| **`dunnlab-hpc`** | YCRC cluster reference — partitions, storage quotas, SLURM batch templates, GPU inventory, Snakemake integration. Yale-specific; see [Computing at Yale](yale.md). |
+| **`dunnlab-hpc`** | YCRC cluster reference — partitions, storage quotas, SLURM batch templates, GPU inventory, Snakemake integration, and running coding agents on Bouchet's agent partition. Yale-specific; see [Computing at Yale](yale.md). |
 | **`dunnlab-codereview`** | Review and verification using the relevant skill's standards, with feedback that distinguishes blocking issues from suggestions. |
+| **`dunnlab-manuscript`** | How a manuscript is organized and built: a paired manuscript repository, Quarto source, numbers, tables, and figures staged by the analysis repository and synced in with their commit, PDF and Word builds, and co-author edits. |
 | **`dunnlab-biblio`** | Verified manuscript, data, and software citations, claim support, and BibTeX conventions; never invents missing metadata. |
 
 Workflow design applies across lifecycle phases. Exploration uses the same reusable
@@ -42,6 +44,8 @@ computation with provisional configurations and lightweight evidence. Distillati
 selects the analysis set, preserves its history, and completes the verification and
 documentation needed for reporting. Bioinformatics adds biological choices to this
 shared foundation; it does not prescribe a separate workflow architecture.
+
+Several skills work with the plan documents described in [Working Effectively](working-effectively.md#commit-the-plan-for-anything-large). `dunnlab-new-project` can create `dev_docs/overview.md` during setup, and `dunnlab-research-lifecycle` develops the scientific plan in that same document. `dunnlab-release-cycle` keeps a separate release plan in `dev_docs/PLAN.md`, sequencing issues into releases with a gate on each step. Invoking a skill does not by itself add an approval step: an already actionable, authorized plan proceeds without a new review. Ask for a review before implementation when you want that decision point.
 
 Skills are loaded on demand, so the body of one costs you nothing until it is used. What is always in context is the one-line description of each, which is how Claude decides whether a skill applies — see [Managing Context](managing-context.md#skills) for the budget that governs this.
 
@@ -55,7 +59,7 @@ Skills are loaded on demand, so the body of one costs you nothing until it is us
 
 Files in [`assets/`](https://github.com/caseywdunn/dunnlab_code/tree/main/assets) are not loaded by Claude. They are there for you to copy.
 
-- **`settings.json`** — A restrictive Claude Code configuration built for the Bouchet cluster, with a cluster quick reference in its comments. See [Computing at Yale](yale.md#use-restrictive-permissions).
+- **`settings.json`** — A restrictive Claude Code configuration built for the Bouchet cluster, with a cluster quick reference in its comments. On the clusters we now run Claude Code through YCRC's sandbox module instead; see [Computing at Yale](yale.md#a-long-running-agent-on-bouchet).
 - **`tmux/`** — A shared tmux configuration and cheat sheet for working over SSH, including clipboard support that works without X11 forwarding.
 
 ## Installing and keeping it current

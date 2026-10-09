@@ -1,14 +1,15 @@
 ---
-name: dunnlab-defaults
+name: dunnlab-coding-defaults
 description: >
-  Dunn Lab language, coding, dependency, testing, and documentation conventions.
-  Use when writing or reviewing code. Workflow architecture belongs to
+  Dunn Lab language, coding, dependency, testing, documentation, commit, and
+  agent-instruction conventions. Use when writing or reviewing code, committing,
+  or writing README.md or AGENTS.md. Workflow architecture belongs to
   dunnlab-workflow-design; repository scaffolding belongs to dunnlab-new-project.
 ---
 
 # Dunn Lab Defaults
 
-Apply these coding preferences within the requested task and established project conventions. Use `dunnlab-workflow-design` for computational workflow architecture and execution, `dunnlab-new-project` for repository scaffolding, and `dunnlab-lifecycle` for scientific analysis phases. These skills own their respective requirements; this skill does not define a second workflow or lifecycle.
+Apply these coding preferences within the requested task and established project conventions. Use `dunnlab-workflow-design` for computational workflow architecture and execution, `dunnlab-new-project` for repository scaffolding, `dunnlab-research-lifecycle` for scientific analysis phases, and `dunnlab-release-cycle` for branches, plans, and releases. These skills own their respective requirements; this skill does not define a second workflow or lifecycle.
 
 ## Preferred languages and tools
 
@@ -16,7 +17,7 @@ Languages for data analysis and scripting:
 - **Python** for data analysis and scripting (prefer Python 3.10+)
 - Fall back to **R** when analyses require specific R libraries such as Seurat (use tidyverse conventions)
 - Prefer **conda** or **mamba** when choosing Python environment management; preserve an established project mechanism.
-- Use **Jupyter notebooks** for exploratory work and **Quarto** for manuscripts. A retained notebook is acceptable when it runs from a clean kernel with explicit inputs and settings. Extract scripts or shared functions when reuse or execution needs warrant it; do not rewrite solely because work began in a notebook.
+- Use **Jupyter notebooks** for exploratory work. A retained notebook is acceptable when it runs from a clean kernel with explicit inputs and settings. Extract scripts or shared functions when reuse or execution needs warrant it; do not rewrite solely because work began in a notebook.
 
 Languages for performant critical code:
 - Use **Rust** for performance-critical code.
@@ -105,7 +106,7 @@ Use the idiomatic test framework for each language — do not introduce third-pa
 
 ### Unit tests
 
-- Test consequential behavior: branching logic, error handling, joins, and non-obvious transformations that could change a result or break an interface. Match test effort to the task and consequences; do not exhaustively harden disposable exploratory branches. Keep the scientific correctness checks required by `dunnlab-workflow-design` and `dunnlab-lifecycle`.
+- Test consequential behavior: branching logic, error handling, joins, and non-obvious transformations that could change a result or break an interface. Match test effort to the task and consequences; do not exhaustively harden disposable exploratory branches. Keep the scientific correctness checks required by `dunnlab-workflow-design` and `dunnlab-research-lifecycle`.
 - Keep tests focused — one behavior per test, with a clear name describing what is being verified (e.g., `test_parse_fasta_handles_empty_input`).
 - Use fixtures and parameterized tests to avoid duplication.
 
@@ -130,11 +131,13 @@ Use the idiomatic test framework for each language — do not introduce third-pa
 
 Prefer idiomatic source and test structures for the language, preserving established layouts. `dunnlab-new-project` creates the minimum project scaffold; `dunnlab-workflow-design` owns the organization of analyses, inputs, outputs, and execution guides. Do not create directories or documents solely to fill a template.
 
+Write README.md for the project's users, and assume they are biologists rather than software engineers. Explain what the project does and how to use it in plain language, minimizing computational jargon and defining any necessary technical term where it first appears. If a user does not need to know something, leave it out of the README. Roadmaps, specifications, design decisions, development history, and internal checks belong in `dev_docs/`; the README may give a brief, high-level summary of status or direction and link there.
+
 For software projects, README.md should include a project overview, setup instructions, usage examples, and a link to the development guide. For scientific analyses, follow `dunnlab-workflow-design` for reader-facing READMEs and canonical reproduction instructions; keep developer checks and construction history in linked developer documentation.
 
 Use `dev_docs/` for focused developer material such as the data model, implementation decisions, and internal verification instructions. Keep it readable by people and loadable as needed by coding agents; link to reader-facing methods and usage rather than duplicating them.
 
-AGENTS.md holds the project instructions: how to build, test, and work on this project, plus any custom skills or commands. **Keep it to 100 lines or less** so standing context stays small. Include links and descriptions for the following files when present so they can be loaded as needed:
+AGENTS.md holds the project instructions: how to build, test, and work on this project, the commit attribution rule below, plus any custom skills or commands. **Keep it to 100 lines or less** so standing context stays small. Include links and descriptions for the following files when present so they can be loaded as needed:
 - README.md
 - CONTRIBUTING.md
 - Each file in `dev_docs/` (e.g., `overview.md`, `data-model.md`)
@@ -153,6 +156,8 @@ CONTRIBUTING.md should include all details needed for formatting, linting, testi
 
 ## Version control best practices
 
+Simple projects commit directly to `main`. Projects with multiple contributors, users who depend on the code while it changes, distributed tools, or long unattended agent work use the release cycle in `dunnlab-release-cycle`. Follow whichever the project has adopted.
+
 Exclude bulk data, results, and logs from version control by default. Retain small fixtures and the provenance/specification records needed to interpret results; workflow-design defines their role. Respect files the user has chosen to track. For example:
 
 ```
@@ -169,6 +174,30 @@ Before staging files, inspect size and contents to avoid including large artifac
 Use descriptive commit messages that explain *why* a change was made, not just *what* changed. For example:
 - Good: "Refactor data cleaning to handle missing values and edge cases"
 - Bad: "Update clean_data.py"
+
+### AI attribution in commits
+
+Every commit made with a coding agent names the model and its version in a trailer at the end of the message, so the history records which work was delegated to which model:
+
+```text
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Co-Authored-By: GPT-5.5 <noreply@openai.com>
+```
+
+Use the exact model you are running as. If you cannot determine its version, write `<model name> (version unknown)` rather than guessing. Claude Code adds this trailer by default through its `attribution` setting; leave that on. Codex has no reliable built-in equivalent, so state the rule in `AGENTS.md`:
+
+```markdown
+- End every commit message you write with `Co-Authored-By: <model name and version> <noreply address>`, naming the exact model you are running as.
+```
+
+For enforcement, install the `commit-msg` hook in [templates/commit-msg](templates/commit-msg) into new repositories, and into existing ones when requested. It leaves commits made by people alone. When a commit comes from inside Claude Code or Codex, detected from the environment variables they set, it rejects a message without a versioned model trailer and adds an `AI-Harness:` trailer naming the agent software and its version. Install it once per clone, and record the step in the contributor setup in `CONTRIBUTING.md` (it concerns developers, not users of the project):
+
+```bash
+mkdir -p .githooks && cp <skill>/templates/commit-msg .githooks/ && chmod +x .githooks/commit-msg
+git config core.hooksPath .githooks
+```
+
+If the project uses the `pre-commit` framework, which refuses to install when `core.hooksPath` is set, register the script as a local hook at the `commit-msg` stage instead. The hook can confirm that a model is named, not that the name is correct.
 
 ### Running formatting and linting before commits
 

@@ -1,6 +1,6 @@
 ---
 title: Agent Concepts
-nav_order: 5
+nav_order: 6
 ---
 
 # Agent Concepts
@@ -93,4 +93,14 @@ A **session** is a continuing run with its conversation and accumulated state. S
 
 Local and cloud agents can implement the same loop while running in very different environments. A local harness acts through your machine and credentials. A cloud harness normally works in a provisioned environment and returns a patch, branch, or pull request. For long-running local and remote work, see [Working Across Computers](working-across-computers.md).
 
-With this template in place, the meaningful questions about a coding agent become concrete: which model and context does its harness use, which tools can it call, where does it run, how is it constrained, and how does it preserve state? The next chapter answers those questions for Claude Code and Codex.
+## User, agent, and compute planes
+
+When an agent runs analyses, three kinds of activity are involved, and each can run on a different computer. We call them **planes**:
+
+- The **user plane** is where you interact with the agent: read its output, answer its questions, and approve its actions.
+- The **agent plane** is where the harness runs the agent loop.
+- The **compute plane** is where the analyses themselves run.
+
+On a laptop, all three are on one machine. For larger or longer work it often pays to separate them, because each plane needs something different. [Working Across Computers](working-across-computers.md#user-agent-and-compute-planes) explains why and shows common arrangements.
+
+With this template in place, the meaningful questions about a coding agent become concrete: which model and context does its harness use, which tools can it call, where do its planes run, how is it constrained, and how does it preserve state? The next chapter answers those questions for Claude Code and Codex.

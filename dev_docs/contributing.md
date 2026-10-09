@@ -13,7 +13,7 @@ How to add or modify skills, commands, hooks, and documentation in this repo.
 3. Keep the `description` to one concise sentence — it's always in context
 4. Use the ownership map in `dev_docs/plugin-architecture.md`; reference the skill that owns a convention rather than duplicating it
 5. Test locally: `claude --plugin-dir /path/to/dunnlab_code`, then invoke it as `/dunnlab-code:<skill-name>`
-6. Update `README.md` and `dev_docs/plugin-architecture.md` to list the new skill
+6. Update `README.md`, `docs/plugin.md`, and `dev_docs/plugin-architecture.md` to list the new skill (`check.sh` checks all three)
 7. Run `claude plugin validate . --strict` before opening a PR
 
 ## Adding a new command
@@ -33,7 +33,8 @@ How to add or modify skills, commands, hooks, and documentation in this repo.
 
 - Edit the `SKILL.md` file directly, then run `/reload-plugins` to pick it up. Personal and project skills are detected live, but **plugin skills are not** — this repo's skills need the reload.
 - If changing a skill's scope or purpose, update its `description` frontmatter.
-- If the change affects how other skills reference it, check cross-references.
+- If the change affects how other skills reference it, check cross-references. `check.sh` fails on a `dunnlab-*` name that is not an existing skill or command.
+- If the change moves a responsibility between skills or adds one, run `/skill-audit` to look for competing mandates and drifted descriptions. It is required before every release.
 
 ## Updating the GitHub Pages site
 
@@ -133,10 +134,16 @@ What to bump:
 
 | Change | Bump |
 |--------|------|
-| Removing or renaming a skill or command, or anything that loosens the permission templates | **major** — `/dunnlab-code:<name>` invocations and settings people have copied will break |
+| Changes that materially break supported workflows, or anything that loosens the permission templates | **major** |
 | A new skill, a new command, or substantive new guidance in an existing one | **minor** |
 | Corrections, copy edits, link fixes, HPC number updates | **patch** |
 | Changes only under `docs/` | none needed — Pages does not read the version — but bumping is never wrong |
+
+Deleting or renaming a skill does not automatically require a major version
+bump. Assess the effect on supported workflows: retiring an unused or obsolete
+skill can be a minor release, while a removal that materially disrupts existing
+workflows warrants a major release. Document the removal and any replacement or
+migration guidance in the changelog.
 
 ### Release steps
 
@@ -146,24 +153,29 @@ From an up-to-date `dev`:
 # 1. Bump the version in BOTH manifests, and add a CHANGELOG entry.
 #    Commit that on dev.
 
-# 2. Everything passes.
+# 2. Audit the skills with the project skill: /skill-audit
+#    It writes dev_docs/skill-audits/<version>.md. Fix findings in separate
+#    commits; only a person may accept one unfixed. Commit the report on dev.
+
+# 3. Everything passes. check.sh fails without the audit report for this
+#    version, or with an open finding in it.
 ./scripts/check.sh
 
-# 3. Sanity-check the plugin as a user would receive it.
+# 4. Sanity-check the plugin as a user would receive it.
 claude --plugin-dir .
 #   /dunnlab-code:dunnlab-check    → lists every skill
 #   /context                       → skill listing cost looks sane
 
-# 4. Merge to main. Use a merge commit, not a squash, so dev's history
+# 5. Merge to main. Use a merge commit, not a squash, so dev's history
 #    survives and the release diff is reviewable.
 git checkout main && git pull
 git merge --no-ff dev -m "Release 0.4.0"
 
-# 5. Tag. This validates that the two manifests agree before it writes anything.
+# 6. Tag. This validates that the two manifests agree before it writes anything.
 claude plugin tag . --dry-run      # check what it would do
 claude plugin tag . --push         # creates dunnlab-code--v0.4.0 and pushes it
 
-# 6. Push main, then fast-forward dev so the two do not diverge.
+# 7. Push main, then fast-forward dev so the two do not diverge.
 git push origin main
 git checkout dev && git merge --ff-only main && git push origin dev
 ```

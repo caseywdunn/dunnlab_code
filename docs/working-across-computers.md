@@ -1,40 +1,110 @@
 ---
 title: Working Across Computers
-nav_order: 8
+nav_order: 11
 ---
 
 # Working Across Computers
 
 Once your work is organized around a terminal, text files, and Git, it becomes natural to split it across computers. The agent does not have to run on the same machine as you, and the machine running the agent does not have to perform the heavy computation.
 
-## Why use more than one computer
+## User, agent, and compute planes
 
-There are two main reasons to move work away from your everyday computer.
+When an agent runs analyses, three kinds of activity are involved. We call each one a **plane**:
+
+| Plane | What happens there | What it needs |
+|---|---|---|
+| **User plane** | You read the agent's output, answer its questions, approve actions, and review results. | To be with you. This is typically your laptop, which you may turn on and off many times a day. |
+| **Agent plane** | The harness runs the agent loop: reading files, editing code, calling the model, submitting and monitoring jobs, and checking results. | Long, uninterrupted persistence so a session can run for hours or days. Very little compute; 1 CPU and 8 GB of RAM are usually sufficient. Restrictions on what the agent can do, enforced by the plane itself, such as which files it can read and write. |
+| **Compute plane** | The analyses themselves run. | Enough resources for the analysis, which may mean hundreds of gigabytes of disk, dozens of CPUs, and large amounts of RAM. |
+
+The model itself runs on the provider's servers in every arrangement below. The planes describe where your side of the work happens.
+
+### Why separate them
+
+If you run an agent on your laptop to do some analyses locally, all three planes are on the same machine. That is the simplest arrangement and often the right one. Two needs push the planes apart as work grows:
 
 **Isolation.** A dedicated computer, cloud virtual machine, or separate account can hold only one project and narrowly scoped credentials. The agent can work autonomously there without being able to reach your email, browser profile, private files, or unrelated repositories. This is a practical extension of the boundaries in [Managing Security](managing-security.md#system-level-control).
 
 **Compute.** Some analyses need more memory, CPUs, GPUs, storage, or runtime than a laptop can provide. A workstation, cloud instance, or high-performance computing cluster can run the analysis while your local computer remains available for ordinary work.
 
-These motivations often overlap, but they do not require the same architecture. A cheap remote machine may be an excellent isolated place for an agent and a poor place for computation; an HPC cluster may be an excellent compute resource and an inappropriate place to run an autonomous agent.
+More generally, each plane is optimized differently:
 
-## Control plane and compute plane
+- The user plane has to be where you are, but your laptop is a poor host for a long-running agent. If it sleeps or loses its network connection, the agent stops.
+- The agent plane should be persistent and tightly bounded, but it barely uses resources. A small, always-on machine or a long-lived, low-resource allocation suits it well. Because it is dedicated to the agent, restrictions can be enforced at the level of the machine or account rather than relying on the harness alone.
+- The compute plane needs large resources, but often only for part of the time. These are frequently shared resources that you want to use only while you need them and then return immediately to the pool. Compute planes are therefore often ephemeral: the agent allocates them as needed, for example by submitting a job to a scheduler, and releases them when the job ends.
 
-It helps to separate two kinds of work:
+These needs do not call for the same machine. A cheap remote machine may be an excellent agent plane and a poor compute plane; an HPC cluster may be an excellent compute plane and an inappropriate place to run an autonomous agent.
 
-| Plane | What happens there |
-|---|---|
-| **Control plane** | The agent reads the plan, edits code, commits changes, submits jobs, monitors progress, moves selected files, checks gates, and interprets results. |
-| **Compute plane** | CPUs, GPUs, memory, and storage execute the actual analysis, often through a batch scheduler. |
+### Example: all planes on a laptop
 
-Sometimes both planes live on one computer. They can also be separated:
+You start the agent in a terminal on your laptop, and it runs analyses there. This suits work that fits on the laptop and finishes while you are present. Closing the laptop stops the agent and the analysis.
+
+```mermaid
+flowchart LR
+  subgraph laptop["Laptop"]
+    direction LR
+    U["User plane<br/>terminal"]
+    A["Agent plane<br/>harness session"]
+    C["Compute plane<br/>local analyses"]
+  end
+  U --> A --> C
+```
+
+### Example: laptop and a lab workstation
+
+You connect over SSH from your laptop to a headless Ubuntu computer that is always running in the lab. The agent runs on the workstation inside a persistent terminal session, such as `tmux`, and runs analyses on the same machine. The workstation is both the agent plane and the compute plane. You can close your laptop, reconnect later, and find the agent still working. The workstation's account and file permissions bound what the agent can reach.
+
+```mermaid
+flowchart LR
+  subgraph laptop["Laptop"]
+    U["User plane<br/>terminal"]
+  end
+  subgraph lab["Lab workstation"]
+    A["Agent plane<br/>harness in tmux"]
+    C["Compute plane<br/>local analyses"]
+  end
+  U -- "SSH" --> A
+  A --> C
+```
+
+### Example: laptop, agent allocation, and cluster jobs
+
+You connect over SSH from your laptop to an agent running in a small, long-lived allocation on a computing cluster, such as an instance on a partition set aside for agents. That allocation is the agent plane. The agent then creates compute planes as needed by submitting SLURM jobs with the CPUs, memory, and disk each step requires. It monitors those jobs, and each job releases its resources when it finishes. The agent plane stays small and persistent, and each compute plane is large and ephemeral.
+
+```mermaid
+flowchart LR
+  subgraph laptop["Laptop"]
+    U["User plane<br/>terminal"]
+  end
+  subgraph cluster["Computing cluster"]
+    A["Agent plane<br/>agent partition instance<br/>1 CPU, 8 GB RAM<br/>long time limit"]
+    subgraph jobs["SLURM jobs"]
+      C1["Compute plane<br/>job 1"]
+      C2["Compute plane<br/>job 2"]
+    end
+  end
+  U -- "SSH" --> A
+  A -- "sbatch" --> C1
+  A -- "sbatch" --> C2
+```
+
+## Choosing an arrangement
+
+The user plane stays with you. The arrangements differ in where the agent and compute planes go:
 
 | Arrangement | Best for | Main caution |
 |---|---|---|
 | **Remote agent, remote compute** | A dedicated workstation or VM where the agent can code and run moderate analyses unattended. | The remote machine still needs narrowly scoped credentials and backups through Git. |
-| **Local agent, remote compute** | Keeping the agent on your own machine while using a cluster, GPU server, or cloud instance for heavy jobs. | SSH access gives the local agent reach into the remote system; constrain that reach deliberately. |
+| **Local agent, remote compute** | Keeping the agent on your own machine while using a cluster, GPU server, or cloud instance for heavy jobs. | SSH access gives the local agent reach into the remote system; constrain that reach deliberately. The agent stops whenever your computer sleeps, so submitted jobs continue unmonitored. |
 | **Agent on shared infrastructure** | Work whose code and data already live there, when policy explicitly permits agents. | Shared filesystems, login-node rules, and weak sandbox support raise the stakes. |
 
-The middle arrangement is especially useful: the agent remains in a familiar, controlled environment but can drive a much larger compute resource entirely through command-line tools.
+Choose the simplest arrangement that fits:
+
+- **A dedicated remote machine** when isolation and long autonomous sessions matter most.
+- **A local agent with remote compute** when the remote system is mainly a source of capacity and command-line access is enough. Keeping the agent local is a simple way to start: it stays in a familiar, controlled environment while driving a much larger compute resource. When sessions need to run for hours or days, move the agent plane to a persistent machine or allocation.
+- **An agent on the cluster** only when policy permits it and the benefits outweigh the broader risks of a shared system; see [Agents on shared clusters](#agents-on-shared-clusters).
+
+Start with one agent plane and one authoritative repository. Add file transfer and remote execution deliberately, pilot the complete path on a small job, and put a gate between submission, retrieval, and interpretation.
 
 ## Connect with SSH and transfer with SCP
 
@@ -118,7 +188,25 @@ A second computer should not create a second, disconnected history. For every su
 - Capture the environment definition and tool versions in tracked files.
 - Keep logs with enough context to connect outputs back to the run that produced them.
 
-That makes the compute plane replaceable. You should be able to move the same committed code and environment description to another machine and understand what differs.
+That makes the compute plane replaceable. [Reproducibility](reproducibility.md) covers the rest of what a result needs in order to be regenerated. You should be able to move the same committed code and environment description to another machine and understand what differs.
+
+## Agents on shared clusters
+
+A high-performance computing cluster is a shared, powerful, and largely irreversible environment. The stakes are different from your laptop: you can create work for the cluster's maintainers and deny other people access, you can delete or leak a colleague's data, and you can silently modify your own in ways you will not notice until much later. The safest arrangement uses the cluster only as the compute plane. If you do run an agent on a cluster, take these precautions.
+
+**Follow your institution's policy first.** Many computing centres publish guidance on AI agents, and some do not support them at all. Read it before installing anything; where it disagrees with this manual, it wins.
+
+**Start with restrictive permissions.** Begin with read-only access and explicit approvals, then broaden access only for actions the environment and policy permit. For Codex, a conservative starting command is:
+
+```bash
+codex --sandbox read-only --ask-for-approval on-request
+```
+
+For Claude Code, start in plan mode with a settings file that allows inspection and job monitoring, requires confirmation for file changes and network access, and denies destructive operations. [Managing Security](managing-security.md) explains how these rules work. Put the cluster's details, such as partitions, storage paths, and job templates, in a document that `AGENTS.md` points to, so every agent can find them.
+
+**Check that the sandbox works before trusting it.** Permission rules constrain what a harness chooses to run; a working sandbox constrains what a running command *can reach*, which is the guarantee you want on shared storage. Shared systems often disable the kernel features sandboxes depend on. In Claude Code, run `/sandbox` and check whether a Dependencies tab appears; its sandbox needs `bubblewrap`, `socat`, and unprivileged user namespaces. **When it cannot start, Claude Code warns and runs commands unsandboxed**, unless `sandbox.failIfUnavailable` is set to `true`. In Codex, use `/permissions` to inspect the active sandbox and writable directories. With either, test that a deliberately out-of-scope read or write is actually blocked. If the isolation you need is unavailable, keep the agent plane off the cluster, as in [Let a local agent control remote computation](#let-a-local-agent-control-remote-computation).
+
+**Never run heavy work on a login node.** This rule predates AI, but agents break it easily, because an agent will run whatever gets the answer fastest. Lightweight orchestration is fine on a login node: submitting jobs, Git operations, managing environments, inspecting files. Everything else belongs in a submitted job. A long-running orchestrator such as Snakemake on a login node should run inside `tmux` so a dropped connection does not kill it.
 
 ## Security and policy still apply
 
@@ -127,19 +215,10 @@ A dedicated machine with no private data is a strong boundary, but “remote” 
 - Give it credentials scoped to one project and only the remote actions it needs.
 - Check institutional and provider policies before installing an agent or exposing data to one.
 - Keep raw and sensitive data outside the agent's readable paths unless its use is explicitly approved.
-- Never run heavy work on a shared login node; submit it through the scheduler.
 
 {: .warning }
-> **Separating control and compute does not automatically separate the agent from the data.**
+> **Separating the agent and compute planes does not automatically separate the agent from the data.**
 >
 > If a local agent can run `ssh cluster cat sensitive-file`, it can read that file and potentially send its contents to the model. Enforce the boundary with accounts, filesystem permissions, restricted credentials, and approved data paths rather than relying on where the agent process happens to run.
-
-## Choose the simplest arrangement that fits
-
-- **Dedicated remote machine:** choose this when isolation and long autonomous sessions matter most.
-- **Local agent with remote compute:** choose this when the cluster or server is primarily a source of capacity and command-line access is sufficient.
-- **Agent on the cluster:** choose this only when policy permits it and the benefits outweigh the broader shared-system risk.
-
-Start with one control plane and one authoritative repository. Add file transfer and remote execution deliberately, pilot the complete path on a small job, and put a gate between submission, retrieval, and interpretation.
 
 For institution-specific cluster policy and examples, see [Computing at Yale](yale.md). For the short session commands, see [Quick Reference](quick-reference.md#remote-work-with-tmux).

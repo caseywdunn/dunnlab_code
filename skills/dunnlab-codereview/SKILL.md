@@ -10,11 +10,11 @@ description: >
 
 When reviewing code in Dunn Lab projects, follow this process and use the relevant
 parts of the checklist. Scale review to the change and its consequences. Apply
-`dunnlab-defaults` for coding conventions, `dunnlab-workflow-design` for workflow
+`dunnlab-coding-defaults` for coding conventions, `dunnlab-workflow-design` for workflow
 structure and execution evidence, and the relevant domain skill for scientific
 assumptions. Those skills own the standards; this checklist prompts assessment.
 Review does not itself authorize a rewrite, branch switch, or expensive analysis.
-Engineering review contributes evidence; `dunnlab-lifecycle` assesses scientific
+Engineering review contributes evidence; `dunnlab-research-lifecycle` assesses scientific
 readiness when that assessment is requested.
 
 ## Review process
@@ -51,7 +51,7 @@ readiness when that assessment is requested.
 
 ### Style and conventions
 
-- [ ] Does the code follow lab conventions (see `dunnlab-defaults` skill)?
+- [ ] Does the code follow lab conventions (see `dunnlab-coding-defaults` skill)?
 - [ ] Is formatting consistent (ran through `ruff format`/`styler`/`cargo fmt`)?
 - [ ] Are linters clean (`ruff check`/`lintr`/`clippy`)?
 - [ ] Are variable and function names descriptive and consistent with the codebase?
@@ -60,6 +60,7 @@ readiness when that assessment is requested.
 
 - [ ] Are new functions documented with docstrings/doc comments?
 - [ ] Is the README or dev_docs/ updated if behavior changed?
+- [ ] For projects on a release cycle (`dunnlab-release-cycle`): does the PR target the right branch (`dev`, or `main` for a release or hotfix), cite its issue when it implements one, add its changelog entry (under `[Unreleased]`, or in the dated section for a release or hotfix), and update its step in `dev_docs/PLAN.md` when it completes one?
 - [ ] Do comments explain *why*, not *what*?
 
 ### Data and reproducibility
@@ -67,7 +68,7 @@ readiness when that assessment is requested.
 - [ ] Is raw data left unmodified?
 - [ ] Are random seeds set where reproducibility matters?
 - [ ] Are dependencies and runtime requirements reconstructable through the
-  project's mechanism, following `dunnlab-defaults`?
+  project's mechanism, following `dunnlab-coding-defaults`?
 - [ ] Can someone else reproduce the results from a clean environment?
 
 ### Performance and resources

@@ -8,17 +8,20 @@ description: >
 
 # Dunn Lab New Project Setup
 
-Create the minimum useful scaffold for the requested project, preserving existing work. This skill owns setup and then hands off; it does not run an ongoing development lifecycle. Apply `dunnlab-defaults` for language, dependency, coding, and documentation conventions.
+Create the minimum useful scaffold for the requested project, preserving existing work. This skill owns setup and then hands off; it does not run an ongoing development lifecycle. Apply `dunnlab-coding-defaults` for language, dependency, coding, and documentation conventions.
 
 ## Establish scope and inspect what exists
 
 Infer the goal, language, project type, and expected inputs and outputs from the request and repository. Ask only for missing information that changes setup. Default to Python, use R when the needed packages warrant it, and Rust for performance-critical code. Do not require confirmation of an obvious choice or a separate planning approval when implementation is already authorized.
+
+Decide whether the project works directly on `main` or uses the release cycle, using the criteria in `dunnlab-release-cycle`. Infer this from the request when it is clear, and ask otherwise. For the release cycle, also complete [its setup](../dunnlab-release-cycle/references/setup.md).
 
 Inspect existing source, documentation, environment specifications, git state, and agent instructions. Complete only the missing setup relevant to the task; an existing analysis does not need a new repository or a restart of its lifecycle. Do not replace established layouts or permissions because they differ from a template.
 
 ## Repository and execution environment
 
 - Initialize git when creating a repository and it is not already initialized. Preserve existing git configuration and work.
+- For a new repository, install the AI-attribution `commit-msg` hook from `dunnlab-coding-defaults` (`.githooks/` with `core.hooksPath`) and record the one-time `git config core.hooksPath .githooks` step in `CONTRIBUTING.md`. Add it to an existing repository only when requested.
 - Create or update `.gitignore` for the language and actual layout. Default ignores include `.DS_Store`, Python caches, notebook checkpoints, bulk data/results, and logs; preserve tracked fixtures and provenance records. Add `target/` for Rust and `.Rhistory`, `.RData`, `.Rproj.user/` for R where relevant.
 - Preserve the active harness's permissions and sandbox policy. Configure permissions only when the user requests it. For requested Claude Code permission setup, read [references/settings-permissions.md](references/settings-permissions.md); do not translate or apply those settings to another harness automatically.
 
@@ -27,7 +30,7 @@ Inspect existing source, documentation, environment specifications, git state, a
 Create useful initial documentation from known information, leaving unresolved scientific choices explicit rather than inventing a detailed plan:
 
 - **README.md**: project purpose, current setup and entry points, and links to developer checks. For scientific analyses, follow workflow-design's reader-facing documentation guidance.
-- **AGENTS.md**: a brief project summary, working/test commands, and links to relevant documentation; follow the 100-line limit in `dunnlab-defaults`. Reference companion skills only when they apply.
+- **AGENTS.md**: a brief project summary, working/test commands, the commit attribution rule from `dunnlab-coding-defaults`, and links to relevant documentation; follow the 100-line limit in `dunnlab-coding-defaults`. Reference companion skills only when they apply.
 - **CLAUDE.md**: use the single line `@AGENTS.md` for a new shared-instructions setup. Preserve and reconcile existing instructions instead of overwriting them.
 - **`dev_docs/overview.md`** when a plan is useful: goal, known inputs and outputs, current approach, and unresolved choices. For research, lifecycle Planning extends this same document; do not create a competing scientific plan here.
 - **CONTRIBUTING.md** or additional focused `dev_docs/` documents only when their content warrants a separate home.
@@ -50,9 +53,10 @@ Verify what was created: dependency specifications parse, documented paths and c
 
 Summarize the scaffold, checks performed, unresolved setup dependencies, and the next action. Continue already authorized work under the appropriate skill:
 
-- **Scientific research goals**: `dunnlab-lifecycle` determines the current phase from existing evidence and extends the same plan.
+- **Scientific research goals**: `dunnlab-research-lifecycle` determines the current phase from existing evidence and extends the same plan.
 - **Computational workflows and pipelines**: `dunnlab-workflow-design` supplies design and execution principles from the first exploration onward; add the relevant domain skill for methods and tool choices.
-- **Ordinary software development**: `dunnlab-defaults` supplies coding and verification conventions.
+- **Ordinary software development**: `dunnlab-coding-defaults` supplies coding and verification conventions.
+- **Release-cycle projects**: `dunnlab-release-cycle` supplies branches, the plan, gates, and releases.
 - **Yale execution**: `dunnlab-hpc` supplies cluster and SLURM details when needed.
 
 These routes can combine: a research pipeline uses lifecycle for scientific decisions and workflow-design for its computational implementation. A reusable CLI does not need research phase gates merely because it processes scientific data.

@@ -9,7 +9,7 @@ description: >
 
 Standards for managing `.bib` files and bibliographic references in Dunn Lab
 manuscripts. This skill owns citation identity, attribution, and formatting;
-`dunnlab-lifecycle` owns the scientific assessment and publication handoff.
+`dunnlab-research-lifecycle` owns the scientific assessment and publication handoff.
 
 ## Connect claims and research objects to sources
 

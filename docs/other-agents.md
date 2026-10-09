@@ -1,6 +1,6 @@
 ---
 title: Coding Agents
-nav_order: 6
+nav_order: 7
 ---
 
 # Coding Agents
@@ -14,7 +14,7 @@ The concepts in the previous chapter are implemented differently by each coding-
 | **Model** | Claude models | OpenAI models, with model selection varying by surface and account |
 | **Local harness** | Claude Code CLI and editor integrations | Codex CLI and IDE extension |
 | **Cloud harness** | Claude Code on the web | Codex cloud |
-| **Project instructions** | `CLAUDE.md` and `.claude/rules/` | Layered `AGENTS.md` files |
+| **Project instructions** | `AGENTS.md`, through a one-line `CLAUDE.md` import; `.claude/rules/` | Layered `AGENTS.md` files |
 | **Remembered context** | Auto memory | Session history; durable project knowledge belongs in files |
 | **Core tools** | File operations, search, shell commands, and web tools | File operations, search, shell commands, and web tools |
 | **Extensions** | Skills, hooks, subagents, MCP servers, and plugins | Skills, subagents, MCP servers, and plugins; support varies by surface |
@@ -29,7 +29,7 @@ The differences are mostly in how those ideas are packaged. A command, setting, 
 
 In the terminal, launch either agent from the root of the Git repository. That directory becomes the focus for file discovery, commands, Git operations, and project instructions. It is not automatically a security boundary; permissions and sandboxing determine what the harness can actually reach.
 
-Claude Code assembles project context from `CLAUDE.md`, `.claude/rules/`, auto memory, installed skills and plugins, and configured MCP servers. `/context` shows what has loaded.
+Claude Code assembles project context from `AGENTS.md` (through its `CLAUDE.md` import), `.claude/rules/`, auto memory, installed skills and plugins, and configured MCP servers. `/context` shows what has loaded.
 
 Codex reads `AGENTS.md` files from the repository root down to the current directory, with instructions closer to the working directory taking precedence. Its CLI, IDE extension, and desktop app share MCP configuration, while the exact context supplied by an editor or cloud task differs from a terminal session.
 
@@ -67,15 +67,7 @@ Claude Code's `bypassPermissions` and Codex's full-access setting are deployment
 
 ## Serving both from one file
 
-The filenames for project instructions differ. Codex reads [`AGENTS.md`](https://agents.md/), a plain Markdown file at the repository root that can contain build commands, test commands, conventions, and warnings. It also discovers more specific `AGENTS.md` files deeper in the directory tree.
-
-**Claude Code reads `CLAUDE.md`, not `AGENTS.md`.** A repository with only an `AGENTS.md` gives Claude Code no project instructions. Maintaining two copies invites them to drift, so put the real content in `AGENTS.md` and make `CLAUDE.md` a one-line import:
-
-```markdown
-@AGENTS.md
-```
-
-Claude Code expands the import at session start. Both harnesses then receive the same version-controlled instructions, while other agents that support `AGENTS.md` can use them too.
+Codex reads `AGENTS.md`; Claude Code reads `CLAUDE.md`. Put the instructions in `AGENTS.md` and make `CLAUDE.md` a one-line import of it, so both harnesses, and other agents that support `AGENTS.md`, receive the same instructions. [Managing Context](managing-context.md#agent-instructions) explains the setup.
 
 ## What carries between agents
 

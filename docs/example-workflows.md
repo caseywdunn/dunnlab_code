@@ -1,6 +1,6 @@
 ---
 title: Example Workflows
-nav_order: 12
+nav_order: 16
 ---
 
 # Example Workflows
@@ -22,7 +22,11 @@ mkdir ~/repos/my-new-project
 cd ~/repos/my-new-project
 ```
 
-### 2. Plan and scaffold the project
+### 2. Sign in and install optional tools
+
+If you have not already set up an agent, follow [Getting Started](getting-started.md): install Claude Code, Codex, or both, sign in on the computer where the agent will run, and optionally install the DunnLab plugin for Claude Code. Codex does not need the plugin; it follows the committed plan and `AGENTS.md` instructions directly.
+
+### 3. Plan and scaffold the project
 
 Launch either agent in the new directory:
 
@@ -38,11 +42,11 @@ With the DunnLab Claude Code plugin, invoke the scaffolding skill:
 
 Then provide the scope below. It explicitly requests a review before
 implementation; this is a choice for this example, not an automatic effect
-of invoking the skill. Use `dunnlab-lifecycle` for the scientific planning alongside
+of invoking the skill. Use `dunnlab-research-lifecycle` for the scientific planning alongside
 the scaffold. With Codex, or Claude Code without the plugin, provide the same scope
 directly:
 
-> Help me plan and scaffold this research project. Define the scientific question, inputs, outputs, tests, and verification gates with me. Create `README.md`, `.gitignore`, `AGENTS.md`, a one-line `CLAUDE.md` importing it, and `dev_docs/overview.md`. Do not implement the analysis until I have reviewed and committed the plan.
+> Help me plan and scaffold this research project. Define the scientific question, inputs, outputs, tests, and verification gates with me. Decide with me whether this project works directly on `main` or uses a release cycle. Create `README.md`, `.gitignore`, `AGENTS.md`, a one-line `CLAUDE.md` importing it, and `dev_docs/overview.md`, and install a `commit-msg` hook that requires agent commits to name their model and version. Do not implement the analysis until I have reviewed and committed the plan.
 
 The agent then walks you through a structured planning process:
 
@@ -53,24 +57,6 @@ The agent then walks you through a structured planning process:
 - **Commit the plan** — Once you're satisfied, commit the scaffolding. This gives you a clean baseline to build from.
 
 At this point you have a Git repository with a clear plan, environment setup, and no code yet. The documentation is the product-independent specification that will guide either agent's implementation.
-
-### 3. Authenticate the agent and install optional tools
-
-If you have not already signed in, authenticate on the computer where you will run the agent:
-
-```bash
-claude auth login  # Claude Code
-codex              # Codex prompts for sign-in on first launch
-```
-
-For Claude Code, you can optionally install the DunnLab plugin:
-
-```bash
-claude plugin marketplace add caseywdunn/dunnlab_code
-claude plugin install dunnlab-code@dunnlab
-```
-
-Verify it by launching Claude Code and running `/dunnlab-code:dunnlab-check`. Codex does not require this plugin to follow the committed plan and `AGENTS.md` instructions.
 
 ### 4. Launch the agent with autonomy
 
@@ -90,13 +76,14 @@ With the planning documents already in place, ask the agent to implement
 milestones. For a scientific analysis with the DunnLab Claude Code plugin, use:
 
 ```
-/dunnlab-lifecycle
+/dunnlab-research-lifecycle
 ```
 
 Lifecycle selects the current scientific work; `dunnlab-workflow-design` guides
 its computational structure from exploration onward, and `dunnlab-bioinformatics`
-adds domain methods when relevant. For a software tool or package, ask for
-implementation directly using `dunnlab-defaults`. Invoke `dunnlab-new-project`
+adds domain methods when relevant. For a software tool or package, use
+`dunnlab-release-cycle` to plan and work through releases, with `dunnlab-coding-defaults`
+for the code itself. Invoke `dunnlab-new-project`
 again only if setup remains unfinished. Either agent can follow the same committed
 plan and evaluate routine gates without pausing for a new approval at each one.
 
@@ -107,7 +94,7 @@ The agent should:
 - **Update documentation** — keeping the README and docs in sync with the implementation
 - **Commit after each milestone** — so you have a clean git history
 
-Because the planning documents act as a specification, either agent can stay on track without constant guidance. `AGENTS.md` supplies the shared conventions; Claude Code can additionally use `dunnlab-defaults` through its plugin.
+Because the planning documents act as a specification, either agent can stay on track without constant guidance. `AGENTS.md` supplies the shared conventions; Claude Code can additionally use `dunnlab-coding-defaults` through its plugin.
 
 ### 6. Review and iterate
 
@@ -124,8 +111,9 @@ If anything needs changes, continue the current session or start a fresh session
 
 The key insight is separating **planning** from **implementation**:
 
-- **Steps 1–2** happen interactively on your machine, with you guiding the project's direction and reviewing the plan.
-- **Steps 3–4** set up authentication, any optional tools, and the agent's permissions and sandbox.
+- **Steps 1–2** set up the project folder, the agent, and any optional tools.
+- **Step 3** happens interactively, with you guiding the project's direction and reviewing the plan.
+- **Step 4** sets the agent's permissions and sandbox for autonomous work.
 - **Step 5** proceeds autonomously, with the agent following the plan you approved.
 - **Step 6** brings you back in to review the result.
 
