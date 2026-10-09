@@ -6,7 +6,7 @@ release process in [`dev_docs/contributing.md`](dev_docs/contributing.md#releasi
 Lab members pick up a new version with `/plugin update dunnlab-code@dunnlab`;
 auto-update is off by default for third-party marketplaces.
 
-## Unreleased
+## 1.1.0 (2026-10-09)
 
 ### Added
 
