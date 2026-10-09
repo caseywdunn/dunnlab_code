@@ -41,6 +41,7 @@ These are routine tasks with simple invariants: the number of sequences is the s
 - **Rewriting a slow program to be fast.** A k-mer counter rewritten in Rust is hard to write, but easy to check: it must give exactly the same counts as the slow version on the same data.
 - **Designing primers or guide RNAs.** Finding a sequence that meets every constraint is hard, but checking a proposed sequence's melting temperature, specificity, and position is straightforward.
 - **Searching for a better tree.** Finding a high-likelihood phylogeny is computationally hard, but computing the likelihood of a proposed tree is easy.
+- **Assembling a genome with proximity data.** Getting a chromosome-scale assembly right is challenging, but with chromatin conformation (Hi-C) data it is easy to see when you have. In a contact map, a correct assembly shows a strong diagonal within each chromosome, while misjoins, inversions, and misplaced contigs stand out as signal off the diagonal.
 
 **Strategy:** build the checker first, then let the agent work against it. This is where agents are most powerful, because they can try many approaches and keep only what passes. Keep a simple reference implementation, even a slow one, as the standard to compare against. An agent can work autonomously for a long time in this quadrant, because every attempt is checked objectively.
 
@@ -65,7 +66,6 @@ This is the most dangerous quadrant, especially with agents. The output looks fi
 *Examples:*
 
 - **Deep phylogenetic relationships,** such as which animal lineage branched first. There is no ground truth to compare against, and results can depend on models, gene sampling, and taxon sampling.
-- **De novo genome assembly** of a non-model organism. Summary statistics measure completeness and contiguity, but not whether the assembly's structure is right.
 - **Reconstructing ancestral traits** across a tree, where the answer depends on the tree and on modeling assumptions that are hard to test.
 
 **Strategy:**
@@ -79,7 +79,7 @@ This is the most dangerous quadrant, especially with agents. The output looks fi
 
 ### Moving between quadrants
 
-The quadrants are not fixed. Building a good check moves a task from "hard to check" to "easy to check": a simulation framework, a set of positive controls, or a reference implementation is often the most valuable thing an agent can build early in a project. Agents also move many tasks from "hard to do" to "easy to do". They do much less to make anything easier to check. **As agents take over more of the doing, checking becomes the bottleneck**, and it is where your time and expertise matter most.
+The quadrants are not fixed. Building a good check moves a task from "hard to check" to "easy to check": a simulation framework, a set of positive controls, or a reference implementation is often the most valuable thing an agent can build early in a project. New data can do the same: without proximity data, a genome assembly's structure is hard to check, because summary statistics measure completeness and contiguity but not whether contigs are joined in the right order; with Hi-C data, a contact map shows it directly. Agents also move many tasks from "hard to do" to "easy to do". They do much less to make anything easier to check. **As agents take over more of the doing, checking becomes the bottleneck**, and it is where your time and expertise matter most.
 
 ## Tests
 
