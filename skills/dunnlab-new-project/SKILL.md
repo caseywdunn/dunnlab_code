@@ -21,7 +21,7 @@ Inspect existing source, documentation, environment specifications, git state, a
 ## Repository and execution environment
 
 - Initialize git when creating a repository and it is not already initialized. Preserve existing git configuration and work.
-- For a new repository, install the AI-attribution `commit-msg` hook from `dunnlab-coding-defaults` (`.githooks/` with `core.hooksPath`) and list the one-time `git config core.hooksPath .githooks` step in the README's setup. Add it to an existing repository only when requested.
+- For a new repository, install the AI-attribution `commit-msg` hook from `dunnlab-coding-defaults` (`.githooks/` with `core.hooksPath`) and record the one-time `git config core.hooksPath .githooks` step in `CONTRIBUTING.md`. Add it to an existing repository only when requested.
 - Create or update `.gitignore` for the language and actual layout. Default ignores include `.DS_Store`, Python caches, notebook checkpoints, bulk data/results, and logs; preserve tracked fixtures and provenance records. Add `target/` for Rust and `.Rhistory`, `.RData`, `.Rproj.user/` for R where relevant.
 - Preserve the active harness's permissions and sandbox policy. Configure permissions only when the user requests it. For requested Claude Code permission setup, read [references/settings-permissions.md](references/settings-permissions.md); do not translate or apply those settings to another harness automatically.
 

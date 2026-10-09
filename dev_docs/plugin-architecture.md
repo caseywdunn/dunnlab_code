@@ -39,7 +39,7 @@ Frontmatter `name` is optional for personal and project skills, where the direct
 - **dunnlab-release-cycle** — Branches, issues, `dev_docs/PLAN.md` with gates, changelog, and the release ritual for projects that outgrow working on `main`.
 - **dunnlab-research-lifecycle** — Scientific planning, exploration, selection, validation, and publication handoff; distillation retains the working implementation and closes evidence gaps.
 - **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
-- **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
+- **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, Snakemake integration, and running coding agents on Bouchet's agent partition.
 - **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
 - **dunnlab-manuscript** — Manuscript repositories with Quarto source, results staged by the analysis repository and synced in with their commit, PDF and Word builds, and co-author edits.
 - **dunnlab-biblio** — Verified manuscript, data, and software citations, claim support, and BibTeX conventions.

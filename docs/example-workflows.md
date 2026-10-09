@@ -46,7 +46,7 @@ of invoking the skill. Use `dunnlab-research-lifecycle` for the scientific plann
 the scaffold. With Codex, or Claude Code without the plugin, provide the same scope
 directly:
 
-> Help me plan and scaffold this research project. Define the scientific question, inputs, outputs, tests, and verification gates with me. Create `README.md`, `.gitignore`, `AGENTS.md`, a one-line `CLAUDE.md` importing it, and `dev_docs/overview.md`. Do not implement the analysis until I have reviewed and committed the plan.
+> Help me plan and scaffold this research project. Define the scientific question, inputs, outputs, tests, and verification gates with me. Decide with me whether this project works directly on `main` or uses a release cycle. Create `README.md`, `.gitignore`, `AGENTS.md`, a one-line `CLAUDE.md` importing it, and `dev_docs/overview.md`, and install a `commit-msg` hook that requires agent commits to name their model and version. Do not implement the analysis until I have reviewed and committed the plan.
 
 The agent then walks you through a structured planning process:
 
@@ -81,8 +81,9 @@ milestones. For a scientific analysis with the DunnLab Claude Code plugin, use:
 
 Lifecycle selects the current scientific work; `dunnlab-workflow-design` guides
 its computational structure from exploration onward, and `dunnlab-bioinformatics`
-adds domain methods when relevant. For a software tool or package, ask for
-implementation directly using `dunnlab-coding-defaults`. Invoke `dunnlab-new-project`
+adds domain methods when relevant. For a software tool or package, use
+`dunnlab-release-cycle` to plan and work through releases, with `dunnlab-coding-defaults`
+for the code itself. Invoke `dunnlab-new-project`
 again only if setup remains unfinished. Either agent can follow the same committed
 plan and evaluate routine gates without pausing for a new approval at each one.
 

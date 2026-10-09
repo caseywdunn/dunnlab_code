@@ -28,7 +28,7 @@ Save each figure twice, with the same base name:
 - **`tree.pdf`**, the vector file used in the PDF manuscript. Embed fonts; in matplotlib, set `pdf.fonttype` to 42.
 - **`tree.png`**, a raster copy for the Word version, at 300 dpi or more, or 600 dpi for line art. Word cannot display PDF images, so the PNG is what co-authors editing in Word see.
 
-Raster images such as micrographs are generated as PNG or TIFF at their native resolution rather than as PDF.
+**Raster images**, such as micrographs and photographs, have no vector form. Save them once, as a PNG at their native resolution, converting TIFF to PNG in the analysis, since neither LaTeX nor Word reliably displays TIFF. Include them with the `.png` extension, as below.
 
 ## Include without an extension
 
@@ -36,7 +36,11 @@ Raster images such as micrographs are generated as PNG or TIFF at their native r
 ![Phylogeny of {{< meta results.n_species >}} species.](_results/figures/tree){#fig-tree}
 ```
 
-With no extension, each output format chooses its file through `default-image-extension` in `_quarto.yml`: `pdf` for the PDF build and `png` for Word.
+With no extension, each output format chooses its file through `default-image-extension` in `_quarto.yml`: `pdf` for the PDF build and `png` for Word. The pre-render check therefore requires both files. A raster-only figure is included with its extension, which both formats accept:
+
+```markdown
+![In situ hybridization of the gene in a tentacle.](_results/figures/in_situ.png){#fig-in-situ}
+```
 
 ## Figures assembled by hand
 

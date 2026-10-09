@@ -1,8 +1,9 @@
 ---
 name: dunnlab-coding-defaults
 description: >
-  Dunn Lab language, coding, dependency, testing, and documentation conventions.
-  Use when writing or reviewing code. Workflow architecture belongs to
+  Dunn Lab language, coding, dependency, testing, documentation, commit, and
+  agent-instruction conventions. Use when writing or reviewing code, committing,
+  or writing README.md or AGENTS.md. Workflow architecture belongs to
   dunnlab-workflow-design; repository scaffolding belongs to dunnlab-new-project.
 ---
 
@@ -189,7 +190,7 @@ Use the exact model you are running as. If you cannot determine its version, wri
 - End every commit message you write with `Co-Authored-By: <model name and version> <noreply address>`, naming the exact model you are running as.
 ```
 
-For enforcement, install the `commit-msg` hook in [templates/commit-msg](templates/commit-msg) into new repositories, and into existing ones when requested. It leaves commits made by people alone. When a commit comes from inside Claude Code or Codex, detected from the environment variables they set, it rejects a message without a versioned model trailer and adds an `AI-Harness:` trailer naming the agent software and its version. Install it once per clone and note the step in the README's setup instructions:
+For enforcement, install the `commit-msg` hook in [templates/commit-msg](templates/commit-msg) into new repositories, and into existing ones when requested. It leaves commits made by people alone. When a commit comes from inside Claude Code or Codex, detected from the environment variables they set, it rejects a message without a versioned model trailer and adds an `AI-Harness:` trailer naming the agent software and its version. Install it once per clone, and record the step in the contributor setup in `CONTRIBUTING.md` (it concerns developers, not users of the project):
 
 ```bash
 mkdir -p .githooks && cp <skill>/templates/commit-msg .githooks/ && chmod +x .githooks/commit-msg

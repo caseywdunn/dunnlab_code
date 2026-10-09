@@ -80,8 +80,8 @@ An agent working through a release repeats this loop:
 1. Read `AGENTS.md` and `dev_docs/PLAN.md`. Pick the first step whose dependencies are done and whose gate is not met.
 2. Branch `issue-<N>-<slug>` from an up-to-date `dev`.
 3. Implement the change with tests, following `dunnlab-coding-defaults`. Run format, lint, and test checks.
-4. Evaluate the step's gate on the branch. In the same branch, record the gate's status in `PLAN.md` and add the changelog entry.
-5. Open a PR into `dev` (`gh pr create --base dev`) and wait for CI (`gh pr checks --watch`).
+4. Add the changelog entry, and open a PR into `dev` (`gh pr create --base dev`).
+5. Evaluate the step's gate on the branch, put the evidence in the PR, and record the gate's status in `PLAN.md` on the same branch, linking the PR. Push, and wait for CI (`gh pr checks --watch`).
 6. When CI passes, merge with a merge commit (`gh pr merge --merge --delete-branch`). Close the issue with a comment naming the commit and the evidence.
 7. Continue to the next step.
 

@@ -3,8 +3,9 @@ name: dunnlab-hpc
 description: >
   YCRC HPC cluster reference for the Dunn Lab. Use when writing SLURM
   batch scripts, configuring job resources, managing storage, or running
-  analyses on Bouchet, McCleary, or Misha clusters. Covers partitions,
-  storage, job scheduling, and cluster-specific details.
+  analyses or coding agents on Bouchet, McCleary, or Misha clusters. Covers
+  partitions, storage, job scheduling, the Bouchet agent partition, and
+  cluster-specific details.
 ---
 
 # YCRC HPC Clusters

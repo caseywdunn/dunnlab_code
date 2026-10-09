@@ -41,7 +41,8 @@ Adapt artifacts to the deliverable: a manuscript is not required for a dataset r
 - **Domain skills**, such as `dunnlab-bioinformatics`, guide relevant methods,
   tool choices, and scientific checks.
 - **`dunnlab-codereview`** provides the relevant engineering review checklist;
-  **`dunnlab-biblio`** supports methods and references when writing up.
+  **`dunnlab-biblio`** supports methods and references when writing up, and
+  **`dunnlab-manuscript`** owns how a manuscript is written and built.
 
 Load the current phase reference and any reference needed for a transition or
 specific dependency. The shared workflow design applies in every phase.

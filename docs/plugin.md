@@ -30,11 +30,11 @@ Each has a markdown entry point, with references for substantial conditional det
 |-------|-----------------|
 | **`dunnlab-coding-defaults`** | Preferred languages, coding style, dependency management, focused tests, and version-control conventions. |
 | **`dunnlab-workflow-design`** | Computational structure from the first exploratory runs: readable commands, explicit dependencies, shared implementation, provenance, valid output reuse, and reproduction instructions. |
-| **`dunnlab-bioinformatics`** | Biological methods and tool recipes: identifiers, format checks, sequence orientation, annotation, paralog resolution, and quality assessment. |
+| **`dunnlab-bioinformatics`** | Biological methods and tool recipes: identifiers, format checks, phylogenetic inference with IQ-TREE (including replicate searches and constrained-tree AU tests), sequence orientation, annotation, paralog resolution, and quality assessment. |
 | **`dunnlab-release-cycle`** | When a project outgrows working directly on `main`: development and issue branches, a plan with gates an agent can work through, a changelog, and a repeatable release procedure. |
 | **`dunnlab-research-lifecycle`** | Planning, exploration, distillation, and validation of scientific analyses. Tracks decisions and readiness for the selected scope, with publication handoff guidance when needed. |
 | **`dunnlab-new-project`** | Repository, environment, and documentation scaffolding, then a handoff. Resumable setup can use `.agent/new-project-progress.yaml`; ongoing scientific work belongs to lifecycle. |
-| **`dunnlab-hpc`** | YCRC cluster reference — partitions, storage quotas, SLURM batch templates, GPU inventory, Snakemake integration. Yale-specific; see [Computing at Yale](yale.md). |
+| **`dunnlab-hpc`** | YCRC cluster reference — partitions, storage quotas, SLURM batch templates, GPU inventory, Snakemake integration, and running coding agents on Bouchet's agent partition. Yale-specific; see [Computing at Yale](yale.md). |
 | **`dunnlab-codereview`** | Review and verification using the relevant skill's standards, with feedback that distinguishes blocking issues from suggestions. |
 | **`dunnlab-manuscript`** | How a manuscript is organized and built: a paired manuscript repository, Quarto source, numbers, tables, and figures staged by the analysis repository and synced in with their commit, PDF and Word builds, and co-author edits. |
 | **`dunnlab-biblio`** | Verified manuscript, data, and software citations, claim support, and BibTeX conventions; never invents missing metadata. |

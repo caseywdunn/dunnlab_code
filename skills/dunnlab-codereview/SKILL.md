@@ -60,7 +60,7 @@ readiness when that assessment is requested.
 
 - [ ] Are new functions documented with docstrings/doc comments?
 - [ ] Is the README or dev_docs/ updated if behavior changed?
-- [ ] For projects on a release cycle (`dunnlab-release-cycle`): does the PR target `dev`, cite its issue, add a changelog entry under `[Unreleased]`, and update its step in `dev_docs/PLAN.md`?
+- [ ] For projects on a release cycle (`dunnlab-release-cycle`): does the PR target the right branch (`dev`, or `main` for a release or hotfix), cite its issue when it implements one, add its changelog entry (under `[Unreleased]`, or in the dated section for a release or hotfix), and update its step in `dev_docs/PLAN.md` when it completes one?
 - [ ] Do comments explain *why*, not *what*?
 
 ### Data and reproducibility

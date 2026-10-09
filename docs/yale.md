@@ -73,7 +73,7 @@ flowchart LR
 4. **Start Claude in the sandbox,** from your project directory:
 
    ```bash
-   cd ~/project/my-analysis
+   cd ~/project_pi_<netid>/my-analysis
    module load claude
    claude
    ```
@@ -84,6 +84,6 @@ From there, the agent submits analyses with `sbatch`, monitors them with `squeue
 
 ### Cluster reference for agents
 
-Put the cluster quick reference (partitions, storage paths, Slurm templates, and the conda workflow) in shared `AGENTS.md` instructions, so every agent receives it. The `dunnlab-hpc` skill carries the same reference for Claude Code.
+Give agents the cluster's details (partitions, storage paths, Slurm templates, and the conda workflow) in a document such as `dev_docs/cluster.md`, with a one-line pointer to it in `AGENTS.md`, so every agent can find it without filling the always-loaded instructions. The `dunnlab-hpc` skill carries the same reference for Claude Code.
 
 This repository's [tmux configuration and cheat sheet](https://github.com/caseywdunn/dunnlab_code/tree/main/assets/tmux) includes clipboard support that works over SSH.

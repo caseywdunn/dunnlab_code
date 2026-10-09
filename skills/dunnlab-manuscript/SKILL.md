@@ -60,7 +60,7 @@ Code and results are archived at doi:{{< meta analysis.doi >}}.
 ```
 
 - Values work in captions as well as text.
-- Include figures without a file extension; each output format picks its own file.
+- Include vector figures without a file extension, so each output format picks its own file; include raster-only figures, such as micrographs, as `.png`. See [Figures](references/figures.md).
 - Cite with `[@key]` from `references.bib`, following `dunnlab-biblio`.
 - The `analysis` block of `values.json` supplies the repository URL, commit, version, and DOI for data-availability statements.
 
