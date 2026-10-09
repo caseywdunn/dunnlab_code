@@ -39,6 +39,12 @@ auto-update is off by default for third-party marketplaces.
 - A Toolkit chapter introduces the non-AI tools: the shell, Git, GitHub, VS Code,
   Python, R, Rust, Markdown, LaTeX, and Quarto.
 
+- Commits made by agents name the model and version in a `Co-Authored-By:`
+  trailer. `dunnlab-coding-defaults` gives the `AGENTS.md` rule for agents that do
+  not add it themselves, such as Codex, and a `commit-msg` hook, installed in new
+  projects, that rejects agent commits without one and records the agent
+  software's version in an `AI-Harness:` trailer.
+
 ### Changed
 
 - Manuscripts are written in Quarto again, rendering PDF (through LaTeX) and

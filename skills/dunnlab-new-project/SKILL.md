@@ -21,6 +21,7 @@ Inspect existing source, documentation, environment specifications, git state, a
 ## Repository and execution environment
 
 - Initialize git when creating a repository and it is not already initialized. Preserve existing git configuration and work.
+- For a new repository, install the AI-attribution `commit-msg` hook from `dunnlab-coding-defaults` (`.githooks/` with `core.hooksPath`) and list the one-time `git config core.hooksPath .githooks` step in the README's setup. Add it to an existing repository only when requested.
 - Create or update `.gitignore` for the language and actual layout. Default ignores include `.DS_Store`, Python caches, notebook checkpoints, bulk data/results, and logs; preserve tracked fixtures and provenance records. Add `target/` for Rust and `.Rhistory`, `.RData`, `.Rproj.user/` for R where relevant.
 - Preserve the active harness's permissions and sandbox policy. Configure permissions only when the user requests it. For requested Claude Code permission setup, read [references/settings-permissions.md](references/settings-permissions.md); do not translate or apply those settings to another harness automatically.
 
@@ -29,7 +30,7 @@ Inspect existing source, documentation, environment specifications, git state, a
 Create useful initial documentation from known information, leaving unresolved scientific choices explicit rather than inventing a detailed plan:
 
 - **README.md**: project purpose, current setup and entry points, and links to developer checks. For scientific analyses, follow workflow-design's reader-facing documentation guidance.
-- **AGENTS.md**: a brief project summary, working/test commands, and links to relevant documentation; follow the 100-line limit in `dunnlab-coding-defaults`. Reference companion skills only when they apply.
+- **AGENTS.md**: a brief project summary, working/test commands, the commit attribution rule from `dunnlab-coding-defaults`, and links to relevant documentation; follow the 100-line limit in `dunnlab-coding-defaults`. Reference companion skills only when they apply.
 - **CLAUDE.md**: use the single line `@AGENTS.md` for a new shared-instructions setup. Preserve and reconcile existing instructions instead of overwriting them.
 - **`dev_docs/overview.md`** when a plan is useful: goal, known inputs and outputs, current approach, and unresolved choices. For research, lifecycle Planning extends this same document; do not create a competing scientific plan here.
 - **CONTRIBUTING.md** or additional focused `dev_docs/` documents only when their content warrants a separate home.

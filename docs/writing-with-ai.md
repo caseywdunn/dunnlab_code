@@ -55,7 +55,7 @@ Because these uses have no clear boundaries, criteria are hard to set in advance
 
 - **Discuss it early,** when the project starts and again when writing begins. Co-authors may have different expectations and comfort levels, and journal policy sets only the minimum.
 - **Agree on what is acceptable** for this project: which of the uses above, by whom, and for which parts of the paper.
-- **Keep a record as you go.** A disclosure statement written at submission from memory will be incomplete. Commit messages, notes in the plan, and the agent's own attribution in commits all help.
+- **Keep a record as you go.** A statement of AI use written at submission from memory will be incomplete. Commits that name the model and version, as described in [Reporting AI use](using-ai.md#reporting-ai-use), together with notes in the plan, make the record as the work happens.
 - **Report what was actually done,** in specific terms.
 
 Hiding AI use helps no one. It leaves co-authors unable to vouch for work they are named on, prevents readers from evaluating the work appropriately, and stops the community from developing shared norms. Those norms are still being worked out, and they will be worked out better in the open.

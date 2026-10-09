@@ -81,6 +81,7 @@ The agent then reads the detailed document only when it is relevant to the task.
 - Naming conventions and file organization
 - Pointers to files with additional context (as shown above)
 - Common workflows and gotchas
+- How to attribute AI in commits, for agents that do not do it by themselves: for example, *end every commit message with a `Co-Authored-By:` trailer naming the exact model and version you are running as*
 
 To see what actually loaded in a session, use `/context` in Claude Code or `/status` in Codex.
 

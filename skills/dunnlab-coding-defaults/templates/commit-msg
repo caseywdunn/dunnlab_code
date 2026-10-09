@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Git commit-msg hook: require AI attribution on commits made by a coding agent.
+#
+# Install once per clone:
+#   cp commit-msg .githooks/commit-msg && chmod +x .githooks/commit-msg
+#   git config core.hooksPath .githooks
+#
+# Commits made by people are left alone. When a commit is made from inside a
+# coding agent, the message must carry a trailer naming the model and its
+# version, such as
+#   Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+#   Co-Authored-By: GPT-5.5 <noreply@openai.com>
+# and the hook adds an AI-Harness trailer naming the agent software and its version.
+set -euo pipefail
+msg_file="$1"
+
+# Detect a coding agent from the environment its shell commands run in.
+harness=""
+if [[ -n "${AI_AGENT:-}" ]]; then
+  # e.g. claude-code_2-1-292_agent -> claude-code 2.1.292
+  harness=$(sed -E 's/^([a-z-]+)_([0-9]+)-([0-9]+)-([0-9]+).*/\1 \2.\3.\4/' <<<"$AI_AGENT")
+elif [[ -n "${CLAUDECODE:-}" ]]; then
+  harness="claude-code"
+elif [[ -n "${CODEX_THREAD_ID:-}${CODEX_SESSION_ID:-}${CODEX_SANDBOX:-}" ]]; then
+  harness=$(codex --version 2>/dev/null | head -n 1 || true)
+  harness=${harness:-codex}
+fi
+[[ -z "$harness" ]] && exit 0
+
+# Require a Co-Authored-By trailer that names a model with a version number,
+# or says explicitly that the version is unknown.
+if ! grep -Eiq '^Co-Authored-By: [^<]*([0-9]|version unknown)[^<]* <[^>]+>[[:space:]]*$' "$msg_file"; then
+  cat >&2 <<'EOF'
+error: commits made by a coding agent must name the model and its version.
+Add a trailer at the end of the commit message, for example:
+
+  Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+  Co-Authored-By: GPT-5.5 <noreply@openai.com>
+
+Use the exact model you are running as. If you cannot determine its version,
+write it as "<model name> (version unknown)" rather than guessing.
+EOF
+  exit 1
+fi
+
+# Record the agent software, unless the message already does.
+if ! grep -Eiq '^AI-Harness:' "$msg_file"; then
+  git interpret-trailers --in-place --trailer "AI-Harness: $harness" "$msg_file"
+fi

@@ -21,6 +21,8 @@ A few are more consequential than a style preference, and they are the ones most
 
 **Cross-species gene IDs are namespaced as `Genus_species@gene_id`.** Reserve `@` as the separator and check source identifiers for conflicts. Every renaming keeps a mapping file and is checked for collisions. Merging datasets with ambiguous identities is a class of silent error that can surface months later in a tree.
 
+**Every agent commit names its model and version.** A `Co-Authored-By:` trailer such as `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` ends every commit an agent writes, and new repositories install a `commit-msg` hook, from `dunnlab-coding-defaults`, that rejects agent commits without one and records the agent software's version. The history then records which work was delegated to which model, which is what statements of AI use are written from.
+
 **`AGENTS.md` stays under 100 lines.** General guidance allows up to about 200, but everything in it loads into every session, and a shorter file is followed more reliably. Detail goes in linked documents under `dev_docs/`, which the agent reads when it needs them. See [Managing Context](managing-context.md#keep-it-short).
 
 **Exploration and reporting share computation.** Apply workflow design from the first consequential experiment. Distillation selects configurations and outputs, prunes the maintained scope, and closes verification gaps while preserving scientific history. Retained code should need a specific reason to be rewritten.

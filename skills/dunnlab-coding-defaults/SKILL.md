@@ -136,7 +136,7 @@ For software projects, README.md should include a project overview, setup instru
 
 Use `dev_docs/` for focused developer material such as the data model, implementation decisions, and internal verification instructions. Keep it readable by people and loadable as needed by coding agents; link to reader-facing methods and usage rather than duplicating them.
 
-AGENTS.md holds the project instructions: how to build, test, and work on this project, plus any custom skills or commands. **Keep it to 100 lines or less** so standing context stays small. Include links and descriptions for the following files when present so they can be loaded as needed:
+AGENTS.md holds the project instructions: how to build, test, and work on this project, the commit attribution rule below, plus any custom skills or commands. **Keep it to 100 lines or less** so standing context stays small. Include links and descriptions for the following files when present so they can be loaded as needed:
 - README.md
 - CONTRIBUTING.md
 - Each file in `dev_docs/` (e.g., `overview.md`, `data-model.md`)
@@ -173,6 +173,30 @@ Before staging files, inspect size and contents to avoid including large artifac
 Use descriptive commit messages that explain *why* a change was made, not just *what* changed. For example:
 - Good: "Refactor data cleaning to handle missing values and edge cases"
 - Bad: "Update clean_data.py"
+
+### AI attribution in commits
+
+Every commit made with a coding agent names the model and its version in a trailer at the end of the message, so the history records which work was delegated to which model:
+
+```text
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Co-Authored-By: GPT-5.5 <noreply@openai.com>
+```
+
+Use the exact model you are running as. If you cannot determine its version, write `<model name> (version unknown)` rather than guessing. Claude Code adds this trailer by default through its `attribution` setting; leave that on. Codex has no reliable built-in equivalent, so state the rule in `AGENTS.md`:
+
+```markdown
+- End every commit message you write with `Co-Authored-By: <model name and version> <noreply address>`, naming the exact model you are running as.
+```
+
+For enforcement, install the `commit-msg` hook in [templates/commit-msg](templates/commit-msg) into new repositories, and into existing ones when requested. It leaves commits made by people alone. When a commit comes from inside Claude Code or Codex, detected from the environment variables they set, it rejects a message without a versioned model trailer and adds an `AI-Harness:` trailer naming the agent software and its version. Install it once per clone and note the step in the README's setup instructions:
+
+```bash
+mkdir -p .githooks && cp <skill>/templates/commit-msg .githooks/ && chmod +x .githooks/commit-msg
+git config core.hooksPath .githooks
+```
+
+If the project uses the `pre-commit` framework, which refuses to install when `core.hooksPath` is set, register the script as a local hook at the `commit-msg` stage instead. The hook can confirm that a model is named, not that the name is correct.
 
 ### Running formatting and linting before commits
 
