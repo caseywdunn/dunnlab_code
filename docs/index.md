@@ -37,7 +37,7 @@ The manual uses Claude Code and Codex as its main examples, but most of it appli
 - [Software Engineering](software-engineering.md) — Building large projects with agents: architecture principles, testing and linting, idempotence and dry runs, workflow frameworks such as Snakemake, prototyping, increments and gates, issues, and release cycles.
 - [Writing with AI](writing-with-ai.md) — AI in manuscripts: where analysis and writing blur, the ways AI can contribute, discussing use openly with co-authors, and getting references right.
 - [Example Workflows](example-workflows.md) — A project from empty directory to working code, start to finish.
-- [Computing at Yale](yale.md) — YCRC clusters, YCRC policy on coding agents, and a settings file for Bouchet.
+- [Computing at Yale](yale.md) — YCRC clusters, YCRC guidance on coding agents, and a long-running agent on Bouchet's agent partition.
 - [Dunn Lab Practices](lab-practices.md) — Lab-specific practices, and the reasoning behind the conventions the plugin encodes.
 - [DunnLab Plugin](plugin.md) — The skills, commands, and assets in this repository, and how to run them.
 

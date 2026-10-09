@@ -87,8 +87,28 @@ Public partitions (private `priority*`, `pi_*`, and `education*` partitions are 
 | **gpu_b200** | 2 days | 7 | 128 | 2,251 GiB | 16 GPUs, 6 jobs |
 | **gpu_rtx6000** | 2 days | 7 | 128 | 2,251 GiB | 16 GPUs, 16 jobs |
 | **gpu_devel** | 6 hours | 6 | 48 / 128 | 479–2,251 GiB | 2 GPUs, 1 job |
+| **agent** | 7 days | — | 1 per job | 8 GiB per job | Long-running interactive coding-agent sessions only; not for analyses |
 | **scavenge** | 1 day | 177 | 32–192 | 487–2,251 GiB | Preemptable; idle private nodes |
 | **scavenge_gpu** | 1 day | 70 | 32–128 | 488–2,251 GiB | Preemptable GPU nodes |
+
+### Coding agents on Bouchet
+
+Agents must run on a compute node, never a login node, started from a non-hidden subdirectory of home, project, scratch, or PI storage. The `agent` partition gives an agent a small allocation that lasts up to 7 days. The agent works there and submits analyses as ordinary Slurm jobs:
+
+```bash
+tmux new -s claude                                             # on a login node, e.g. via an OOD shell
+salloc -p agent -t 7-00:00:00 --cpus-per-task=1 --mem=5G       # the agent's own allocation
+cd ~/project_pi_<netid>/my-analysis
+module load claude                                             # YCRC's Claude Code sandbox (beta)
+claude
+```
+
+- **Model choice:** `module load claude` runs Claude Code in YCRC's sandbox: a container that limits which files it can see, with YCRC-managed settings. It sends prompts and data to Anthropic, so use it with low-risk data only. `module load local-coding-agents/1.0` provides Claude Code, Codex, and other interfaces backed by a YCRC-hosted model that keeps data at Yale.
+- **Analyses go to other partitions.** The agent allocation has 1 CPU. Submit real work with `sbatch` to `day`, `week`, `gpu`, and so on, and monitor it with `squeue` and `sacct`.
+- **The session ends after 7 days.** Jobs the agent submitted keep running. Start a new allocation the same way and resume with `claude -c`.
+- **Reattaching:** detach with `Ctrl-b d` and return with `tmux a -t claude`. A tmux session lives on one login node, so record `hostname` and `ssh` back to that node if a new shell lands elsewhere.
+
+McCleary has no `agent` partition. See <https://docs.ycrc.yale.edu/ai/aicodingtools/> for YCRC's current guidance.
 
 ### Bouchet GPUs
 
@@ -278,7 +298,7 @@ GPUs must be explicitly requested with `--gpus`; none are allocated by default. 
 salloc -p devel -t 2:00:00 --mem=8G
 ```
 
-`StdEnv` sets `SALLOC_PARTITION=devel`, so `salloc` targets `devel` unless you pass `-p`. Add `--x11` for graphical forwarding (requires X11 setup). Wrap interactive sessions in `tmux` so a dropped connection does not kill the job.
+`StdEnv` sets `SALLOC_PARTITION=devel`, so `salloc` targets `devel` unless you pass `-p`. For a coding agent's long session, use the `agent` partition on Bouchet instead. Add `--x11` for graphical forwarding (requires X11 setup). Wrap interactive sessions in `tmux` so a dropped connection does not kill the job.
 
 ### Job monitoring
 
@@ -406,5 +426,5 @@ Store environments in your project directory or home — **never in scratch** (o
 - **Max interactive apps**: 4 concurrent OOD interactive instances per user.
 - **Job rate limits**: YCRC enforces submission rate limits — use job arrays or `dsq` instead of submission loops.
 - **Module system**: Use `module reset` then `module load` for software. Run `module avail` to see available packages.
-- **AI coding agents**: YCRC does not formally support coding agents on the clusters and warns about data exposure, credential leakage, and destructive actions taken with your permissions. See <https://docs.ycrc.yale.edu/ai/aicodingtools/> and use restrictive permissions — `assets/settings.json` in this repo for Claude Code, or a `workspace-write` sandbox with `on-request` approvals for Codex. YCRC also documents connecting Claude Science to a cluster by SSH tunnel to a **compute node, not a login node**.
+- **AI coding agents**: follow <https://docs.ycrc.yale.edu/ai/aicodingtools/>. Run agents on compute nodes only; on Bouchet, use the `agent` partition (see [Coding agents on Bouchet](#coding-agents-on-bouchet)). Commercial agents, including YCRC's `module load claude` sandbox, are for low-risk data only until Claude Enterprise is available, and never for PHI or other high-risk data. YCRC's local coding agents keep data at Yale.
 - **Paid storage**: YCRC cannot accept new or increased paid storage allocations on Bouchet, Grace, or McCleary; availability may return in late 2026.

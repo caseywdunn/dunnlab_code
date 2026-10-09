@@ -59,7 +59,7 @@ Skills are loaded on demand, so the body of one costs you nothing until it is us
 
 Files in [`assets/`](https://github.com/caseywdunn/dunnlab_code/tree/main/assets) are not loaded by Claude. They are there for you to copy.
 
-- **`settings.json`** — A restrictive Claude Code configuration built for the Bouchet cluster, with a cluster quick reference in its comments. See [Computing at Yale](yale.md#a-settings-file-for-bouchet).
+- **`settings.json`** — A restrictive Claude Code configuration built for the Bouchet cluster, with a cluster quick reference in its comments. On the clusters we now run Claude Code through YCRC's sandbox module instead; see [Computing at Yale](yale.md#a-long-running-agent-on-bouchet).
 - **`tmux/`** — A shared tmux configuration and cheat sheet for working over SSH, including clipboard support that works without X11 forwarding.
 
 ## Installing and keeping it current
