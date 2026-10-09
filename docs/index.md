@@ -57,6 +57,6 @@ Following this manual's own advice on [rolling your own](using-ai.md#roll-your-o
 
 Agents: Anthropic Claude Code and OpenAI Codex.
 
-Models: Claude Opus 4.6, 4.7, 4.8, and Opus 5; OpenAI GPT-5 via Codex.
+Models: Claude Opus 4.6, 4.7, 4.8, Opus 5, and Opus 5.5; OpenAI GPT-5 via Codex.
 
 The git history is the detailed record. Most earlier commits carry a `Co-Authored-By` trailer naming the Claude model that contributed to them.
