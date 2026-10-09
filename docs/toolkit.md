@@ -102,15 +102,15 @@ Its usual companions:
 
 **What it is.** [LaTeX](https://www.latex-project.org/) is a typesetting system. You write plain text with commands such as `\section{Methods}` or `\cite{dunn2008}`, and LaTeX produces a professionally typeset PDF.
 
-**Why we use it.** LaTeX is our format for manuscripts. Its source is plain text, so Git tracks every change and agents can edit it directly. Many journals provide LaTeX templates. It handles citations, equations, and cross-references well. And it can include numbers, tables, and figures generated directly by the analysis code, so the manuscript never contains results copied by hand. Co-authors who prefer Word can receive a converted copy. [Dunn Lab Practices](lab-practices.md#manuscripts) describes how we do this.
+**Why we use it.** LaTeX produces the best-typeset documents for science, handles equations superbly, and is what many journals' templates are built on. We rarely write it directly: Quarto uses LaTeX behind the scenes to make PDFs, and can keep the LaTeX source for journals that ask for it. Knowing a little LaTeX helps when adjusting a journal template or writing an equation.
 
 **Learn more:** [Overleaf's LaTeX documentation](https://www.overleaf.com/learn).
 
 ## Quarto
 
-**What it is.** [Quarto](https://quarto.org/) creates documents in which code and text are mixed: the code runs when the document is built, and its results appear in place. It produces HTML, PDF, and Word.
+**What it is.** [Quarto](https://quarto.org/) turns plain-text documents written in Markdown into PDF (through LaTeX), Word, and HTML. Documents can insert values and tables from files, and can also contain code that runs when the document is built.
 
-**Why we use it.** Quarto suits documents where the analysis is the document, such as analysis reports, supplementary reports, internal summaries, and tutorials. There, every result is computed by code in plain view, and rebuilding updates everything. For manuscripts we prefer LaTeX, which gives finer control over typesetting and journal templates.
+**Why we use it.** Quarto is our format for manuscripts and reports. One plain-text source produces the PDF for journals and readers and the Word file for co-authors, Git tracks every change, and agents can edit it directly. Numbers, tables, and figures come straight from files the analysis generates, so the manuscript never contains results copied by hand. Quarto journal extensions provide many journals' templates. [Dunn Lab Practices](lab-practices.md#manuscripts) describes how we use it.
 
 **Learn more:** the [Quarto guide](https://quarto.org/docs/guide/).
 

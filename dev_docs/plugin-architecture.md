@@ -41,7 +41,7 @@ Frontmatter `name` is optional for personal and project skills, where the direct
 - **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, and Snakemake integration.
 - **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
-- **dunnlab-manuscript** — Manuscript repositories, LaTeX with generated results and figures, PDF and Word builds, and incorporating co-author edits.
+- **dunnlab-manuscript** — Manuscript repositories with Quarto source, results staged by the analysis repository and synced in with their commit, PDF and Word builds, and co-author edits.
 - **dunnlab-biblio** — Verified manuscript, data, and software citations, claim support, and BibTeX conventions.
 
 ### Design principles

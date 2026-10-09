@@ -38,6 +38,10 @@ its inputs, configurations, and targets. Keep provisional and selected outputs
 distinguishable without requiring parallel source trees or relocation. Archive
 unselected investigations without erasing decisions, negative results, or evidence.
 
+When selected results feed a manuscript, stage them with a workflow step such as
+`report_manuscript_results` in a committed `manuscript/` bundle of values, tables,
+and figures; `dunnlab-manuscript` defines the bundle and how the manuscript reads it.
+
 ## Make the computation readable
 
 Declare each stage's inputs, outputs, and scientifically meaningful parameters.
