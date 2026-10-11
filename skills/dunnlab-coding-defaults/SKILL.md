@@ -3,7 +3,7 @@ name: dunnlab-coding-defaults
 description: >
   Dunn Lab language, coding, dependency, testing, documentation, commit, and
   agent-instruction conventions. Use when writing or reviewing code, committing,
-  or writing README.md or AGENTS.md. Workflow architecture belongs to
+  or writing user-facing documentation or AGENTS.md. Workflow architecture belongs to
   dunnlab-workflow-design; repository scaffolding belongs to dunnlab-new-project.
 ---
 
@@ -131,9 +131,11 @@ Use the idiomatic test framework for each language — do not introduce third-pa
 
 Prefer idiomatic source and test structures for the language, preserving established layouts. `dunnlab-new-project` creates the minimum project scaffold; `dunnlab-workflow-design` owns the organization of analyses, inputs, outputs, and execution guides. Do not create directories or documents solely to fill a template.
 
-Write README.md for the project's users, and assume they are biologists rather than software engineers. Explain what the project does and how to use it in plain language, minimizing computational jargon and defining any necessary technical term where it first appears. If a user does not need to know something, leave it out of the README. Roadmaps, specifications, design decisions, development history, and internal checks belong in `dev_docs/`; the README may give a brief, high-level summary of status or direction and link there.
+Write all user-facing documents for biologists: root and analysis READMEs, methods and data guides, setup and execution instructions, and help text. Explain the biological purpose, what is available, where to find it, and how to use it in plain language. Define necessary computational terms where they first appear. Keep each document focused on the reader's task, with one canonical home for detailed instructions and links from other guides.
 
-For software projects, README.md should include a project overview, setup instructions, usage examples, and a link to the development guide. For scientific analyses, follow `dunnlab-workflow-design` for reader-facing READMEs and canonical reproduction instructions; keep developer checks and construction history in linked developer documentation.
+Describe the current work and the analyses reported in the paper. Remove obsolete methods, superseded results, migration notes, and development chronology from reader-facing guides. Preserve scientific provenance and research history in their existing records or `dev_docs/`; documentation cleanup does not authorize deleting them. Keep specifications, agent instructions, engineering checks, and implementation details there too, unless a detail is needed to interpret a result or run an analysis. Retain scientific limitations, controls, and sensitivity analyses that affect the reported conclusions.
+
+For software projects, README.md should include a project overview, setup instructions, usage examples, and a link to the development guide. For scientific analyses, follow the [reader documentation guidance](../dunnlab-workflow-design/references/documentation.md) in `dunnlab-workflow-design`. When a repository accompanies a manuscript, its README uses the paper's Results headings and order in a table linking directly to the relevant analyses and files.
 
 Use `dev_docs/` for focused developer material such as the data model, implementation decisions, and internal verification instructions. Keep it readable by people and loadable as needed by coding agents; link to reader-facing methods and usage rather than duplicating them.
 

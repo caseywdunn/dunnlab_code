@@ -47,6 +47,19 @@ to the researchers rather than inventing them.
 
 ## Exercise the reader's route
 
+For a manuscript companion, check the README against the current paper using
+workflow-design's [manuscript-to-repository guidance](../../dunnlab-workflow-design/references/documentation.md#connect-the-manuscript-to-the-repository).
+Verify that the navigation table uses the paper's Results headings and order,
+figure and table identifiers, and working links to the corresponding analyses
+and available files. Check the manuscript and repository links in both directions
+where public links exist; pending citations remain clearly marked.
+
+Review all user-facing guides for biological purpose, clear file locations,
+current methods, and necessary interpretation or reproduction limits. Keep them
+streamlined and understandable to biologists. Remove development chronology and
+obsolete analyses from the guides while preserving their underlying records.
+Do not direct readers to a preliminary analysis report as the paper or supplement.
+
 Check the canonical instructions from a fresh checkout or unpacked handoff in an
 isolated workspace. Verify that readers can locate the stated versions, obtain
 accessible inputs, reconstruct the required environment, and launch the documented
