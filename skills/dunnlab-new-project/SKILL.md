@@ -29,7 +29,7 @@ Inspect existing source, documentation, environment specifications, git state, a
 
 Create useful initial documentation from known information, leaving unresolved scientific choices explicit rather than inventing a detailed plan:
 
-- **README.md**: project purpose, current setup and entry points, and links to developer checks. For scientific analyses, follow workflow-design's reader-facing documentation guidance.
+- **README.md**: project purpose, current contents, setup and entry points, written for biologists. For scientific analyses, follow workflow-design's [reader documentation guidance](../dunnlab-workflow-design/references/documentation.md). When a manuscript is available, add its citation or placeholder and the table mapping its Results sections to repository contents; otherwise keep the known scientific purpose and mark the manuscript mapping as pending only if a companion paper is planned.
 - **AGENTS.md**: a brief project summary, working/test commands, the commit attribution rule from `dunnlab-coding-defaults`, and links to relevant documentation; follow the 100-line limit in `dunnlab-coding-defaults`. Reference companion skills only when they apply.
 - **CLAUDE.md**: use the single line `@AGENTS.md` for a new shared-instructions setup. Preserve and reconcile existing instructions instead of overwriting them.
 - **`dev_docs/overview.md`** when a plan is useful: goal, known inputs and outputs, current approach, and unresolved choices. For research, lifecycle Planning extends this same document; do not create a competing scientific plan here.

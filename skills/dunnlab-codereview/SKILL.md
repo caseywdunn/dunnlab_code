@@ -59,7 +59,8 @@ readiness when that assessment is requested.
 ### Documentation
 
 - [ ] Are new functions documented with docstrings/doc comments?
-- [ ] Is the README or dev_docs/ updated if behavior changed?
+- [ ] Are the relevant user-facing guides current, focused, and understandable to biologists, with development details kept separately?
+- [ ] For a manuscript companion, does the README map the paper's Results sections, in order, to the corresponding analyses and files, following workflow-design's [reader documentation guidance](../dunnlab-workflow-design/references/documentation.md)?
 - [ ] For projects on a release cycle (`dunnlab-release-cycle`): does the PR target the right branch (`dev`, or `main` for a release or hotfix), cite its issue when it implements one, add its changelog entry (under `[Unreleased]`, or in the dated section for a release or hotfix), and update its step in `dev_docs/PLAN.md` when it completes one?
 - [ ] Do comments explain *why*, not *what*?
 

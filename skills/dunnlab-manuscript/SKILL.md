@@ -39,6 +39,12 @@ project-a-ms/
 └── tmp/              # gitignored; returned .docx files
 ```
 
+## Help readers navigate the companion repository
+
+Follow workflow-design's [manuscript-to-repository guidance](../dunnlab-workflow-design/references/documentation.md#connect-the-manuscript-to-the-repository): the analysis README names the paper and maps its Results headings, in the same order, to figures, tables, analysis guides, and available data or results. Keep this mapping aligned with manuscript revisions when companion documentation is within scope. Include the public repository link in the paper; use explicit citation placeholders until publication links exist.
+
+All user-facing guides should be concise and accessible to biologists. A retained preliminary analysis report is separate from the manuscript and supplementary materials; it is not the reader's entry point. Preserve development history separately from the guides to the reported analyses.
+
 ## Setting up
 
 Copy the templates in this skill: `templates/manuscript/` into the manuscript repository, and `templates/analysis/write_manuscript_values.py` into the analysis repository's `scripts/`. Set `DEFAULT_ANALYSIS_REPO` in `sync_results.py`. When the target journal is known, add its Quarto journal extension (for example from [quarto-journals](https://github.com/quarto-journals)) rather than hand-building a LaTeX template.

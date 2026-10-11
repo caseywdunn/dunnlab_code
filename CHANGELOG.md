@@ -6,6 +6,16 @@ release process in [`dev_docs/contributing.md`](dev_docs/contributing.md#releasi
 Lab members pick up a new version with `/plugin update dunnlab-code@dunnlab`;
 auto-update is off by default for third-party marketplaces.
 
+## [Unreleased]
+
+### Changed
+
+- Manuscript companion READMEs now map the paper's Results sections, in order,
+  to figure and table references and the corresponding analyses and files.
+- All user-facing analysis guides are written for biologists and focus on the
+  reported analyses. Preliminary reports and development history remain separate
+  from the reader's route through the paper and repository.
+
 ## 1.1.0 (2026-10-09)
 
 ### Added
