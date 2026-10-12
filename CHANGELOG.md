@@ -8,6 +8,17 @@ auto-update is off by default for third-party marketplaces.
 
 ## [Unreleased]
 
+### Added
+
+- `dunnlab-specimens` manages field-collected specimen metadata from collection
+  to archive. It tracks specimens, samples, libraries, and tubes (handwritten,
+  DunnLab data-matrix, and FluidX labels), keeps raw sources unchanged, records
+  a source for every value, and keeps initial, public, and current
+  identifications with evidence. It maps among YPM/LUX, GBIF (including
+  iNaturalist), SRA, and ENA, uses WoRMS with NCBI taxonomy IDs, and ships a
+  tested tool that fetches records, builds integrated tables, checks
+  coordinates and depths against OBIS, validates, and exports BioSample tables.
+
 ### Changed
 
 - Manuscript companion READMEs now map the paper's Results sections, in order,

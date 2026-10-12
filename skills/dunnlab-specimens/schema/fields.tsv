@@ -1,0 +1,72 @@
+field	table	required	type	format	description	biosample	ena	dwc_gbif	lux	inaturalist_via_gbif
+specimen_key	specimen	yes	key	^[A-Za-z0-9._-]+$	Frozen analysis identifier: the voucher (as INSDC voucher with ':' replaced by '_') when one existed as analysis began, otherwise the field ID. Safe for FASTA headers, trees, and file names.	isolate	isolate
+specimen_voucher	specimen	recommended	voucher	^[A-Za-z]+(<[A-Z-]+>)?:[A-Za-z]+:[A-Za-z0-9.-]+$	Museum voucher in INSDC form institution:collection:catalog, e.g. YPM:IZ:110226.	specimen_voucher	specimen_voucher	institutionCode + collectionCode + catalogNumber	identified_by (YPM External Catalog Number)
+institution_code	specimen	recommended	string		Institution code from the INSDC/NCBI BioCollections list, e.g. YPM.		collecting institution	institutionCode	member_of	institutionCode
+collection_code	specimen	recommended	string		Collection code, e.g. IZ.			collectionCode	member_of	collectionCode
+catalog_number	specimen	recommended	string		Catalog number as the holding museum writes it, e.g. YPM IZ 110226.			catalogNumber	identified_by	catalogNumber
+field_id	specimen	recommended	string		Lab field identifier assigned at collection, e.g. D1399-SS10.	sample_name (often)		recordNumber / fieldNumber
+event_id	specimen	no	string		Collecting event (dive, station, or tow) shared by specimens, e.g. D1399.			eventID	encountered_by
+scientific_name	specimen	yes	string		Current determination, from determinations.tsv; WoRMS accepted name when available.	organism	scientific_name	scientificName	classified_as	scientificName
+initial_identification	specimen	recommended	string		First determination, usually made at collection, from determinations.tsv (initial=yes, or the earliest).					
+public_identification	specimen	no	string	name (source); ...	Names under which public records list the specimen, generated from the sources, e.g. 'Nanomia sp. (insdc)'.	organism	scientific_name	scientificName	classified_as	scientificName
+identification_evidence	specimen	no	string		Evidence for the current determination, required when it differs from the initial or a public identification: e.g. COI barcode, morphology, or a taxonomic revision with citation.					
+identification_qualifier	specimen	no	string		cf., aff., sp., or an informal name qualifier.			identificationQualifier
+informal_name	specimen	no	string		Lab informal name for an undescribed or unidentified taxon, e.g. Apolemia sp. 3 CWD-2005.	organism (NCBI informal name)	scientific_name
+aphia_id	specimen	recommended	integer	^[0-9]+$	WoRMS AphiaID of the current determination.			taxonID (when WoRMS)
+ncbi_taxid	specimen	recommended	integer	^[0-9]+$	NCBI Taxonomy ID, required for INSDC submission.	organism (taxid)	tax_id
+identified_by	specimen	recommended	string		Who made the current determination.	identified_by	identified_by	identifiedBy	referred_to_by (Identification Notes)	identifiedBy
+date_identified	specimen	no	date	ISO 8601	When the current determination was made.			dateIdentified		dateIdentified
+type_status	specimen	no	string		Type status, if any.			typeStatus
+collection_date	specimen	yes	date	ISO 8601 date, partial date, or interval (YYYY-MM-DD/YYYY-MM-DD)	Date of collection, UTC.	collection_date	collection_date	eventDate	encountered_by (timespan)	eventDate
+verbatim_date	specimen	no	string		Date exactly as given by the source.			verbatimEventDate
+collected_by	specimen	recommended	string		Collector names.	collected_by	collected_by	recordedBy	encountered_by (carried_out_by)	recordedBy
+collection_method	specimen	recommended	string		e.g. ROV suction sampler, ROV detritus sampler, blue-water diving, trawl, beach.			samplingProtocol
+vessel	specimen	no	string		Vessel or platform, e.g. R/V Western Flyer; ROV Doc Ricketts.
+geo_loc_name	specimen	yes	string	INSDC: <country or ocean>[:<region>][, <locality>]	INSDC geographic name, e.g. Pacific Ocean: Monterey Bay.	geo_loc_name	geographic location (country and/or sea)	country / waterBody
+locality	specimen	recommended	string		Broad locality, e.g. Monterey Bay.		geographic location (region and locality)	locality	encountered_by (took_place_at)
+collection_site	specimen	no	string		Specific collection site when it differs from the broad locality.			verbatimLocality
+decimal_latitude	specimen	yes	decimal	-90 to 90; south negative	Decimal degrees, WGS84.	lat_lon (as 'd.dd N')	lat_lon / geographic location (latitude)	decimalLatitude		decimalLatitude
+decimal_longitude	specimen	yes	decimal	-180 to 180; west negative	Decimal degrees, WGS84.	lat_lon (as 'd.dd W')	lat_lon / geographic location (longitude)	decimalLongitude		decimalLongitude
+coordinate_uncertainty_m	specimen	no	decimal	>= 0	Radius of uncertainty in metres.			coordinateUncertaintyInMeters		coordinateUncertaintyInMeters
+verbatim_coordinates	specimen	no	string		Coordinates exactly as given by the source.			verbatimCoordinates
+depth_m	specimen	yes	decimal	>= 0	Collection depth in metres. Measured, or derived as recorded in depth_basis.	depth (as '{float} m')	depth	depth (GBIF interpreted)
+depth_min_m	specimen	no	decimal	>= 0	Minimum depth in metres, when a range was recorded.			minimumDepthInMeters
+depth_max_m	specimen	no	decimal	>= 0	Maximum depth in metres, when a range was recorded.			maximumDepthInMeters
+depth_basis	specimen	recommended	enum	measured|interval_midpoint|convention|not_recorded	How depth_m was obtained. 'convention' requires a note naming the convention.
+verbatim_depth	specimen	no	string		Depth exactly as given by the source, e.g. '0-20', '10 meters'.			verbatimDepth
+preservation	specimen	recommended	string		e.g. 95% ethanol, RNAlater, snap frozen, 4% formalin.			preparations	referred_to_by (Preservation Notes)
+permit	specimen	recommended	string		Collecting permit or authorization.
+gbif_id	specimen	no	string	^[0-9]+$	GBIF occurrence ID of the matching record.			gbifID		gbifID
+lux_uri	specimen	no	string	^https://lux\.collections\.yale\.edu/data/object/	LUX record URI.				id
+occurrence_url	specimen	no	string		Public record URL, e.g. an iNaturalist observation.			occurrenceID / references		occurrenceID
+notes	specimen	no	string		Human-readable notes: missing information, disagreements, derived values, unusual identifier mappings.	description	description
+analysis_notes	specimen	no	string		Computational annotations, kept separate from notes.
+sample_id	sample	yes	key	^[A-Za-z0-9._-]+$	Lab sample identifier: one tissue or part of one specimen.	sample_name	sample_alias
+specimen_key	sample	yes	key	^[A-Za-z0-9._-]+$	Specimen the sample came from.	isolate	isolate
+tissue	sample	yes	string		Tissue or part, from a sample-specific record, e.g. siphosome, gastrozooid.	tissue	tissue_type / organism_part
+dev_stage	sample	no	string		Developmental stage.	dev_stage	dev_stage / lifestage
+sex	sample	no	string		INSDC sex value, e.g. not determined.	sex	sex
+preservation	sample	recommended	string		How the tissue was preserved for molecular work.
+biosample_accession	sample	no	accession	^SAM(N|EA|D)[0-9]+$	BioSample accession (SAMN, SAMEA, SAMD).	accession	sample_accession
+sample_title	sample	no	string		Title for the BioSample.	sample_title	sample_title
+derived_from	sample	no	accession	^SAM(N|EA|D)[0-9]+$	BioSample this sample was derived from.	derived_from
+notes	sample	no	string		Human-readable notes.	description	description
+library_id	library	yes	key	^[A-Za-z0-9._-]+$	Lab library identifier.	library_ID
+sample_id	library	yes	key	^[A-Za-z0-9._-]+$	Sample the library was made from.	sample_name
+library_strategy	library	yes	string		SRA library strategy, e.g. WGS, RNA-Seq, Hi-C.	library_strategy	library_strategy
+library_source	library	recommended	string		SRA library source, e.g. GENOMIC, TRANSCRIPTOMIC.	library_source	library_source
+library_selection	library	recommended	string		SRA library selection, e.g. RANDOM, PolyA.	library_selection	library_selection
+library_layout	library	recommended	enum	paired|single	Read layout.	library_layout	library_layout
+platform	library	recommended	string		e.g. ILLUMINA, PACBIO_SMRT.	platform	instrument_platform
+instrument_model	library	recommended	string		e.g. Illumina NovaSeq 6000.	instrument_model	instrument_model
+bioproject_accession	library	no	accession	^PRJ(NA|EB|DB)[0-9]+$	BioProject.	bioproject_accession	study_accession
+experiment_accession	library	no	accession	^(SRX|ERX|DRX)[0-9]+$	SRA experiment.		experiment_accession
+run_accessions	library	no	string	^((SRR|ERR|DRR)[0-9]+)(;(SRR|ERR|DRR)[0-9]+)*$	SRA runs, semicolon-separated.		run_accession
+notes	library	no	string		Human-readable notes.
+tube_id	tube	yes	tube	handwritten: initials + index (CWD16); dunnlab_datamatrix: DunnLab + 6 digits (DunnLab001707); fluidx: two letters + 8 digits (FA27205833)	Identifier on a physical tube. Often used as a BioSample sample_name.	sample_name (often)	sample_alias (often)
+tube_id_type	tube	yes	enum	handwritten|dunnlab_datamatrix|fluidx|other	How the tube is labelled.
+contents	tube	yes	enum	whole_specimen|tissue|dna|rna|library|other	What the tube holds.
+sample_id	tube	recommended	key	^[A-Za-z0-9._-]+$	Sample whose material the tube holds.
+library_id	tube	no	key	^[A-Za-z0-9._-]+$	Library the tube holds, for library tubes.
+parent_tube_id	tube	no	tube		Tube this one was aliquoted or extracted from.
+notes	tube	no	string		Human-readable notes, e.g. relabelling or transfers between tubes.

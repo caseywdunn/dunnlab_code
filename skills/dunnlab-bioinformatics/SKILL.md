@@ -34,6 +34,8 @@ library for the biological method rather than adding a second implementation.
 
 Support gzip-compressed inputs without requiring manual decompression. Use text-mode gzip streams with parsers, or a workflow-managed derivative for tools that require an uncompressed file. Check the selected tool's actual compression support; DIAMOND supports gzip queries, but this is not universal across bioinformatics tools.
 
+For field-collected specimens, `dunnlab-specimens` defines the specimen key used to identify a specimen in sequence headers, trees, and file names, and keeps its link to vouchers, BioSamples, and tubes.
+
 ## Identifier transformations
 
 When producing sanitized derivative identifiers:
