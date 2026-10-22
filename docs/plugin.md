@@ -37,7 +37,7 @@ Each has a markdown entry point, with references for substantial conditional det
 | **`dunnlab-specimens`** | Field-collected specimens from collection to archive: vouchers, field and tube IDs, collecting data, initial, public, and current identifications, and crosswalks among the Yale Peabody Museum (LUX), GBIF, iNaturalist, SRA, and ENA, with tools that fetch records, build tables with a source for every value, validate them, and export BioSample submissions. |
 | **`dunnlab-hpc`** | YCRC cluster reference — partitions, storage quotas, SLURM batch templates, GPU inventory, Snakemake integration, and running coding agents on Bouchet's agent partition. Yale-specific; see [Computing at Yale](yale.md). |
 | **`dunnlab-codereview`** | Review and verification using the relevant skill's standards, with feedback that distinguishes blocking issues from suggestions. |
-| **`dunnlab-manuscript`** | How a manuscript is organized and built: a paired manuscript repository, Quarto source, numbers, tables, and figures staged by the analysis repository and synced in with their commit, PDF and Word builds, and co-author edits. |
+| **`dunnlab-manuscript`** | How a manuscript is written, organized, and built: prose style that leads with the biology, a paired manuscript repository, Quarto source, numbers, tables, and figures staged by the analysis repository and synced in with their commit, PDF and Word builds, and co-author edits. |
 | **`dunnlab-biblio`** | Verified manuscript, data, and software citations, claim support, and BibTeX conventions; never invents missing metadata. |
 
 Workflow design applies across lifecycle phases. Exploration uses the same reusable
