@@ -21,4 +21,4 @@ Schimel, Strunk & White, King, Silvia (*How to Write a Lot*), and Bolker (*Writi
 
 ## Lab experience
 
-The "Patterns that make prose read as agent-written" section comes from co-authors' comments on agent-drafted Dunn Lab manuscripts and supplements (October 2026). They flagged abstract subjects with vague present-tense verbs, over-explanation and over-specification, "X, not Y" statements, repetition across sections, phrasing carried over from the pipeline, and supplements that read like a log of the agent's work. The examples in the guidance are invented; keep specifics from real manuscripts out of the skill.
+The "Common weaknesses in drafts" section comes from co-authors' comments on agent-drafted Dunn Lab manuscripts and supplements (October 2026). They flagged abstract subjects with vague present-tense verbs, over-explanation and over-specification, "X, not Y" statements, repetition across sections, phrasing carried over from the pipeline, and supplements that read like a log of the agent's work. The examples in the guidance are invented; keep specifics from real manuscripts out of the skill.

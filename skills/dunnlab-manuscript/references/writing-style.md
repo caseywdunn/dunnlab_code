@@ -66,9 +66,9 @@ Within this arc:
 - **Define terms once,** at first use, for the paper's actual audience. Keep abbreviations to a minimum. Use one term for one thing throughout; switching terms makes readers think there are two things.
 - **Prefer concrete to abstract.** Name the organism, the tissue, the gene, the place.
 
-## Patterns that make prose read as agent-written
+## Common weaknesses in drafts
 
-Co-authors repeatedly flag these in agent drafts. Search for them in every draft before sharing it.
+These are failures of clarity and focus that agent drafts are especially prone to, and that co-authors repeatedly flag. Search for them in every draft before sharing it.
 
 - **Abstract subjects with vague verbs.** A sentence whose subject is an artifact of the work (a study, dataset, analysis, table, step, screen, or tool) and whose verb is a fuzzy present-tense one: "The dataset provides broader sampling", "Supplementary tables accompany the figures", "The first filtering step yields retained reads". Ask what actually happened and who did it, and say that: "We added published data from twelve species to broaden sampling". Often the sentence is housekeeping and can be deleted. Software is a tool, so the authors are the actors: "We predicted genes with Tool A and annotated them with Tool B", not "Tool A identified genes and Tool B assigned functions".
 - **Over-explanation.** Defining terms the audience knows; reporting things that were not done ("no statistical tests were applied"); stating limits that no reader would assume away; narrating data handling and bookkeeping in the Results; itemizing every count when the argument needs one or two numbers. Ask what the reader would lose without the sentence.
@@ -92,5 +92,5 @@ Edit in this order: get the story structure right, then make the ideas clear and
 - **Read it aloud.** Stumbles mark sentences to rewrite.
 - **Read as a newcomer would.** Would a biologist outside the project know why each paragraph is there and what to take from it?
 - **Check each unit:** does each paragraph and section have a single clear point, clear links to its neighbours, and a resolution?
-- **Search for the agent patterns above** before handing a draft to co-authors.
+- **Search for the common weaknesses above** before handing a draft to co-authors.
 - **Keep the numbers generated.** Rewriting for style never means typing a value; keep every `{{< meta >}}` shortcode intact.
