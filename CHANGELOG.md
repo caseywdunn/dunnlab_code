@@ -6,14 +6,16 @@ release process in [`dev_docs/contributing.md`](dev_docs/contributing.md#releasi
 Lab members pick up a new version with `/plugin update dunnlab-code@dunnlab`;
 auto-update is off by default for third-party marketplaces.
 
-## [Unreleased]
+## 1.2.0 (2026-10-22)
 
 ### Added
 
 - `dunnlab-manuscript` gives writing-style guidance in
-  `references/writing-style.md`: lead with the biological question and
-  significance, use people and organisms as subjects, and remove the patterns
-  co-authors flag in agent drafts (abstract subjects with vague verbs,
+  `references/writing-style.md`, built mainly on Schimel's *Writing Science*:
+  find the story and tell it as Opening, Challenge, Action, Resolution; lead
+  with the biological question and significance; use organisms, processes,
+  and authors as subjects with strong verbs; and remove common weaknesses that
+  agent drafts are prone to (abstract subjects with vague verbs,
   over-explanation, "X, not Y" contrasts, repetition, pipeline jargon, and
   supplements that read as logs). Its sources are recorded in
   `dev_docs/writing-style-sources.md`, outside the skill.
