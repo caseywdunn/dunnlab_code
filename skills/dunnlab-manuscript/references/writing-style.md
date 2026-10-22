@@ -4,6 +4,10 @@ Read this before drafting or revising any manuscript prose, including the supple
 
 A paper tells a story about biology. Readers come to learn what question was asked, what was found, why it matters, and how far to trust it. Methods and numbers support that story; they are not the story. Agent-drafted prose tends to invert this. It reports what was done, in dense and over-specified sentences, and leaves the reader to work out why. Write for a biologist who does not know the project and is reading because of the organisms and the question. It is the writer's job to make the reader's job easy.
 
+## Decisions that belong to the authors
+
+What the paper claims, how strongly, what it emphasizes, and which results it reports are the authors' decisions. When the advice below calls for choosing the story, making a finding prominent, or cutting a result, propose the change and ask; do not make it silently. Style edits never remove controls, sensitivity analyses, null findings, or limitations that the analysis's validation requires (`dunnlab-research-lifecycle`). Those can move to the Methods or the supplement, but they stay in the paper.
+
 ## Find the story first
 
 Develop the story from the bottom up, from data to understanding, and tell it from the top down, from understanding to data. Before drafting, be able to answer:
@@ -30,7 +34,7 @@ Within this arc:
 
 - **Abstract:** the whole story in miniature: the problem and gap, the approach and main findings, and the significance.
 - **Methods:** give a brief overview of each method before its details.
-- **Results:** lead with the finding, then the supporting evidence. Statistics support the story; they are not the story. Write "Expression was higher in tentacles than in other tissues (Fig. 2)", not "Figure 2 shows the expression in each tissue". Headings and figure titles state findings rather than topics. Cut results that do not serve the story, however much work they took.
+- **Results:** lead with the finding, then the supporting evidence. Statistics support the story; they are not the story. Write "Expression was higher in tentacles than in other tissues (Fig. 2)", not "Figure 2 shows the expression in each tissue". Headings and figure titles state findings rather than topics. Propose cutting results that do not serve the story, however much work they took.
 - **Discussion:** build to the resolution. This is where the work's meaning is argued; do not simply restate the Results.
 
 ## Limitations and uncertainty
@@ -71,7 +75,7 @@ Within this arc:
 These are failures of clarity and focus that agent drafts are especially prone to, and that co-authors repeatedly flag. Search for them in every draft before sharing it.
 
 - **Abstract subjects with vague verbs.** A sentence whose subject is an artifact of the work (a study, dataset, analysis, table, step, screen, or tool) and whose verb is a fuzzy present-tense one: "The dataset provides broader sampling", "Supplementary tables accompany the figures", "The first filtering step yields retained reads". Ask what actually happened and who did it, and say that: "We added published data from twelve species to broaden sampling". Often the sentence is housekeeping and can be deleted. Software is a tool, so the authors are the actors: "We predicted genes with Tool A and annotated them with Tool B", not "Tool A identified genes and Tool B assigned functions".
-- **Over-explanation.** Defining terms the audience knows; reporting things that were not done ("no statistical tests were applied"); stating limits that no reader would assume away; narrating data handling and bookkeeping in the Results; itemizing every count when the argument needs one or two numbers. Ask what the reader would lose without the sentence.
+- **Over-explanation.** Defining terms the audience knows; reporting things that were not done ("no statistical tests were applied"); stating trivial limits that no reader would assume away (required limitations stay); narrating data handling and bookkeeping in the Results; itemizing every count when the argument needs one or two numbers. Ask what the reader would lose without the sentence.
 - **Over-specification.** Carrying exact sub-counts, ranges, exclusions, and special cases into the main text. Put details in a table or the Methods, and give the reader the numbers that make the point.
 - **Chains of short factual sentences.** A sequence of separate observations that leaves the reader to assemble the point. Combine them into the claim they support, stated with its reasoning ("Because …, we cannot tell whether …").
 - **"X, not Y" contrasts** with something the reader never assumed: "The values are medians, not means." State the positive claim. Keep a contrast only when readers are likely to hold the mistaken view.

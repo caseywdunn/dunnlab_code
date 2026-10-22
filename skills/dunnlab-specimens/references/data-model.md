@@ -23,6 +23,8 @@ specimens/
 
 Copy the header-only files in [`templates/`](../templates/) to start. Field definitions, formats, and requirements are in [`schema/fields.tsv`](../schema/fields.tsv).
 
+Commit the whole `specimens/` directory, including `sources/` and `generated/`. These are small text files, `build` needs `sources/` to run offline, and committed generated tables let a diff show what a rebuild changed. A download archive too large to commit, such as a big GBIF download, stays outside the repository; its `retrieval.json`, with the DOI and checksums, is committed so the archive can be fetched again and verified.
+
 Each `retrieval.json` records the source, the UTC time, every request URL, and a SHA-256 checksum for each file, plus the DOI for a GBIF download. Later retrievals of the same record are added beside earlier ones rather than replacing them.
 
 ## Edited tables
@@ -75,7 +77,7 @@ Use `other` for anything else. BioSample `sample_name` values are often tube lab
 | File | Contents |
 |---|---|
 | `specimens.tsv`, `samples.tsv`, `libraries.tsv`, `tubes.tsv` | integrated tables |
-| `manifest.tsv` | one row per library, with its sample, specimen, key metadata, accessions, and tubes; the table analyses read |
+| `manifest.tsv` | one row per library, with its sample, specimen, key metadata, accessions, and tubes; the table analyses use; the analysis workflow reads a committed copy among its inputs, never this file directly |
 | `provenance.tsv` | for every value: entity, key, field, value, source, and locator |
 | `conflicts.tsv` | fields where sources disagree, the value chosen, and the alternatives |
 | `missing_fields.tsv` | required and recommended values not found in any reviewed source |

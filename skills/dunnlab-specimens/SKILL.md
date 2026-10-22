@@ -41,7 +41,7 @@ Field names follow the NCBI BioSample attributes where one exists, and Darwin Co
 - Use the **museum voucher** if the specimen has one when analysis begins, written as the INSDC voucher with `:` replaced by `_` (`YPM:IZ:110226` becomes `YPM_IZ_110226`). Colons are not allowed, because Newick trees read them as branch lengths.
 - Otherwise use the **field ID** (`D1399-SS10`). For public data without a voucher, use the **BioSample accession**.
 - **A key must be unique across all of the lab's work.** Field IDs are often unique only within a trip: `BW` marks a blue-water SCUBA dive, and `BW3-4` is dive 3, specimen 4 of that trip. As a key, such an ID must include the trip, e.g. `26Mar19-BW3-39` or `KiloMoana2018-BW7-4`.
-- **Once used, the key never changes.** A voucher assigned later, a re-catalogued specimen, or a transfer to another museum is recorded in `crosswalk.tsv` as an identifier of the same key.
+- **Within a project, the key never changes once used.** A voucher assigned later, a re-catalogued specimen, or a transfer to another museum is recorded in `crosswalk.tsv` as an identifier of the same key. A later project chooses its own key by the rule above, so it may use a voucher where an earlier project used the field ID; the voucher links the specimen across projects.
 - One specimen may have several samples and BioSamples, for example separate zooids of one siphonophore. They share the specimen key.
 
 ## Taxonomy
@@ -69,7 +69,7 @@ Determinations are a dated history in `determinations.tsv`, with the verbatim na
 | `validate` | check the generated tables; exit 1 on errors |
 | `export-biosample` | an NCBI BioSample Invertebrate.1.0 table |
 
-Fetching only adds new folders under `sources/`. `build` and `validate` work offline and run quickly, so curation can be rebuilt at any time without touching sequence data. Results are in `generated/`: the integrated `specimens.tsv`, `samples.tsv`, `libraries.tsv`, and `tubes.tsv`; a library-level `manifest.tsv` for analyses; `provenance.tsv`; and the review reports `conflicts.tsv`, `missing_fields.tsv`, `unmatched_records.tsv`, `catalog_audit.tsv`, and `validation.tsv`.
+Fetching only adds new folders under `sources/`. `build` and `validate` work offline and run quickly, so curation can be rebuilt at any time without touching sequence data. Results are in `generated/`: the integrated `specimens.tsv`, `samples.tsv`, `libraries.tsv`, and `tubes.tsv`; a library-level `manifest.tsv` for analyses; `provenance.tsv`; and the review reports `conflicts.tsv`, `missing_fields.tsv`, `unmatched_records.tsv`, `catalog_audit.tsv`, `build_problems.tsv`, and `validation.tsv`.
 
 ## Workflows
 
@@ -87,4 +87,4 @@ When ingesting a specimen, query every relevant source and compare them; see [So
 
 `validate` checks that identifiers are well formed and unique at their level, joins between tables resolve, coordinates are in range, depth bounds are ordered, dates are ISO 8601, tube labels match their declared type, and each depth set by convention names the convention. After `check-obis`, it also warns when a point is on land, a depth exceeds the bathymetry, or a depth lies outside the depths at which the taxon has been recorded. Treat warnings as items to review, not automatic errors.
 
-Changes to metadata can change figures or summaries. Refreshing those is a separate, explicit step in the analysis workflow; confirm that frozen analysis inputs are unchanged.
+Changes to metadata can change figures or summaries. The analysis workflow never reads `generated/` directly, because every `build` rewrites it. It reads a committed copy of `manifest.tsv` among its own inputs, and copying a rebuilt manifest there is the explicit refresh step; its diff shows what changed. After curation, confirm that frozen analysis inputs are unchanged.

@@ -24,7 +24,7 @@ Treat archived data as public data (workflow 2), but link it to the lab's record
 
 ## 4. Curation
 
-Follow the review loop in [Curation](curation.md). It is metadata-only: rebuilding never touches sequence data, and analysis inputs stay frozen. Refreshing figures or summaries that use the metadata is a separate, explicit step in the analysis workflow.
+Follow the review loop in [Curation](curation.md). It is metadata-only: rebuilding never touches sequence data, and analysis inputs stay frozen because the analysis reads its own committed copy of `manifest.tsv`, not `generated/manifest.tsv`. Refreshing that copy, and the figures or summaries that use it, is a separate, explicit step in the analysis workflow.
 
 ## 5. Publication
 

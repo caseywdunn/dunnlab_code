@@ -56,7 +56,7 @@ Homo_sapiens@BRCA1
 Nematostella_vectensis@NVE12345
 ```
 
-Use the full binomial with an underscore for the species prefix, and sanitize the gene ID portion before prefixing. Reserve `@` as the separator and check source IDs for conflicts. For unnamed species or datasets requiring specimen/assembly distinctions, document an unambiguous prefix in the species mapping rather than inventing a binomial or allowing collisions.
+Use the full binomial with an underscore for the species prefix, and sanitize the gene ID portion before prefixing. Reserve `@` as the separator and check source IDs for conflicts. For unnamed species, document an unambiguous prefix in the species mapping rather than inventing a binomial. When several specimens of one species must be told apart, use the `specimen_key` from `dunnlab-specimens` as the prefix, record it in the species mapping, and never allow collisions.
 
 Maintain `species_gene_mapping.tsv` with `species`, `original_id`, and `global_id` columns, linked to any sanitization mapping. Carry the resulting IDs through FASTA, annotations, trees, and all cross-file joins. When multiple transcripts or proteins are retained for one gene, preserve their distinct IDs and gene relationships.
 
