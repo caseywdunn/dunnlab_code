@@ -6,6 +6,36 @@ release process in [`dev_docs/contributing.md`](dev_docs/contributing.md#releasi
 Lab members pick up a new version with `/plugin update dunnlab-code@dunnlab`;
 auto-update is off by default for third-party marketplaces.
 
+## 1.2.0 (2026-10-22)
+
+### Added
+
+- `dunnlab-manuscript` gives writing-style guidance in
+  `references/writing-style.md`, built mainly on Schimel's *Writing Science*:
+  find the story and tell it as Opening, Challenge, Action, Resolution; lead
+  with the biological question and significance; use organisms, processes,
+  and authors as subjects with strong verbs; and remove common weaknesses that
+  agent drafts are prone to (abstract subjects with vague verbs,
+  over-explanation, "X, not Y" contrasts, repetition, pipeline jargon, and
+  supplements that read as logs). Its sources are recorded in
+  `dev_docs/writing-style-sources.md`, outside the skill.
+- `dunnlab-specimens` manages field-collected specimen metadata from collection
+  to archive. It tracks specimens, samples, libraries, and tubes (handwritten,
+  DunnLab data-matrix, and FluidX labels), keeps raw sources unchanged, records
+  a source for every value, and keeps initial, public, and current
+  identifications with evidence. It maps among YPM/LUX, GBIF (including
+  iNaturalist), SRA, and ENA, uses WoRMS with NCBI taxonomy IDs, and ships a
+  tested tool that fetches records, builds integrated tables, checks
+  coordinates and depths against OBIS, validates, and exports BioSample tables.
+
+### Changed
+
+- Manuscript companion READMEs now map the paper's Results sections, in order,
+  to figure and table references and the corresponding analyses and files.
+- All user-facing analysis guides are written for biologists and focus on the
+  reported analyses. Preliminary reports and development history remain separate
+  from the reader's route through the paper and repository.
+
 ## 1.1.0 (2026-10-09)
 
 ### Added

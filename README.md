@@ -91,9 +91,10 @@ If you are loading a local copy with `--plugin-dir`, just `git pull`. Changes ar
 - **dunnlab-release-cycle** — Development and release process for projects with several contributors or outside users: dev and issue branches, a plan with gates, changelog, and releases.
 - **dunnlab-research-lifecycle** — Scientific planning, exploration, selection, validation, and publication handoff; distillation retains the working implementation and closes evidence gaps.
 - **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
+- **dunnlab-specimens** — Specimen and sample metadata with provenance: vouchers, field and tube IDs, collecting data, taxonomy, crosswalks among YPM/LUX, GBIF, iNaturalist, SRA, and ENA, and tools to fetch, build, validate, and export.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, Snakemake integration, and running coding agents on Bouchet's agent partition.
 - **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
-- **dunnlab-manuscript** — Manuscript repositories with Quarto source, results staged by the analysis repository and synced in, PDF and Word builds, and co-author edits.
+- **dunnlab-manuscript** — Manuscript prose style, manuscript repositories with Quarto source, results staged by the analysis repository and synced in, PDF and Word builds, and co-author edits.
 - **dunnlab-biblio** — Verified manuscript, data, and software citations, claim support, and BibTeX conventions.
 
 ### Commands

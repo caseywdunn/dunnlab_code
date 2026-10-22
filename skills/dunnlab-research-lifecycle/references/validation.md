@@ -106,8 +106,10 @@ submission are distinct statuses.
   records and artifacts agree and reproduction limits are explicit.
 - [ ] Reported results trace to verified outputs and accurately describe the
   methods, uncertainty, and scientific choices.
-- [ ] Relevant code review is complete and reader documentation explains reproduction
-  and access to preserved exploratory evidence.
+- [ ] Relevant code review is complete. User-facing guides describe current analyses
+  for biologists and explain reproduction; manuscript companions map the paper's
+  Results sections to repository contents. Exploratory evidence remains preserved
+  separately from the reader's navigation through the reported analyses.
 - [ ] Applicable handoff criteria for the intended deliverable are met; pending
   deposits, submissions, or other external actions are identified accurately.
 

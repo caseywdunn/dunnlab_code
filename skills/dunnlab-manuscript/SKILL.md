@@ -1,9 +1,9 @@
 ---
 name: dunnlab-manuscript
 description: >
-  Set up, write, revise, and build Dunn Lab manuscripts: Quarto source in a -ms
-  repository, results staged in the analysis repository and synced in, PDF and
-  Word output, and co-author edits.
+  Set up, write, revise, and build Dunn Lab manuscripts: prose style, Quarto
+  source in a -ms repository, results staged in the analysis repository and
+  synced in, PDF and Word output, and co-author edits.
 ---
 
 # Dunn Lab Manuscripts
@@ -39,11 +39,32 @@ project-a-ms/
 └── tmp/              # gitignored; returned .docx files
 ```
 
+## Help readers navigate the companion repository
+
+Follow workflow-design's [manuscript-to-repository guidance](../dunnlab-workflow-design/references/documentation.md#connect-the-manuscript-to-the-repository): the analysis README names the paper and maps its Results headings, in the same order, to figures, tables, analysis guides, and available data or results. Keep this mapping aligned with manuscript revisions when companion documentation is within scope. Include the public repository link in the paper; use explicit citation placeholders until publication links exist.
+
+All user-facing guides should be concise and accessible to biologists. A retained preliminary analysis report is separate from the manuscript and supplementary materials; it is not the reader's entry point. Preserve development history separately from the guides to the reported analyses.
+
 ## Setting up
 
 Copy the templates in this skill: `templates/manuscript/` into the manuscript repository, and `templates/analysis/write_manuscript_values.py` into the analysis repository's `scripts/`. Set `DEFAULT_ANALYSIS_REPO` in `sync_results.py`. When the target journal is known, add its Quarto journal extension (for example from [quarto-journals](https://github.com/quarto-journals)) rather than hand-building a LaTeX template.
 
 ## Writing
+
+### Style
+
+Read [Writing style](references/writing-style.md) before drafting or revising any prose, including the supplement and captions. In short:
+
+- Find the story first: the problem, the specific question, the answer, and why it matters. Tell it as Opening, Challenge, Action, Resolution.
+- Lead with biological motivation and significance. Technical detail supports the argument and goes in the main text only when the reader needs it.
+- Make organisms, processes, and the authors the subjects, and their actions strong verbs. Avoid study artifacts doing vague things ("The dataset provides…").
+- Do not over-explain or over-specify. Give the reader what the argument needs and put the rest in tables or the Methods.
+- State positive claims; drop "X, not Y" contrasts with things no reader assumed.
+- Say each thing once. Do not repeat scope, caveats, or sample sizes across sections.
+- Replace pipeline-internal names and shorthand with terms a biologist would use.
+- Write the supplement for readers. It is not a log of the work.
+
+### Source
 
 Quarto Markdown (`.qmd`) is the source of record:
 

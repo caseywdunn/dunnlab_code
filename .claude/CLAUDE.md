@@ -40,3 +40,4 @@ Detailed guides for working on this repo (load as needed):
 - `dev_docs/plugin-architecture.md` — How skills, commands, and hooks are structured
 - `dev_docs/contributing.md` — How to add or modify skills, commands, hooks, and Pages content
 - `dev_docs/github-pages.md` — How the `docs/` Jekyll site is configured and deployed
+- `dev_docs/writing-style-sources.md` — Provenance of the manuscript writing-style guidance

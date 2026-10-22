@@ -39,9 +39,10 @@ Frontmatter `name` is optional for personal and project skills, where the direct
 - **dunnlab-release-cycle** — Branches, issues, `dev_docs/PLAN.md` with gates, changelog, and the release ritual for projects that outgrow working on `main`.
 - **dunnlab-research-lifecycle** — Scientific planning, exploration, selection, validation, and publication handoff; distillation retains the working implementation and closes evidence gaps.
 - **dunnlab-new-project** — Minimal repository, environment, and documentation scaffolding, followed by a handoff to the relevant work.
+- **dunnlab-specimens** — Specimen, sample, library, and tube metadata with value-level provenance; crosswalks among YPM/LUX, GBIF, iNaturalist, SRA, and ENA; WoRMS taxonomy; and tools to fetch, build, validate, and export.
 - **dunnlab-hpc** — YCRC cluster reference: Bouchet, McCleary, and Misha partitions, storage, SLURM, Snakemake integration, and running coding agents on Bouchet's agent partition.
 - **dunnlab-codereview** — Targeted code review and verification using the relevant skill's standards.
-- **dunnlab-manuscript** — Manuscript repositories with Quarto source, results staged by the analysis repository and synced in with their commit, PDF and Word builds, and co-author edits.
+- **dunnlab-manuscript** — Manuscript prose style, manuscript repositories with Quarto source, results staged by the analysis repository and synced in with their commit, PDF and Word builds, and co-author edits.
 - **dunnlab-biblio** — Verified manuscript, data, and software citations, claim support, and BibTeX conventions.
 
 ### Design principles
@@ -85,6 +86,7 @@ Use these scenarios when evaluating changes to skill boundaries:
 | Review a workflow change or propose a design | Review/design skills as relevant | Assess requested artifacts without launching a lifecycle or expensive computation |
 | Rename workflow rules or update documentation | Workflow design; targeted review | Verify scope and dependencies; reuse still-valid scientific execution evidence |
 | Set up releases or work through a planned release | Release cycle + coding defaults; research lifecycle if the tool serves a scientific plan | `PLAN.md` holds release steps and gates; the scientific plan stays in `dev_docs/overview.md` |
+| Ingest, curate, or deposit specimen metadata | Specimens; bioinformatics for sequence identifiers; workflow design for the analysis that reads the manifest | Raw sources stay immutable; identity only through explicit identifiers or reviewed crosswalks; YPM corrections go upstream |
 | Write or build a manuscript | Manuscript + bibliography; workflow design for the step that generates results | Results reach the text only as generated values, tables, and figures synced with their analysis commit |
 | Prepare a manuscript or dataset release for handoff | Lifecycle publication reference + manuscript + workflow design + bibliography as relevant | Match the final artifact to evidence, preserve a citable version and access route, identify pending deposits without repeating valid computation |
 

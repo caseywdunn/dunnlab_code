@@ -69,8 +69,10 @@ for external services, manual interpretation, or renewed human work.
   environment, with relevant engineering checks passed.
 - [ ] External, human, and model dependencies have recoverable inputs, verification
   evidence, and explicit reproduction limits.
-- [ ] Reader documentation identifies the maintained scope, its reproduction route,
-  verified results, limitations, and preserved exploratory evidence.
+- [ ] Reader documentation explains the selected analyses, file locations,
+  reproduction route, and scientific limitations for biologists. Manuscript
+  companions follow workflow-design's manuscript-to-repository table guidance;
+  exploratory history remains preserved separately.
 
 Record evidence identities, checks actually run, reused evidence, and limitations
 so Validation can assess the result without repeating unchanged expensive work.

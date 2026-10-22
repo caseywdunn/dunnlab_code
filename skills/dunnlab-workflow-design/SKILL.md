@@ -134,7 +134,8 @@ is part of the method, preserve its inputs, prompts, settings, responses, and
 verification; replaying responses differs from a fresh invocation. Lifecycle
 assesses whether those limits meet the intended scientific deliverable.
 
-When writing execution instructions or preparing a handoff, read
-[reader documentation](references/documentation.md). Keep public usage instructions
-canonical and current, with development history and detailed run evidence linked
-separately.
+When writing any user-facing analysis guide or preparing a handoff, read
+[reader documentation](references/documentation.md). Write for biologists and keep
+the instructions focused on current analyses. For a manuscript companion, include
+the required README table mapping Results sections to analyses and files in the
+paper's order. Keep development history and detailed run evidence separate.

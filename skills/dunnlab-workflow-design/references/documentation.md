@@ -1,17 +1,59 @@
 # Document workflows for their readers
 
-Write root and analysis READMEs for people who need to understand and reproduce
-the work, assuming they are biologists rather than software engineers, as in the
-README guidance in `dunnlab-coding-defaults`. Use plain language and define necessary
-technical terms. Describe its current scope, methods, inputs, outputs, software
-requirements, and usable entry points. Keep development history, implementation
-decisions, progress, review gates, and failed attempts in `dev_docs/` or linked
-provenance records. Do not turn public instructions into a construction narrative.
+Write all user-facing analysis documentation for biologists, following
+`dunnlab-coding-defaults`. Readers should be able to understand the biological
+question, find the relevant inputs and results, and see how the analysis was done
+without running it or knowing the project's development history. Start with those
+descriptions, then give execution instructions. Define necessary technical terms;
+explain safeguards through their practical consequences rather than opening with
+an agent instruction, binding rule, or software specification.
 
-Keep the root README concise and link to the analysis guide and report. Give each
-set of execution instructions one canonical home, commonly a workflow README;
-link to it from other guides instead of copying commands or analysis grids.
-Domain guides explain methods, inputs, products, and requirements.
+Keep the root README concise. Give each set of execution instructions one
+canonical home, commonly an analysis README, and link to it from other guides.
+Apply the same focused style to methods, data, software, setup, and cluster guides.
+Describe the current analysis and retain limitations that affect interpretation
+or reproduction. Remove obsolete methods, superseded results, migration notes,
+failed attempts, and development chronology from these guides. Preserve the
+underlying records in their existing archive or developer documentation.
+
+## Connect the manuscript to the repository
+
+For a repository accompanying a paper, read the current manuscript source before
+organizing the README. Use the draft when the paper is not yet published. Introduce
+the repository as its companion, with the manuscript title, citation, and public
+link when available. Use a clearly marked placeholder for an unavailable citation
+or link; do not invent metadata or expose a private manuscript path as a public link.
+If the manuscript is unavailable, leave its mapping explicitly pending instead of
+inventing Results headings or figure numbers.
+
+Near the beginning of the root README, include a table that connects the paper
+directly to repository contents. Copy the Results headings and their order, use
+the same biological terms, and include the relevant main and supplementary figure
+or table identifiers. Link each row to the actual analysis guide or code and the
+available inputs or results. This is the table's shape, with illustrative paths:
+
+```markdown
+| Results section in the paper | Figures and tables | Analyses and files |
+| --- | --- | --- |
+| Tissue-specific expression | Figure 2; Table S1 | [Analysis and code](workflows/expression/README.md), [sample metadata](resources/expression/samples.tsv), [abundance table](results/expression/abundance.tsv) |
+```
+
+Use real tracked paths, durable deposits, or clear retrieval instructions. Explain
+where experimental results or analyses performed elsewhere are documented without
+implying that this repository contains their code or raw data. Keep the manuscript,
+its supplementary materials, and repository resources distinguishable.
+
+A broader preliminary analysis report may remain in the repository, but do not
+send readers to it as the starting point, present it as the manuscript or
+supplementary information, or use its outline and figure numbers for this table.
+Reader-facing guides describe the selected analyses and supporting controls;
+retaining research history does not require narrating or advertising it there.
+
+The table provides navigation over the established directory layout; it does not
+require moving files or rebuilding analyses. Keep it current when manuscript
+headings, ordering, figure identifiers, or selected outputs change. Check its links
+against the files and the manuscript, and provide the repository link in the paper
+when editing the manuscript is within scope.
 
 ## Make launching the analysis explicit
 
@@ -63,9 +105,11 @@ external services, model dependencies, or required human work. Define institutio
 specific services and link official documentation as well as local launchers.
 
 Preserve data underlying figures and the code used to generate them. Keep human
-interpretation or presentation steps explicit. The maintained report may live
-outside the exploratory archive while linking the evidence behind its results.
+interpretation or presentation steps explicit. Link readers to the selected
+outputs and their methods, with detailed execution evidence available separately.
 
-After a change, check related guides for stale commands, duplicated instructions,
-incorrect output boundaries, and broken references. Update active documentation
-without rewriting immutable run histories.
+After a change, check all related user-facing guides for stale commands,
+duplicated instructions, obsolete analyses, incorrect output boundaries, and
+broken references. For a manuscript companion, also compare its navigation table
+with the current paper. Update active documentation without rewriting immutable
+run histories or relabeling preliminary outputs as published results.
