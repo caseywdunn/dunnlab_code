@@ -10,6 +10,13 @@ auto-update is off by default for third-party marketplaces.
 
 ### Added
 
+- `dunnlab-manuscript` gives writing-style guidance in
+  `references/writing-style.md`: lead with the biological question and
+  significance, use people and organisms as subjects, and remove the patterns
+  co-authors flag in agent drafts (abstract subjects with vague verbs,
+  over-explanation, "X, not Y" contrasts, repetition, pipeline jargon, and
+  supplements that read as logs). Its sources are recorded in
+  `dev_docs/writing-style-sources.md`, outside the skill.
 - `dunnlab-specimens` manages field-collected specimen metadata from collection
   to archive. It tracks specimens, samples, libraries, and tubes (handwritten,
   DunnLab data-matrix, and FluidX labels), keeps raw sources unchanged, records
