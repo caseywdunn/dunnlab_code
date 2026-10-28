@@ -12,33 +12,49 @@ This repo has two purposes:
 
 This repository was written by Casey Dunn with Claude, Anthropic's AI assistant, from the first commit onward. The [full statement](https://dunnlab.org/dunnlab_code/#ai-use) says what was delegated and to which models; the commit history is the detailed record.
 
-## Installation
+## Plugin installation
 
-Register the repo as a marketplace, then install the plugin:
+### Claude Code
+
+Install from the GitHub repository by registering it as a marketplace:
 
 ```bash
 claude plugin marketplace add caseywdunn/dunnlab_code
 claude plugin install dunnlab-code@dunnlab
 ```
 
-This pulls the plugin from GitHub and caches it locally. It works anywhere Claude Code runs.
+To update an installation from GitHub, refresh the marketplace and then update the plugin:
+
+```bash
+claude plugin marketplace update dunnlab
+claude plugin update dunnlab-code@dunnlab
+```
+
+Restart Claude Code to use the updated plugin. Auto-update is off by default for third-party marketplaces; you can enable it under `/plugin` → **Marketplaces**.
+
+### Codex
+
+Install from the same GitHub repository:
+
+```bash
+codex plugin marketplace add caseywdunn/dunnlab_code
+codex plugin add dunnlab-code@dunnlab
+```
+
+To update an installation from GitHub, refresh the marketplace snapshot and install the current plugin version:
+
+```bash
+codex plugin marketplace upgrade dunnlab
+codex plugin add dunnlab-code@dunnlab
+```
+
+Start a new Codex session to use the updated plugin. Codex loads the shared `skills/` directory; the Claude-specific slash command and plugin controls below apply only to Claude Code. See the [official Codex plugin documentation](https://developers.openai.com/plugins/build/plugins) for marketplace details.
 
 The [Getting Started](https://dunnlab.org/dunnlab_code/getting-started.html) guide walks through the full setup, including the other plugins we recommend.
 
-### Loading a local copy instead
+For local development installs, updates, and removal in either tool, see [Contributing](dev_docs/contributing.md#working-with-a-local-plugin).
 
-To load the plugin from a working copy without installing it — useful while developing it:
-
-```bash
-git clone https://github.com/caseywdunn/dunnlab_code ~/repos/dunnlab_code
-claude --plugin-dir ~/repos/dunnlab_code
-```
-
-This loads the plugin for that session alongside anything already installed; it does not replace them. The flag is repeatable (`--plugin-dir ~/pluginA --plugin-dir ~/pluginB`). If a `--plugin-dir` plugin shares a name with an installed one, the local copy wins for that session. Because it reads from the directory, edits take effect in the next session with no update step.
-
-There is no `--plugin-dir` option for the Claude VS Code extension, but you can run `claude --plugin-dir` in the VS Code terminal.
-
-## Using skills and commands
+## Using skills and commands in Claude Code
 
 Once the plugin is installed, everything is available automatically — there are no extra activation steps.
 
@@ -59,18 +75,6 @@ To disable the plugin without uninstalling it:
 /plugin disable dunnlab-code@dunnlab
 /plugin enable dunnlab-code@dunnlab
 ```
-
-## Updating the plugin
-
-If you installed from the marketplace:
-
-```
-/plugin update dunnlab-code@dunnlab
-```
-
-Claude Code can also update marketplaces and their plugins in the background after startup, but **auto-update is off by default for third-party marketplaces like this one**. Turn it on per marketplace under `/plugin` → **Marketplaces**, or run the update command above when you want the latest.
-
-If you are loading a local copy with `--plugin-dir`, just `git pull`. Changes are picked up on the next session.
 
 ## What's included
 

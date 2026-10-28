@@ -6,6 +6,58 @@ That badge is `dev`, the integration branch — the state of what is queued for 
 
 How to add or modify skills, commands, hooks, and documentation in this repo.
 
+## Working with a local plugin
+
+Run each block from the repository root; `"$PWD"` supplies the absolute path to your local checkout. If you already registered the GitHub marketplace under `dunnlab`, remove that installation and marketplace before registering the local one. You can test changes before they reach GitHub.
+
+### Claude Code
+
+Install the local checkout:
+
+```bash
+claude plugin marketplace add "$PWD"
+claude plugin install dunnlab-code@dunnlab
+```
+
+To update from the local checkout, edit its files or run `git pull`, then start a new Claude Code session or run `/reload-plugins` in the current one. Claude Code reads this local installation directly from the checkout. If you changed the marketplace manifest, refresh it with:
+
+```bash
+claude plugin marketplace update dunnlab
+```
+
+To uninstall the local plugin and remove its marketplace registration:
+
+```bash
+claude plugin uninstall dunnlab-code@dunnlab
+claude plugin marketplace remove dunnlab
+```
+
+For a single development session without an install, run `claude --plugin-dir "$PWD"`. It loads the working copy for that session, and edits take effect after `/reload-plugins` or in the next session. There is nothing to uninstall when using `--plugin-dir`.
+
+### Codex
+
+Install the local checkout:
+
+```bash
+codex plugin marketplace add "$PWD"
+codex plugin add dunnlab-code@dunnlab
+```
+
+After editing the checkout (or running `git pull`), refresh the installed copy and start a new Codex session:
+
+```bash
+codex plugin add dunnlab-code@dunnlab
+```
+
+To uninstall the local plugin and remove its marketplace registration:
+
+```bash
+codex plugin remove dunnlab-code@dunnlab
+codex plugin marketplace remove dunnlab
+```
+
+Codex installs a cached copy of the plugin, so editing the checkout alone does not update an existing session. Its CLI recognizes this repository's `.claude-plugin/marketplace.json`; the shared skills are available in Codex, while Claude-specific commands and hooks should be tested in Claude Code. See the [official Codex plugin documentation](https://developers.openai.com/plugins/build/plugins) for local marketplace behavior.
+
 ## Adding a new skill
 
 1. Create a directory: `skills/<skill-name>/`
